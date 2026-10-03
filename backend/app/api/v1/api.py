@@ -1,10 +1,11 @@
 from fastapi import APIRouter
-from backend.app.api.v1.endpoints import auth
+from backend.app.api.v1.endpoints import auth, transactions
 
 api_router = APIRouter()
 
 # Mount feature endpoints
 api_router.include_router(auth.router, prefix="/auth", tags=["Authentication & RBAC"])
+api_router.include_router(transactions.router, prefix="/transactions", tags=["Transactions & Ledger"])
 
 @api_router.get("/info", tags=["System"])
 def get_system_info():

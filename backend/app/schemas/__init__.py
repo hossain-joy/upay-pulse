@@ -6,6 +6,13 @@ from backend.app.schemas.auth import (
     CustomerProfileResponse,
     AgentProfileResponse
 )
+from backend.app.schemas.transaction import (
+    SendMoneyRequest,
+    CashOutRequest,
+    CashInRequest,
+    TransactionResponse,
+    TransactionHistoryResponse
+)
 
 __all__ = [
     "UserRegisterRequest",
@@ -13,5 +20,10 @@ __all__ = [
     "UserResponse",
     "TokenResponse",
     "CustomerProfileResponse",
-    "AgentProfileResponse"
+    "AgentProfileResponse",
+    "SendMoneyRequest",
+    "CashOutRequest",
+    "CashInRequest",
+    "TransactionResponse",
+    "TransactionHistoryResponse"
 ]
