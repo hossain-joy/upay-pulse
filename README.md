@@ -6,7 +6,7 @@
 [![Google AI Studio](https://img.shields.io/badge/Google%20AI%20Studio-Gemini%202.5%20Flash-4285F4?logo=google&logoColor=white)](https://aistudio.google.com)
 [![LightGBM](https://img.shields.io/badge/LightGBM-4.5+-brightgreen)](https://lightgbm.readthedocs.io)
 [![NetworkX](https://img.shields.io/badge/NetworkX-3.4+-blue)](https://networkx.org)
-[![Test Suite](https://img.shields.io/badge/Tests-36%2F36%20Passed-success)](#testing)
+[![Test Suite](https://img.shields.io/badge/Tests-38%2F38%20Passed-success)](#testing)
 
 > **upay Pulse** is an integrated, production-grade Mobile Financial Services (MFS) intelligence platform engineered for Bangladesh's unbanked and underbanked population. It bridges customer financial resilience, agent liquidity stability, and ecosystem security against organized money-mule syndicates.
 
@@ -167,16 +167,17 @@ python -m pytest -v
 ```
 tests\test_agent_ai.py ...                                               [  8%]
 tests\test_auth.py ...                                                   [ 16%]
-tests\test_customer_ai.py ...                                            [ 25%]
-tests\test_database.py ....                                              [ 36%]
-tests\test_foundation.py ....                                            [ 47%]
-tests\test_graph_mules.py ....                                           [ 58%]
-tests\test_risk_and_freeze.py ...                                        [ 66%]
-tests\test_soundbox_badge.py ..                                          [ 72%]
-tests\test_transactions.py .....                                         [ 86%]
+tests\test_customer_ai.py ...                                            [ 24%]
+tests\test_database.py ....                                              [ 34%]
+tests\test_events_ws.py ..                                               [ 39%]
+tests\test_foundation.py ....                                            [ 50%]
+tests\test_graph_mules.py ....                                           [ 60%]
+tests\test_risk_and_freeze.py ...                                        [ 68%]
+tests\test_soundbox_badge.py ..                                          [ 74%]
+tests\test_transactions.py .....                                         [ 87%]
 tests\test_voice_coach.py .....                                          [100%]
 
-============================= 36 passed in 13.91s =============================
+============================= 38 passed in 17.16s =============================
 ```
 
 ---
