@@ -10,37 +10,38 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ currentRole, onRoleChange }) => {
   return (
-    <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3.5">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/60 px-4 lg:px-8 py-3">
+      {/* Subtle top accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan-500/50 to-transparent" />
+
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-rose-500 p-0.5 shadow-lg shadow-cyan-500/20">
-            <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Zap className="w-5 h-5 text-cyan-400" />
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="relative w-9 h-9">
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-cyan-500 via-indigo-500 to-rose-500 blur-sm opacity-60" />
+            <div className="relative w-9 h-9 rounded-xl bg-slate-950 border border-slate-700/60 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-cyan-400" />
             </div>
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-200 to-white bg-clip-text text-transparent">
-                upay Pulse
-              </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300">
-                AI Ecosystem
-              </span>
-            </div>
-            <p className="text-xs text-slate-400">SecurityAI • CustomerAI • AgentAI</p>
+          <div className="hidden sm:block">
+            <span className="text-lg font-extrabold tracking-tight bg-gradient-to-r from-cyan-400 via-sky-200 to-white bg-clip-text text-transparent">
+              upay Pulse
+            </span>
+            <p className="text-[10px] text-slate-500 leading-none mt-0.5">MFS Intelligence Platform</p>
           </div>
         </div>
 
-        {/* Role Switcher */}
-        <RoleSwitcher currentRole={currentRole} onRoleChange={onRoleChange} />
+        {/* Role Switcher — center */}
+        <div className="flex-1 flex justify-center">
+          <RoleSwitcher currentRole={currentRole} onRoleChange={onRoleChange} />
+        </div>
 
-        {/* Health & Observability */}
-        <div className="flex items-center gap-3">
+        {/* Right side */}
+        <div className="flex items-center gap-2 shrink-0">
           <HealthIndicator />
-          <div className="hidden lg:flex items-center gap-1.5 text-xs text-slate-400 bg-slate-900/60 border border-slate-800 px-3 py-1 rounded-full">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Simulated MFS Sandbox</span>
+          <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-slate-500 bg-slate-900/60 border border-slate-800 px-2.5 py-1 rounded-full">
+            <ShieldCheck className="w-3 h-3 text-emerald-400" />
+            <span>Sandbox</span>
           </div>
         </div>
       </div>
