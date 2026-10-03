@@ -32,29 +32,19 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
 
-    # CORS
-    CORS_ORIGINS: List[str] = [
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "https://*.onrender.com"
-    ]
+    # CORS — stored as comma-separated string to avoid pydantic-settings JSON parsing issues
+    CORS_ORIGINS: str = "http://localhost:5173,http://127.0.0.1:5173,http://localhost:3000,https://*.onrender.com"
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v):
-        if isinstance(v, str):
-            if v == "*":
-                return ["*"]
-            if v.startswith("[") and v.endswith("]"):
-                try:
-                    import json
-                    return json.loads(v)
-                except Exception:
-                    pass
-            return [i.strip() for i in v.split(",") if i.strip()]
-        return v
+        if isinstance(v, list):
+            return ",".join(v)
+        return v or "http://localhost:5173"
+
+    @property
+    def cors_origins_list(self) -> List[str]:
+        return [i.strip() for i in self.CORS_ORIGINS.split(",") if i.strip()]
 
     # Latency limits
     FREEZE_MAX_TIMEOUT_MS: int = 300
