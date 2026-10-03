@@ -61,9 +61,7 @@ export const App: React.FC = () => {
 
         if (res.ok) {
           const data = await res.json();
-          if (data.access_token) {
-            setAuthToken(data.access_token);
-          }
+          if (data.access_token) setAuthToken(data.access_token);
         }
       } catch (e) {
         console.warn('Auto persona token setup notice:', e);
