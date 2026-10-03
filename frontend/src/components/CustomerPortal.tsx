@@ -38,11 +38,42 @@ import {
 } from "../types";
 
 interface CustomerPortalProps {
-  user: UserProfile;
-  onRefreshUser: () => void;
+  user?: UserProfile;
+  onRefreshUser?: () => void;
+  onNotify?: (msg: string, type: 'success' | 'error' | 'info') => void;
 }
 
-export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user, onRefreshUser }) => {
+const defaultUser: UserProfile = {
+  id: "usr-demo-001",
+  phone: "+8801700000001",
+  email: "customer@example.com",
+  role: "CUSTOMER",
+  status: "ACTIVE",
+  is_frozen: false,
+  profile: {
+    full_name: "Tariqul Islam (Garment Worker)",
+    profession: "Senior Sewing Operator",
+    location: "Savar, Dhaka",
+    wallet_balance: 500.0,
+    grace_balance: 0.0,
+    reliability_score: 88.5,
+  }
+};
+
+export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, onRefreshUser, onNotify }) => {
+  const [currentUser, setCurrentUser] = useState<UserProfile>(propUser || defaultUser);
+
+  useEffect(() => {
+    if (propUser) {
+      setCurrentUser(propUser);
+    } else {
+      apiRequest<UserProfile>('/auth/me')
+        .then((res) => { if (res && res.id) setCurrentUser(res); })
+        .catch(() => {});
+    }
+  }, [propUser]);
+
+  const user = currentUser;
   // State
   const [activeTab, setActiveTab] = useState<"overview" | "coach" | "cashflow" | "grace" | "fdr">("overview");
   const [trajectory, setTrajectory] = useState<CashFlowTrajectory | null>(null);
@@ -142,7 +173,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user, onRefreshU
       });
 
       setSendSuccessMsg(`টাকা পাঠানো সফল হয়েছে! রেফারেন্স: ${res.transaction_reference} (৳${res.amount})`);
-      onRefreshUser();
+      onRefreshUser?.();
       fetchCustomerAIData();
 
       // Fetch dynamic badge for this transfer
@@ -260,7 +291,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user, onRefreshU
         })
       });
       setFreezeResult(res);
-      onRefreshUser();
+      onRefreshUser?.();
     } catch (err: any) {
       setFreezeError(err.message || "Master Freeze execution failed.");
     }
@@ -277,7 +308,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user, onRefreshU
         })
       });
       setGraceStatusMsg(`৳${graceAmountInput} উপায় গ্রেস সফলভাবে ওয়ালেটে যুক্ত হয়েছে!`);
-      onRefreshUser();
+      onRefreshUser?.();
       fetchCustomerAIData();
       setTimeout(() => setIsGraceModalOpen(false), 1800);
     } catch (err: any) {
@@ -297,7 +328,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user, onRefreshU
         })
       });
       setFdrSuccessMsg(`৳${res.principal_amount} সফলভাবে ${res.term_days} দিনের Micro-FDR এ জমা হয়েছে! মেয়াদ শেষে প্রদেয়: ৳${res.total_at_maturity}`);
-      onRefreshUser();
+      onRefreshUser?.();
       fetchCustomerAIData();
     } catch (err: any) {
       alert(err.message || "Micro-FDR তৈরিতে ব্যর্থ হয়েছে।");
