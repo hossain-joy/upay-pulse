@@ -49,7 +49,8 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - SECRET_KEY=upay_pulse_super_secure_demo_secret_key_change_in_production
       - ENVIRONMENT=production
-      - AI_PROVIDER=mock
+      - AI_PROVIDER=${AI_PROVIDER:-mock}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
     ports:
       - "8000:8000"
     healthcheck:
