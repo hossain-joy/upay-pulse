@@ -66,6 +66,20 @@ class HybridEventBus:
                 except Exception as exc:
                     logger.error("Error executing subscriber for topic '%s': %s", topic, exc)
 
+    def publish_sync(self, topic: str, data: Dict[str, Any]):
+        """Synchronously trigger in-memory subscribers or schedule async publish."""
+        try:
+            loop = asyncio.get_running_loop()
+            loop.create_task(self.publish(topic, data))
+        except RuntimeError:
+            if topic in self._subscribers:
+                for callback in self._subscribers[topic]:
+                    if not inspect.iscoroutinefunction(callback):
+                        try:
+                            callback(data)
+                        except Exception as exc:
+                            logger.error("Error executing subscriber for topic '%s': %s", topic, exc)
+
     def subscribe(self, topic: str, callback: Callable[[Dict[str, Any]], Any]):
         """Register a callback for an event topic."""
         if topic not in self._subscribers:

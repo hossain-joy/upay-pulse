@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from backend.app.api.v1.endpoints import auth, transactions, risk, freeze
+from backend.app.api.v1.endpoints import auth, transactions, risk, freeze, scams, graph
 
 api_router = APIRouter()
 
@@ -8,6 +8,8 @@ api_router.include_router(auth.router, prefix="/auth", tags=["Authentication & R
 api_router.include_router(transactions.router, prefix="/transactions", tags=["Transactions & Ledger"])
 api_router.include_router(risk.router, prefix="/risk", tags=["SecurityAI: Risk Engine"])
 api_router.include_router(freeze.router, prefix="/freeze", tags=["SecurityAI: Master Freeze"])
+api_router.include_router(scams.router, prefix="/scams", tags=["SecurityAI: Citizen Scam Reporting"])
+api_router.include_router(graph.router, prefix="/graph", tags=["SecurityAI: Money-Mule Graph Intelligence"])
 
 @api_router.get("/info", tags=["System"])
 def get_system_info():

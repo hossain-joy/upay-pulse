@@ -116,6 +116,63 @@ class MasterFreezeService:
         )
 
     @staticmethod
+    def admin_freeze(db: Session, user: User, reason: str = "Admin security lockdown") -> MasterFreezeResponse:
+        """
+        Administrative Master Freeze override (e.g. from scam reporting cascade or risk console).
+        Does not require customer PIN.
+        """
+        t_start = time.perf_counter()
+
+        user.is_frozen = True
+        user.status = UserStatus.FROZEN
+        user.token_revoked_at = utc_now()
+
+        # Cancel pending transactions
+        pending_txns = db.query(Transaction).filter(
+            Transaction.sender_id == user.id,
+            Transaction.status == TransactionStatus.PENDING_REVIEW
+        ).all()
+        for p_tx in pending_txns:
+            p_tx.status = TransactionStatus.CANCELLED_FREEZE
+            p_tx.description = (p_tx.description or "") + " [CANCELLED BY ADMIN MASTER FREEZE]"
+
+        elapsed_ms = (time.perf_counter() - t_start) * 1000.0
+
+        db.add(FreezeAction(
+            user_id=user.id,
+            action_type=FreezeActionType.MASTER_FREEZE_TRIGGERED,
+            sessions_revoked=1,
+            pending_cancelled=len(pending_txns),
+            response_time_ms=Decimal(str(round(elapsed_ms, 2))),
+            reason=reason
+        ))
+        db.add(AuditLog(
+            actor_id=user.id,
+            actor_role="ADMIN",
+            action="ADMIN_MASTER_FREEZE",
+            resource="WALLET",
+            resource_id=user.id,
+            details=f'{{"reason": "{reason}", "latency_ms": {round(elapsed_ms, 2)}}}'
+        ))
+        db.commit()
+
+        return MasterFreezeResponse(
+            status="FROZEN",
+            is_frozen=True,
+            sessions_revoked=1,
+            pending_cancelled=len(pending_txns),
+            response_time_ms=round(elapsed_ms, 2),
+            message="Administrative Master Freeze lockdown executed successfully.",
+            target_sla_met=elapsed_ms < 300.0
+        )
+
+    @classmethod
+    def freeze_account(cls, db: Session, user: User, reason: str = "Security lockdown", admin_override: bool = False):
+        if admin_override:
+            return cls.admin_freeze(db=db, user=user, reason=reason)
+        return cls.admin_freeze(db=db, user=user, reason=reason)
+
+    @staticmethod
     def unfreeze(db: Session, user: User, verification_code: str) -> Dict[str, Any]:
         """Verified unfreeze workflow."""
         if not user.is_frozen:
@@ -144,3 +201,6 @@ class MasterFreezeService:
         db.commit()
 
         return {"status": "ACTIVE", "is_frozen": False, "message": "Account unfreeze verified and restored to active state."}
+
+# Alias for service consumers
+FreezeService = MasterFreezeService
