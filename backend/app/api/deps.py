@@ -52,15 +52,18 @@ def get_current_user(
 
     # Check token revocation
     if user.token_revoked_at:
-        token_iat = payload.get("iat")
-        if token_iat:
-            iat_dt = datetime.fromtimestamp(token_iat, tz=timezone.utc)
-            if iat_dt < user.token_revoked_at:
-                raise AppException(
-                    message="Session has been revoked due to security action or logout. Please log in again.",
-                    code="SESSION_REVOKED",
-                    status_code=status.HTTP_401_UNAUTHORIZED
-                )
+        token_ts = payload.get("ts")
+        if token_ts is None:
+            token_iat = payload.get("iat")
+            token_ts = float(token_iat) if token_iat else 0.0
+
+        revoked_ts = user.token_revoked_at.timestamp()
+        if token_ts < revoked_ts:
+            raise AppException(
+                message="Session has been revoked due to security action or logout. Please log in again.",
+                code="SESSION_REVOKED",
+                status_code=status.HTTP_401_UNAUTHORIZED
+            )
 
     if user.status == UserStatus.SUSPENDED:
         raise AppException(

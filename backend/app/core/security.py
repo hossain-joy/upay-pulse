@@ -36,10 +36,15 @@ def verify_freeze_pin(plain_pin: str, hashed_pin: str) -> bool:
         return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
-    """Create signed JWT access token."""
+    """Create signed JWT access token with microsecond-precision issue timestamp."""
     to_encode = data.copy()
-    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
-    to_encode.update({"exp": expire, "iat": datetime.now(timezone.utc)})
+    now = datetime.now(timezone.utc)
+    expire = now + (expires_delta or timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES))
+    to_encode.update({
+        "exp": expire,
+        "iat": int(now.timestamp()),
+        "ts": now.timestamp()  # High-precision float timestamp for instantaneous session revocation
+    })
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 def decode_access_token(token: str) -> Optional[dict]:

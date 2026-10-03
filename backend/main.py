@@ -31,6 +31,10 @@ async def lifespan(app: FastAPI):
     await event_bus.initialize()
     db_status = check_db_health()
     logger.info("Database health check: %s (%s)", db_status.get("status"), db_status.get("dialect"))
+    # Pre-warm Risk Model
+    from backend.app.services.risk_scoring_service import RiskScoringService
+    _ = RiskScoringService.get_model()
+    logger.info("SecurityAI LightGBM model pre-warmed in memory.")
     yield
     # Shutdown actions
     logger.info("Shutting down upay Pulse API server...")

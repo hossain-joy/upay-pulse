@@ -1,5 +1,6 @@
 import uuid
 import secrets
+import json
 from decimal import Decimal
 from typing import Optional, Tuple, Dict, Any, List
 from sqlalchemy.orm import Session
@@ -115,8 +116,65 @@ class TransactionService:
                 status_code=400
             )
 
-        # 3. Balance & Grace Overdraft Check
+        # 3. Amount Conversion & Real-Time Risk Score via SecurityAI LightGBM
         amount_dec = Decimal(str(req.amount))
+        from backend.app.services.risk_scoring_service import RiskScoringService
+        risk_eval = RiskScoringService.evaluate(
+            amount=float(amount_dec),
+            tx_type="SEND_MONEY",
+            sender_profile=sender_profile
+        )
+
+        # 4. Check High-Risk Threshold
+        if risk_eval.decision == RiskDecision.BLOCK_AND_FLAG:
+            ref = generate_transaction_reference()
+            blocked_txn = Transaction(
+                transaction_reference=ref,
+                idempotency_key=req.idempotency_key,
+                sender_id=sender.id,
+                receiver_id=receiver.id,
+                amount=amount_dec,
+                fee=Decimal("0.00"),
+                transaction_type=TransactionType.SEND_MONEY,
+                status=TransactionStatus.BLOCKED,
+                category=req.category or "General",
+                description="Transaction blocked by SecurityAI Anomaly Detection",
+                is_flagged_fraud=True
+            )
+            db.add(blocked_txn)
+            db.flush()
+
+            db.add(RiskScore(
+                transaction_id=blocked_txn.id,
+                risk_score=Decimal(str(risk_eval.risk_score)),
+                risk_level=risk_eval.risk_level,
+                decision=risk_eval.decision,
+                reasons=json.dumps(risk_eval.reasons),
+                inference_latency_ms=Decimal(str(risk_eval.inference_latency_ms))
+            ))
+
+            db.add(AuditLog(
+                actor_id=sender.id,
+                actor_role="CUSTOMER",
+                action="SECURITY_HIGH_RISK_BLOCK",
+                resource="TRANSACTIONS",
+                resource_id=blocked_txn.id,
+                details=f'{{"amount": {float(amount_dec)}, "risk_score": {risk_eval.risk_score}, "reasons": {risk_eval.reasons}}}'
+            ))
+            db.commit()
+
+            raise AppException(
+                message=f"Transfer blocked by SecurityAI. Risk score: {risk_eval.risk_score:.2f} (High Risk).",
+                code="TRANSACTION_BLOCKED_HIGH_RISK",
+                status_code=403,
+                details={
+                    "risk_score": risk_eval.risk_score,
+                    "reasons": risk_eval.reasons,
+                    "transaction_reference": ref
+                }
+            )
+
+        # 5. Balance & Grace Overdraft Check
         current_bal = sender_profile.wallet_balance
         shortfall = amount_dec - current_bal
         applied_grace_amount = 0.0
@@ -174,7 +232,7 @@ class TransactionService:
             sender_profile.wallet_balance -= amount_dec
             receiver_profile.wallet_balance += amount_dec
 
-        # 4. Create Transaction Record
+        # 6. Create Transaction Record (Approved / Medium Risk)
         ref = generate_transaction_reference()
         txn = Transaction(
             transaction_reference=ref,
@@ -191,16 +249,14 @@ class TransactionService:
         db.add(txn)
         db.flush()
 
-        # 5. Attach Initial Risk Score
-        risk_score_val = Decimal("0.05") if amount_dec < 10000 else Decimal("0.65")
-        risk_tier = RiskLevel.LOW if risk_score_val < Decimal("0.40") else RiskLevel.MEDIUM
+        # 7. Attach Real LightGBM Risk Score
         risk = RiskScore(
             transaction_id=txn.id,
-            risk_score=risk_score_val,
-            risk_level=risk_tier,
-            decision=RiskDecision.ALLOW,
-            reasons='["Standard domestic peer transfer"]',
-            inference_latency_ms=Decimal("15.2")
+            risk_score=Decimal(str(risk_eval.risk_score)),
+            risk_level=risk_eval.risk_level,
+            decision=risk_eval.decision,
+            reasons=json.dumps(risk_eval.reasons),
+            inference_latency_ms=Decimal(str(risk_eval.inference_latency_ms))
         )
         db.add(risk)
 
