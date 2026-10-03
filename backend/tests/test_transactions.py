@@ -1,7 +1,26 @@
 import pytest
 import uuid
 from backend.app.core.database import SessionLocal
-from backend.app.models.user import User
+from backend.app.models.user import User, UserStatus
+
+@pytest.fixture(scope="module", autouse=True)
+def clean_transaction_test_state():
+    db = SessionLocal()
+    c = db.query(User).filter(User.email == "customer@example.com").first()
+    if c and c.customer_profile:
+        c.customer_profile.wallet_balance = 500.00
+        c.customer_profile.grace_balance = 0.00
+        c.is_frozen = False
+        c.status = UserStatus.ACTIVE
+    v = db.query(User).filter(User.email == "victim@example.com").first()
+    if v and v.customer_profile:
+        v.customer_profile.wallet_balance = 25000.00
+        v.customer_profile.grace_balance = 0.00
+        v.is_frozen = False
+        v.status = UserStatus.ACTIVE
+    db.commit()
+    db.close()
+    yield
 
 def get_auth_token(client, email, password="Demo@1234"):
     res = client.post("/api/v1/auth/login", json={"identifier": email, "password": password})
