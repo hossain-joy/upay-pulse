@@ -182,6 +182,33 @@ tests\test_voice_coach.py .....                                          [100%]
 
 ---
 
+## 🚀 Live Cloud Deployment (Render.com)
+
+The repository includes a ready-to-deploy **Render Blueprint** (`render.yaml`).
+
+### Option A: 1-Click Blueprint Deployment (Recommended)
+1. Push this repository to your GitHub account.
+2. Sign in to [Render.com](https://render.com).
+3. In the Render Dashboard, click **New +** > **Blueprint**.
+4. Connect your GitHub repository. Render will automatically read [`render.yaml`](file:///d:/diu_hackathon/render.yaml) and configure:
+   - **PostgreSQL Database** (`upay-pulse-db`)
+   - **FastAPI Web Service** (`upay-pulse-api`)
+   - **React Static Site** (`upay-pulse-frontend`)
+5. Click **Apply**.
+6. Once `upay-pulse-api` deploys, copy its URL (e.g., `https://upay-pulse-api.onrender.com`).
+7. In the `upay-pulse-frontend` service settings, set the environment variable:
+   - `VITE_API_BASE_URL` = `https://upay-pulse-api.onrender.com/api/v1`
+8. Trigger a redeploy of the frontend static site. Done!
+
+### Option B: Manual Dashboard Setup
+| Service | Type | Root Directory | Build Command | Start / Publish Command | Health Check |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Database** | PostgreSQL | Root | N/A | N/A | Default |
+| **API** | Web Service (Python 3.11) | Root | `pip install --upgrade pip && pip install -r backend/requirements.txt` | `python scripts/init_db.py && python scripts/seed_baseline.py && uvicorn backend.main:app --host 0.0.0.0 --port $PORT` | `/health` |
+| **Frontend** | Static Site | `frontend` | `npm install && npm run build` | `dist` | N/A |
+
+---
+
 ## 🛡️ Synthetic Data & Educational Disclaimer
 
 > **IMPORTANT**:

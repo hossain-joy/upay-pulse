@@ -10,8 +10,15 @@ Base = declarative_base()
 def get_engine():
     """Create SQLAlchemy engine with automatic fallback to SQLite if PostgreSQL fails."""
     try:
+        db_url = settings.DATABASE_URL
+        # Normalize Render/Heroku postgres:// schema to SQLAlchemy postgresql+psycopg2://
+        if db_url.startswith("postgres://"):
+            db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+"):
+            db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+
         engine = create_engine(
-            settings.DATABASE_URL,
+            db_url,
             pool_pre_ping=True,
             pool_size=10,
             max_overflow=20,
@@ -20,7 +27,7 @@ def get_engine():
         # Test connection
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
-        logger.info("Connected successfully to PostgreSQL: %s", settings.DATABASE_URL.split('@')[-1])
+        logger.info("Connected successfully to PostgreSQL: %s", db_url.split('@')[-1])
         return engine
     except Exception as e:
         logger.warning(

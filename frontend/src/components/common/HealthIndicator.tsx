@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Activity, Database, Radio, CheckCircle, AlertTriangle } from 'lucide-react';
+import { API_BASE_URL } from '../../api/client';
 
 interface HealthData {
   status: string;
@@ -14,7 +15,8 @@ export const HealthIndicator: React.FC = () => {
   useEffect(() => {
     const fetchHealth = async () => {
       try {
-        const res = await fetch('/ready');
+        const rootUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, '');
+        const res = await fetch(`${rootUrl}/ready`);
         if (res.ok) {
           const data = await res.json();
           setHealth(data);

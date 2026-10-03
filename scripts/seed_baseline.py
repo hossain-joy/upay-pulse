@@ -7,6 +7,9 @@ root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 if root_dir not in sys.path:
     sys.path.insert(0, root_dir)
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 from backend.app.core.database import SessionLocal
 from backend.app.core.security import get_password_hash, get_freeze_pin_hash
 from backend.app.models import (
@@ -14,16 +17,33 @@ from backend.app.models import (
     CustomerProfile, AgentProfile,
     Transaction, TransactionType, TransactionStatus,
     RiskScore, RiskLevel, RiskDecision,
+    ScamReport, MuleGraphNode, MuleGraphEdge,
+    FreezeAction, GraceOverdraftRequest, MicroFDRAccount,
+    AgentLiquidityForecast, VoiceCoachSession,
     CashFlowForecast, Notification, NotificationType,
     AuditLog
 )
 
-def seed_baseline_data():
+def seed_baseline_data(force: bool = False):
     db = SessionLocal()
     try:
+        # Check if already seeded and not forced
+        existing_count = db.query(User).count()
+        if existing_count > 0 and not force:
+            print(f"[INFO] Database already contains {existing_count} users. Baseline accounts ready.")
+            return
+
         print("Seeding baseline demo accounts for upay Pulse...")
         
-        # 1. Clean existing test data safely
+        # 1. Clean existing test data safely in reverse dependency order
+        db.query(VoiceCoachSession).delete()
+        db.query(FreezeAction).delete()
+        db.query(GraceOverdraftRequest).delete()
+        db.query(MicroFDRAccount).delete()
+        db.query(AgentLiquidityForecast).delete()
+        db.query(MuleGraphEdge).delete()
+        db.query(MuleGraphNode).delete()
+        db.query(ScamReport).delete()
         db.query(AuditLog).delete()
         db.query(Notification).delete()
         db.query(CashFlowForecast).delete()
@@ -227,4 +247,5 @@ def seed_baseline_data():
         db.close()
 
 if __name__ == "__main__":
-    seed_baseline_data()
+    force_seed = "--force" in sys.argv
+    seed_baseline_data(force=force_seed)

@@ -4,7 +4,7 @@ import { UserRole } from './components/common/RoleSwitcher';
 import { CustomerPortal } from './components/CustomerPortal';
 import { AgentTerminal } from './components/AgentTerminal';
 import { RiskConsole } from './components/RiskConsole';
-import { setAuthToken } from './api/client';
+import { setAuthToken, API_BASE_URL, getWebSocketUrl } from './api/client';
 import { 
   Sparkles, 
   CheckCircle2, 
@@ -53,7 +53,7 @@ export const App: React.FC = () => {
           body = { identifier: 'admin@example.com', password: 'Admin@1234' };
         }
 
-        const res = await fetch(`http://localhost:8000/api/v1${endpoint}`, {
+        const res = await fetch(`${API_BASE_URL}${endpoint}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(body)
@@ -80,7 +80,7 @@ export const App: React.FC = () => {
 
     const connectWs = () => {
       try {
-        ws = new WebSocket("ws://localhost:8000/api/v1/events/ws");
+        ws = new WebSocket(getWebSocketUrl());
 
         ws.onopen = () => {
           setIsWsConnected(true);
