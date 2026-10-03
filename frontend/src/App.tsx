@@ -49,7 +49,7 @@ export const App: React.FC = () => {
         } else if (role === 'AGENT') {
           body = { identifier: '+8801800000001', password: 'Demo@1234' };
         } else {
-          body = { identifier: 'admin@upaypulse.internal', password: 'Admin@1234' };
+          body = { identifier: 'admin@example.com', password: 'Admin@1234' };
         }
 
         const res = await fetch(`http://localhost:8000/api/v1${endpoint}`, {
