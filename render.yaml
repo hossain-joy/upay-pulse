@@ -11,7 +11,7 @@ services:
   - type: web
     name: upay-pulse-api
     runtime: docker
-    dockerfilePath: ./Dockerfile.backend
+    dockerfilePath: ./Dockerfile
     plan: free
     region: oregon
     healthCheckPath: /health
@@ -39,7 +39,7 @@ services:
   - type: web
     name: upay-pulse-frontend
     runtime: docker
-    dockerfilePath: ./frontend/Dockerfile.frontend
+    dockerfilePath: ./frontend/Dockerfile
     dockerContext: ./frontend
     plan: free
     region: oregon
