@@ -14,7 +14,13 @@ from backend.app.schemas.customer_ai import (
     FDRCreateRequest,
     FDRResponse
 )
+from backend.app.schemas.voice import (
+    VoiceQueryRequest,
+    VoiceQueryResponse,
+    VoiceSessionHistoryItem
+)
 from backend.app.services.customer_ai_service import CustomerAIService
+from backend.app.services.voice_coach_service import VoiceCoachService
 
 router = APIRouter()
 
@@ -79,3 +85,25 @@ def list_micro_fdr_accounts(
     List all active and matured Micro-FDR savings accounts.
     """
     return CustomerAIService.list_fdrs(db=db, user=current_user)
+
+@router.post("/voice-coach/chat", response_model=VoiceQueryResponse)
+def voice_coach_chat(
+    req: VoiceQueryRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_customer)
+):
+    """
+    Conversational financial advisory in natural Bengali with live wallet context injection.
+    """
+    return VoiceCoachService.process_query(db=db, user=current_user, req=req)
+
+@router.get("/voice-coach/history", response_model=List[VoiceSessionHistoryItem])
+def voice_coach_history(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_customer)
+):
+    """
+    Retrieve past voice coach consultation history.
+    """
+    return VoiceCoachService.get_history(db=db, user=current_user)
+
