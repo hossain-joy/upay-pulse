@@ -11,23 +11,23 @@ def get_engine():
     """Create SQLAlchemy engine with automatic fallback to SQLite if PostgreSQL fails."""
     try:
         db_url = settings.DATABASE_URL
-        # Normalize Render/Heroku postgres:// schema to SQLAlchemy postgresql+psycopg2://
+        # Normalize Render/Heroku postgres:// to postgresql+psycopg2://
         if db_url.startswith("postgres://"):
             db_url = db_url.replace("postgres://", "postgresql+psycopg2://", 1)
-        elif db_url.startswith("postgresql://") and not db_url.startswith("postgresql+"):
+        elif db_url.startswith("postgresql://") and "+" not in db_url.split("://")[0]:
             db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
 
+        logger.info("Attempting PostgreSQL connection to: ...@%s", db_url.split('@')[-1])
         engine = create_engine(
             db_url,
             pool_pre_ping=True,
-            pool_size=10,
-            max_overflow=20,
+            pool_size=2,
+            max_overflow=3,
             echo=False
         )
-        # Test connection
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
-        logger.info("Connected successfully to PostgreSQL: %s", db_url.split('@')[-1])
+        logger.info("Connected successfully to PostgreSQL.")
         return engine
     except Exception as e:
         logger.warning(
@@ -35,12 +35,11 @@ def get_engine():
             str(e).strip(),
             settings.SQLITE_FALLBACK_URL
         )
-        engine = create_engine(
+        return create_engine(
             settings.SQLITE_FALLBACK_URL,
             connect_args={"check_same_thread": False},
             echo=False
         )
-        return engine
 
 engine = get_engine()
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

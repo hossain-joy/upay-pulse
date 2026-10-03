@@ -50,8 +50,9 @@ class Settings(BaseSettings):
     FREEZE_MAX_TIMEOUT_MS: int = 300
 
     model_config = SettingsConfigDict(
-        env_file=".env" if os.getenv("ENVIRONMENT", "development") != "production" else None,
+        env_file=".env",
         env_file_encoding="utf-8",
+        env_ignore_empty=True,
         extra="ignore"
     )
 
