@@ -1,51 +1,21 @@
 id,phone,email,agent_code,store_name,location_cluster,cash_balance,float_balance,daily_cash_out_volume,is_factory_zone
-3114edd1c670a3350f2555618556b9c2,+8801810000000,agent_1@pulse.demo,AGT-2000,Savar Telecom Point 1,Savar Industrial Zone,125859.57,179809.18,95136.84,True
-98e720f11db22403b8e803ef80849b26,+8801810000001,agent_2@pulse.demo,AGT-2001,Gazipur Telecom Point 2,Gazipur Garment Belt,123928.24,169325.64,48059.83,True
-65bbf78b5bc613523fbe01e32fae04d0,+8801810000002,agent_3@pulse.demo,AGT-2002,"Gulshan, Telecom Point 3","Gulshan, Dhaka",60638.9,68179.05,83885.07,False
-fed61563a5143c79458e71b5b5c2e2e1,+8801810000003,agent_4@pulse.demo,AGT-2003,Chittagong Telecom Point 4,Chittagong Port Area,43470.41,117096.88,67447.72,False
-8da7f5a7bd49122f5c20a5ef912512ef,+8801810000004,agent_5@pulse.demo,AGT-2004,Narayanganj Telecom Point 5,Narayanganj Export Zone,109901.6,147369.22,96057.01,True
-64c55a54b2e65ddcd96c5f267ddf85d1,+8801810000005,agent_6@pulse.demo,AGT-2005,"Gulshan, Telecom Point 6","Gulshan, Dhaka",48253.9,78041.48,76058.32,False
-a52a759f80f38dc2a7e5b7354afd9dff,+8801810000006,agent_7@pulse.demo,AGT-2006,Rajshahi Telecom Point 7,Rajshahi University Area,36556.96,90312.49,58285.34,False
-5ebabd94912945c31a69f7def0c2771b,+8801810000007,agent_8@pulse.demo,AGT-2007,Savar Telecom Point 8,Savar Industrial Zone,127665.24,224531.39,84427.2,True
-e8336c6c5f3427eea05e30362e62b9d4,+8801810000008,agent_9@pulse.demo,AGT-2008,"Uttara, Telecom Point 9","Uttara, Dhaka",39803.16,106002.62,99083.36,False
-2b40a8d3ecb6e92661fb794f79c30843,+8801810000009,agent_10@pulse.demo,AGT-2009,"Mirpur, Telecom Point 10","Mirpur, Dhaka",70283.42,62362.51,79967.83,False
-c3f943764fffd3b1703a77b1eeeee917,+8801810000010,agent_11@pulse.demo,AGT-2010,Sylhet Telecom Point 11,Sylhet Sadar,56699.13,72100.91,78929.62,False
-d3181d21057e0c5b609a79513064ddc3,+8801810000011,agent_12@pulse.demo,AGT-2011,"Dhanmondi, Telecom Point 12","Dhanmondi, Dhaka",58106.92,89748.42,71872.15,False
-37fc185ec7bd2e132a11bff7938eca71,+8801810000012,agent_13@pulse.demo,AGT-2012,Narayanganj Telecom Point 13,Narayanganj Export Zone,74802.91,225796.35,78123.15,True
-24cc9948d3877ad076290aa58665f7e8,+8801810000013,agent_14@pulse.demo,AGT-2013,Savar Telecom Point 14,Savar Industrial Zone,105988.39,163505.35,68876.96,True
-51620e74f0abfb538f075ee7cf90533b,+8801810000014,agent_15@pulse.demo,AGT-2014,Sylhet Telecom Point 15,Sylhet Sadar,57874.57,106701.11,67531.22,False
-e87ce0dded37caec90d24744ceb08989,+8801810000015,agent_16@pulse.demo,AGT-2015,"Uttara, Telecom Point 16","Uttara, Dhaka",36061.87,110715.8,117049.32,False
-a0bda9af7daae554edaaafde2052489e,+8801810000016,agent_17@pulse.demo,AGT-2016,Chittagong Telecom Point 17,Chittagong Port Area,58842.69,95490.58,83075.06,False
-8b003c54f7325f7620a4fd730935b486,+8801810000017,agent_18@pulse.demo,AGT-2017,"Dhanmondi, Telecom Point 18","Dhanmondi, Dhaka",47755.45,97123.5,78999.5,False
-a43303f9b2c1d07c897f92ee8d36f787,+8801810000018,agent_19@pulse.demo,AGT-2018,"Mirpur, Telecom Point 19","Mirpur, Dhaka",74481.62,76674.97,62921.89,False
-acdff63c8e8ea57592c9f2821946a101,+8801810000019,agent_20@pulse.demo,AGT-2019,Narayanganj Telecom Point 20,Narayanganj Export Zone,139460.61,203275.48,114285.33,True
-04b2eed29860106414425a104c4d232d,+8801810000020,agent_21@pulse.demo,AGT-2020,"Uttara, Telecom Point 21","Uttara, Dhaka",61563.67,90014.63,107912.06,False
-25d04e2a32c6c3d09be8bd64cdfe18ca,+8801810000021,agent_22@pulse.demo,AGT-2021,Savar Telecom Point 22,Savar Industrial Zone,76328.95,164671.31,65078.57,True
-a3e03bcbdf5b8d3babb848e23efbd094,+8801810000022,agent_23@pulse.demo,AGT-2022,"Dhanmondi, Telecom Point 23","Dhanmondi, Dhaka",65521.67,92376.95,71636.43,False
-c5aebcf4e9976d902e75f281c925a72c,+8801810000023,agent_24@pulse.demo,AGT-2023,"Mirpur, Telecom Point 24","Mirpur, Dhaka",69048.7,115713.89,99831.64,False
-01c5e5e5f3bff389ebb775765eb31a41,+8801810000024,agent_25@pulse.demo,AGT-2024,Sylhet Telecom Point 25,Sylhet Sadar,78276.3,78979.23,54710.9,False
-11b808be68f2eb5b807125f3258f3e3a,+8801810000025,agent_26@pulse.demo,AGT-2025,Gazipur Telecom Point 26,Gazipur Garment Belt,80003.19,150501.53,60131.76,True
-4a9fb2dce53eccd34ec25bfc22c473af,+8801810000026,agent_27@pulse.demo,AGT-2026,Savar Telecom Point 27,Savar Industrial Zone,86845.72,171615.93,47644.3,True
-a9813ad5936a23d688a2ea737ede6aba,+8801810000027,agent_28@pulse.demo,AGT-2027,"Mirpur, Telecom Point 28","Mirpur, Dhaka",57421.69,51845.54,71761.0,False
-6276eaeba41005087c1b2a486c64417d,+8801810000028,agent_29@pulse.demo,AGT-2028,Savar Telecom Point 29,Savar Industrial Zone,78314.27,200353.28,46744.9,True
-1a82327e09252c151e0dc4c44a188bca,+8801810000029,agent_30@pulse.demo,AGT-2029,"Uttara, Telecom Point 30","Uttara, Dhaka",45468.53,67317.76,62734.02,False
-41da881a8ccb69fe14315b9f78a883ea,+8801810000030,agent_31@pulse.demo,AGT-2030,Narayanganj Telecom Point 31,Narayanganj Export Zone,80502.17,229007.31,42285.7,True
-b40edfbe734248b0d7960aa56372dd93,+8801810000031,agent_32@pulse.demo,AGT-2031,"Gulshan, Telecom Point 32","Gulshan, Dhaka",73018.44,72764.09,78092.38,False
-eb25551ebc6230a96beaeab1a10dc8dd,+8801810000032,agent_33@pulse.demo,AGT-2032,Sylhet Telecom Point 33,Sylhet Sadar,76742.88,88398.17,50809.19,False
-a52927407cfc5fb7eb2c0a3982397f5f,+8801810000033,agent_34@pulse.demo,AGT-2033,Sylhet Telecom Point 34,Sylhet Sadar,38851.83,91830.89,90483.8,False
-e347e6047dd18c65d560d936ae177f3d,+8801810000034,agent_35@pulse.demo,AGT-2034,Rajshahi Telecom Point 35,Rajshahi University Area,51748.87,94785.06,82702.73,False
-22cf55c30566f372f8dfe84255557661,+8801810000035,agent_36@pulse.demo,AGT-2035,"Gulshan, Telecom Point 36","Gulshan, Dhaka",54082.58,65898.99,47164.32,False
-6753b9059889d6746d841e797bb10a82,+8801810000036,agent_37@pulse.demo,AGT-2036,"Dhanmondi, Telecom Point 37","Dhanmondi, Dhaka",48289.17,68186.49,64285.83,False
-d6e7a0567c2e67e5a0437c6a96a977bf,+8801810000037,agent_38@pulse.demo,AGT-2037,Gazipur Telecom Point 38,Gazipur Garment Belt,111865.3,218578.15,50904.04,True
-1d5a75d4607b287796abf540008eebbf,+8801810000038,agent_39@pulse.demo,AGT-2038,"Dhanmondi, Telecom Point 39","Dhanmondi, Dhaka",53459.9,50582.2,113767.07,False
-5d30679f32d280511491bfeccd66bcaf,+8801810000039,agent_40@pulse.demo,AGT-2039,"Mirpur, Telecom Point 40","Mirpur, Dhaka",44980.53,103610.84,103837.18,False
-69a272f33d007909c2cd655a933c6973,+8801810000040,agent_41@pulse.demo,AGT-2040,Rajshahi Telecom Point 41,Rajshahi University Area,41560.77,50505.26,69891.51,False
-c0d5942f658ec5d9b15ab62e8d5c3fdd,+8801810000041,agent_42@pulse.demo,AGT-2041,"Uttara, Telecom Point 42","Uttara, Dhaka",74108.1,80597.45,59991.69,False
-f22afb4e94f5a84118c7d585ec5f0656,+8801810000042,agent_43@pulse.demo,AGT-2042,"Uttara, Telecom Point 43","Uttara, Dhaka",71421.34,65441.47,46336.78,False
-7a4e59053127dc46c9814cbb6ab34155,+8801810000043,agent_44@pulse.demo,AGT-2043,Chittagong Telecom Point 44,Chittagong Port Area,55830.5,105997.13,89057.3,False
-76cf21d89edc3c836ac02d7a54e6d990,+8801810000044,agent_45@pulse.demo,AGT-2044,"Dhanmondi, Telecom Point 45","Dhanmondi, Dhaka",44233.84,102004.88,104704.69,False
-9ca63901c7bab7844b4b480b2a55ae0e,+8801810000045,agent_46@pulse.demo,AGT-2045,"Uttara, Telecom Point 46","Uttara, Dhaka",39400.03,54792.48,50929.92,False
-cc218707b1c7d21800a03e529336dd7d,+8801810000046,agent_47@pulse.demo,AGT-2046,Savar Telecom Point 47,Savar Industrial Zone,120951.42,200304.82,61770.73,True
-85ebd5857f061fea1a5b43210597ea80,+8801810000047,agent_48@pulse.demo,AGT-2047,Rajshahi Telecom Point 48,Rajshahi University Area,54599.8,72445.06,52171.94,False
-f26e99408319cb85286e623d9415b30c,+8801810000048,agent_49@pulse.demo,AGT-2048,Sylhet Telecom Point 49,Sylhet Sadar,31106.54,118063.28,62569.16,False
-13e992719d64685559368c1246d19ca8,+8801810000049,agent_50@pulse.demo,AGT-2049,Narayanganj Telecom Point 50,Narayanganj Export Zone,127215.68,214523.92,58624.84,True
+65fb813c4a8070e7d6f1e3c595c14972,+8801810000000,agent_1@pulse.demo,AGT-2000,Narayanganj Telecom Point 1,Narayanganj Export Zone,85323.28,216018.6,62119.97,True
+b9ee744cc6893b8e4e16d19dfafb9284,+8801810000001,agent_2@pulse.demo,AGT-2001,Rajshahi Telecom Point 2,Rajshahi University Area,78830.35,86724.58,62639.9,False
+a0a78b533b925cc977153bb8cccf195f,+8801810000002,agent_3@pulse.demo,AGT-2002,Savar Telecom Point 3,Savar Industrial Zone,136610.27,158512.04,68870.49,True
+97732b7d2a0cf42e45df8e38eede305b,+8801810000003,agent_4@pulse.demo,AGT-2003,"Dhanmondi, Telecom Point 4","Dhanmondi, Dhaka",30707.42,87389.46,61944.91,False
+885e891c4171db3ca38bbb35f664c8fc,+8801810000004,agent_5@pulse.demo,AGT-2004,Gazipur Telecom Point 5,Gazipur Garment Belt,114268.72,210664.26,50102.36,True
+c3b37cdf478b5f1365d70e59a9bc7db5,+8801810000005,agent_6@pulse.demo,AGT-2005,"Mirpur, Telecom Point 6","Mirpur, Dhaka",35129.38,50858.58,62747.15,False
+59b4db4760e9c7b71f89662b46b5744d,+8801810000006,agent_7@pulse.demo,AGT-2006,"Mirpur, Telecom Point 7","Mirpur, Dhaka",52023.44,62905.46,44110.14,False
+f5abc8efbbbec1c7c7a75fac1fbeb42a,+8801810000007,agent_8@pulse.demo,AGT-2007,"Mirpur, Telecom Point 8","Mirpur, Dhaka",35704.36,54574.04,79339.72,False
+9f29423a96953422c38499fabad1f7e2,+8801810000008,agent_9@pulse.demo,AGT-2008,Rajshahi Telecom Point 9,Rajshahi University Area,61472.29,53752.64,51935.81,False
+56d3630d48a7c5213076e6c42c8e9cc3,+8801810000009,agent_10@pulse.demo,AGT-2009,Rajshahi Telecom Point 10,Rajshahi University Area,77456.28,55962.66,59855.28,False
+91636429900048d39a6a81c76e775fe7,+8801810000010,agent_11@pulse.demo,AGT-2010,Sylhet Telecom Point 11,Sylhet Sadar,68222.17,92442.24,103259.27,False
+0e65de46311e9c847c499c11aa845484,+8801810000011,agent_12@pulse.demo,AGT-2011,Chittagong Telecom Point 12,Chittagong Port Area,68784.68,76626.46,112680.35,False
+88763c3e84f0d3eb136c4d4e1aeecdaf,+8801810000012,agent_13@pulse.demo,AGT-2012,"Dhanmondi, Telecom Point 13","Dhanmondi, Dhaka",73008.33,119302.19,64430.42,False
+422286bab6d7b8eea429bfee3894aa7b,+8801810000013,agent_14@pulse.demo,AGT-2013,Rajshahi Telecom Point 14,Rajshahi University Area,33011.52,117207.61,47938.69,False
+92768e2a43ab36f88cb4b3850d783b04,+8801810000014,agent_15@pulse.demo,AGT-2014,Chittagong Telecom Point 15,Chittagong Port Area,61275.75,68525.23,46495.0,False
+b1a66b3f63e51e2a843b9028fcb6ded2,+8801810000015,agent_16@pulse.demo,AGT-2015,Chittagong Telecom Point 16,Chittagong Port Area,38690.68,55254.54,40214.06,False
+7b43b48cc2385f8eb14372d3a02b76eb,+8801810000016,agent_17@pulse.demo,AGT-2016,"Mirpur, Telecom Point 17","Mirpur, Dhaka",64468.56,82893.87,42611.19,False
+921012c6b11c284a1771d9b434a6c279,+8801810000017,agent_18@pulse.demo,AGT-2017,"Dhanmondi, Telecom Point 18","Dhanmondi, Dhaka",65347.79,99209.13,76322.51,False
+ff0283fc6d6fcb75b58eb34c73cfeaeb,+8801810000018,agent_19@pulse.demo,AGT-2018,Chittagong Telecom Point 19,Chittagong Port Area,76195.55,105147.96,90004.64,False
+cce557b7c5670116283705cc1e96e85a,+8801810000019,agent_20@pulse.demo,AGT-2019,Chittagong Telecom Point 20,Chittagong Port Area,51256.95,88119.37,91810.78,False

@@ -23,6 +23,7 @@ interface Toast {
 export const App: React.FC = () => {
   const [role, setRole] = useState<UserRole>('CUSTOMER');
   const [toasts, setToasts] = useState<Toast[]>([]);
+  const [isWsConnected, setIsWsConnected] = useState(false);
 
   // Show Toast
   const addToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
@@ -65,13 +66,64 @@ export const App: React.FC = () => {
           }
         }
       } catch (e) {
-        // Standalone resilient mode
         console.warn('Auto persona token setup notice:', e);
       }
     };
 
     autoLoginPersona();
   }, [role]);
+
+  // Real-Time Event Bus WebSocket Connection (Phase 16)
+  useEffect(() => {
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: any = null;
+
+    const connectWs = () => {
+      try {
+        ws = new WebSocket("ws://localhost:8000/api/v1/events/ws");
+
+        ws.onopen = () => {
+          setIsWsConnected(true);
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type === "BUS_EVENT") {
+              const { topic, payload } = data;
+              if (topic === "transaction.flagged") {
+                addToast(`🚨 Security Interception: ${payload.reference || 'Txn'} flagged by LightGBM!`, 'error');
+              } else if (topic === "account.freeze.completed") {
+                addToast(`🔒 Master Freeze Lockdown: Account secured in sub-300ms.`, 'success');
+              } else if (topic === "agent.liquidity.warning") {
+                addToast(`⚠️ Agent Liquidity Alert: ${payload.reason || 'Surge expected'}`, 'info');
+              } else if (topic === "soundbox.trigger") {
+                addToast(`🔊 Soundbox Alert: Payment confirmation received for ৳${payload.amount}`, 'success');
+              }
+            }
+          } catch (e) {}
+        };
+
+        ws.onclose = () => {
+          setIsWsConnected(false);
+          reconnectTimeout = setTimeout(connectWs, 3000);
+        };
+
+        ws.onerror = () => {
+          ws?.close();
+        };
+      } catch (err) {
+        setIsWsConnected(false);
+      }
+    };
+
+    connectWs();
+
+    return () => {
+      clearTimeout(reconnectTimeout);
+      if (ws) ws.close();
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-slate-100 flex flex-col font-sans selection:bg-cyan-500 selection:text-black">
@@ -92,6 +144,10 @@ export const App: React.FC = () => {
                 <h2 className="text-sm font-bold text-white">Google AI Studio Gemini 2.5 Flash Active</h2>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">
                   Exact AI Execution
+                </span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5">
+                  <span className={`w-1.5 h-1.5 rounded-full ${isWsConnected ? 'bg-cyan-400 animate-ping' : 'bg-slate-500'}`} />
+                  {isWsConnected ? 'WebSocket Live' : 'Connecting Stream...'}
                 </span>
               </div>
               <p className="text-xs text-slate-400">
