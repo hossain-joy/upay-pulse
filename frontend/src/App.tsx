@@ -45,12 +45,11 @@ export const App: React.FC = () => {
         let body: any = {};
 
         if (role === 'CUSTOMER') {
-          body = { identifier: '01700000001', pin: '1234' };
+          body = { identifier: '+8801700000001', password: 'Demo@1234' };
         } else if (role === 'AGENT') {
-          body = { identifier: '01800000001', pin: '1234' };
+          body = { identifier: '+8801800000001', password: 'Demo@1234' };
         } else {
-          endpoint = '/auth/admin/login';
-          body = { email: 'admin@upaypulse.internal', password: 'AdminSecret@2026' };
+          body = { identifier: 'admin@upaypulse.internal', password: 'Admin@1234' };
         }
 
         const res = await fetch(`http://localhost:8000/api/v1${endpoint}`, {
