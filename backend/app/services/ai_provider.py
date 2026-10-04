@@ -1,11 +1,10 @@
 """
 upay Pulse - AI Provider Abstraction
-Provides pluggable AI interfaces: Gemini AI (Cloud LLM) and MockLocalProvider (Deterministic Offline Fallback).
-Guarantees resilient, low-latency, dialect-aware Bengali financial coaching without internet dependency.
+Single source of truth for chat responses: a cloud Gemini LLM. The fallback is
+a minimal, non-coaching message — no templates, no scripts, no pre-written text.
 """
 
 import abc
-import re
 import time
 import logging
 from typing import Dict, Any, Tuple, Optional
@@ -13,106 +12,49 @@ from backend.app.core.config import settings
 
 logger = logging.getLogger("upay_pulse.ai_provider")
 
+
 class AIProvider(abc.ABC):
     @abc.abstractmethod
-    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> Tuple[str, str]:
+    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> str:
         """
-        Processes financial query with user context.
-        Returns: (response_bangla_text, detected_intent)
+        Processes a financial query with user context and returns the model's
+        raw reply text. The provider owns the entire response — no scaffolding,
+        no appended phrases, no post-processing.
         """
         pass
 
+
 class MockLocalProvider(AIProvider):
     """
-    Zero-network local fallback LLM provider.
-    Interprets Bengali and English queries, identifies financial intent,
-    and returns contextually grounded responses referencing real wallet metrics.
+    Offline fallback used only when the cloud LLM is completely unreachable.
+    Intentionally returns a single short, non-coaching message — never a
+    templated reply. The caller decides how to present it to the user.
     """
 
-    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> Tuple[str, str]:
-        q = query.lower().strip()
-        balance = float(context.get("wallet_balance", 0.0))
-        grace_balance = float(context.get("grace_balance", 0.0))
-        grace_limit = float(context.get("approved_grace_limit", 50.0))
-        spending_pattern = context.get("spending_pattern", "নিত্যপ্রয়োজনীয় খরচ ও ইউটিলিটি বিল")
-        has_deficit = context.get("has_deficit_alert", False)
-        deficit_date = context.get("deficit_date", "আগামী সপ্তাহে")
-        idle_deposit = round(max(100.0, balance * 0.40), 2)
+    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> str:
+        name = context.get("full_name") or ""
+        greeting = f"{name}, " if name else ""
+        return (
+            f"দুঃখিত {greeting}এই মুহূর্তে AI পরামর্শক সেবা পাওয়া যাচ্ছে না। "
+            "আপনার ওয়ালেট, গ্রেস বা এফডিআর সংক্রান্ত প্রশ্নের জন্য একটু পরে আবার চেষ্টা করুন।"
+        )
 
-        # 1. Balance Inquiry
-        if any(w in q for w in ["ব্যালেন্স", "টাকা আছে", "কত টাকা", "balance", "balance koto", "koto ache"]):
-            intent = "BALANCE_INQUIRY"
-            response = (
-                f"আপনার উপায় ওয়ালেটে বর্তমান ব্যালেন্স রয়েছে ৳{balance:,.2f} টাকা। "
-                f"আপনার এই ব্যালেন্সের মধ্যে ৳{idle_deposit:,.2f} টাকা একটি মাইক্রো-এফডিআরে জমা করলে আপনি ৮.৫০% পর্যন্ত অতিরিক্ত মুনাফা পেতে পারেন।"
-            )
-
-        # 2. Deficit Alert or Upcoming Bill Payment
-        elif any(w in q for w in ["বিল", "বাকি", "ঘাটতি", "খরচ হবে", "bill", "deficit", "baki"]):
-            intent = "DEFICIT_ALERT"
-            if has_deficit:
-                response = (
-                    f"সতর্কতা! আপনার খরচের গতিধারা অনুযায়ী {deficit_date}-এর মধ্যে অ্যাকাউন্টে সম্ভাব্য ঘাটতি দেখা দিতে পারে। "
-                    f"বিল ও জরুরি খরচ নির্বিঘ্ন রাখতে আপনার উপায় গ্রেস থেকে ৳{grace_limit:.0f} ওভারড্রাফট নিতে পারেন অথবা নিকটস্থ এজেন্ট থেকে ক্যাশ-ইন করে নিন।"
-                )
-            else:
-                response = (
-                    f"আপনার আগামী ১৫ দিনের মধ্যে বড় কোনো বিলের ঝুঁকিপূর্ণ ঘাটতি নেই। "
-                    f"আপনার সাম্প্রতিক মাসিক ব্যয়ের ধরন: {spending_pattern}। নিয়মিত হিসাব রাখতে উপায় পালস সক্রিয় রয়েছে।"
-                )
-
-        # 3. upay Grace Micro-Overdraft Loan
-        elif any(w in q for w in ["গ্রেস", "লোন", "ধার", "ধার নেওয়া", "জরুরি টাকা", "grace", "loan", "overdraft"]):
-            intent = "GRACE_ELIGIBILITY"
-            if grace_balance > 0:
-                response = (
-                    f"আপনার বর্তমানে ৳{grace_balance:.2f} টাকার উপায় গ্রেস ওভারড্রাফট সক্রিয় রয়েছে। "
-                    f"আপনার পরবর্তী এজেন্ট ক্যাশ-ইনের সময় এই টাকা কোনো বাড়তি চার্জ ছাড়াই স্বয়ংক্রিয়ভাবে সমন্বয় করা হবে।"
-                )
-            else:
-                response = (
-                    f"অভিনন্দন! আপনার ভালো লেনদেন রেকর্ডের জন্য আপনি সর্বোচ্চ ৳{grace_limit:.2f} টাকা পর্যন্ত উপায় গ্রেস (upay Grace) "
-                    f"জরুরি ওভারড্রাফট সুবিধা পেতে পারেন। কোনো অতিরিক্ত সুদ ছাড়াই জরুরি বিল বা টাকা পাঠাতে এটি ব্যবহার করুন।"
-                )
-
-        # 4. Micro-FDR / Savings Opportunities
-        elif any(w in q for w in ["এফডিআর", "সঞ্চয়", "ডিপিএস", "লাভ", "মুনাফা", "fdr", "saving", "deposit", "profit"]):
-            intent = "MICRO_FDR"
-            response = (
-                f"উপায় মাইক্রো-এফডিআরে আপনার অলস টাকার ওপর আকর্ষণীয় মুনাফা অর্জন করুন! "
-                f"৭ দিনের জন্য ৬.৫০%, ৩০ দিনের জন্য ৭.৫০% এবং ৯০ দিনের জন্য ৮.৫০% বার্ষিক হারে মুনাফা পাওয়া যায়। "
-                f"আপনার ওয়ালেটের ৳{idle_deposit:.2f} দিয়ে আজই একটি নিরাপদ মাইক্রো-এফডিআর শুরু করতে পারেন।"
-            )
-
-        # 5. Spending Insights & Habits
-        elif any(w in q for w in ["কোথায় খরচ", "খরচ বেশি", "হিসাব", "spending", "khoroch", "insight"]):
-            intent = "SPENDING_INSIGHT"
-            response = (
-                f"আপনার ব্যয়ের বিশ্লেষণ অনুযায়ী, আপনার অধিকাংশ লেনদেন হয়েছে '{spending_pattern}' খাতে। "
-                f"আপনার ভবিষ্যৎ নিরাপত্তার জন্য প্রতি মাসের উপার্জনের কমপক্ষে ১০-১৫% সঞ্চয় আলাদা রাখার পরামর্শ দিচ্ছি।"
-            )
-
-        # 6. General Conversational Fallback
-        else:
-            intent = "GENERAL_GUIDE"
-            response = (
-                f"আসসালামু আলাইকুম! আমি উপায় পালস ডিজিটাল আর্থিক পরামর্শক। আপনার অ্যাকাউন্টে ব্যালেন্স ৳{balance:.2f} টাকা। "
-                f"আপনি আমাকে ব্যালেন্স পরীক্ষা, উপায় গ্রেস লোন, মাইক্রো-এফডিআর সঞ্চয় অথবা আসন্ন বিল সংক্রান্ত যেকোনো প্রশ্ন করতে পারেন।"
-            )
-
-        return response, intent
 
 class GeminiProvider(AIProvider):
     """
     Cloud Gemini LLM Provider.
-    Falls back gracefully to MockLocalProvider if API key is not configured or network fails.
+    Falls back gracefully to MockLocalProvider if the API key is not configured
+    or all attempts fail.
 
     Design notes:
       * Model list is validated against the live API once (cached) rather than
-        guessing 4 hard-coded names that may not exist for the user's key/region.
+        guessing hard-coded names that may not exist for the user's key/region.
       * Total wall-clock budget per request is bounded (TOTAL_REQUEST_BUDGET_S),
-        not stacked. Worst-case latency is now ~5s instead of ~14s.
+        not stacked. Worst-case latency is ~5s instead of ~14s.
       * Every failure is logged so silent fallback is no longer invisible.
+      * The provider returns only the model's text. No intent label is added,
+        no canned phrases are prepended or appended, no post-processing mutates
+        the reply.
     """
 
     # Preferred (cheap/fast) models first. The set is intentionally narrow; we
@@ -181,21 +123,6 @@ class GeminiProvider(AIProvider):
             self._validated_at = now
             return self._validated_models
 
-    @staticmethod
-    def _classify_intent(query: str) -> str:
-        q_low = query.lower()
-        if any(w in q_low for w in ["ব্যালেন্স", "টাকা আছে", "balance"]):
-            return "BALANCE_INQUIRY"
-        if any(w in q_low for w in ["বিল", "বাকি", "ঘাটতি", "bill"]):
-            return "DEFICIT_ALERT"
-        if any(w in q_low for w in ["গ্রেস", "লোন", "ধার", "grace", "loan"]):
-            return "GRACE_ELIGIBILITY"
-        if any(w in q_low for w in ["এফডিআর", "সঞ্চয়", "fdr", "saving"]):
-            return "MICRO_FDR"
-        if any(w in q_low for w in ["কোথায় খরচ", "খরচ বেশি", "spending"]):
-            return "SPENDING_INSIGHT"
-        return "GENERAL_GUIDE"
-
     def _try_model(
         self, model: str, payload_bytes: bytes, timeout_s: float
     ) -> Optional[str]:
@@ -221,20 +148,38 @@ class GeminiProvider(AIProvider):
             logger.warning("Gemini model '%s' failed: %s", model, e)
             return None
 
-    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> Tuple[str, str]:
+    def generate_financial_advice(self, query: str, context: Dict[str, Any]) -> str:
         if not self.api_key or self.api_key.strip() == "":
             return self.fallback.generate_financial_advice(query, context)
 
-        import urllib.request  # noqa: F401  (kept for backwards imports)
         import json
 
+        # The system prompt is the *only* steering. It sets persona, language,
+        # tone, and constraints. The model produces the entire reply from here;
+        # we do not prepend, append, rewrite, or classify anything in code.
         system_instruction = (
-            "You are the empathetic, culturally aware, dialect-sensitive AI Financial Coach for 'upay Pulse' Mobile Financial Services (MFS) in Bangladesh. "
-            "The user is an everyday citizen, small merchant, or garment worker. "
-            "Always reply in natural, friendly, polite colloquial Bengali (বাংলা), starting with 'আসসালামু আলাইকুম!'. "
-            "Reference the user's real financial context provided (wallet balance, grace overdraft, micro-FDR, and spending patterns). "
-            "Offer actionable tips on managing balance, preventing cash-flow deficits, utilizing 'upay Grace' micro-overdrafts, or opening Micro-FDRs. "
-            "Keep responses under 3-4 concise sentences."
+            "You are the AI Financial Coach for 'upay Pulse', a mobile financial "
+            "services (MFS) platform in Bangladesh. The user is an everyday citizen, "
+            "small merchant, or garment worker.\n"
+            "\n"
+            "Rules:\n"
+            "1. Reply entirely in natural, polite colloquial Bengali (বাংলা). Use "
+            "the user's verified full_name from context if available, but if the "
+            "user introduces themselves by a different name in the query, use that.\n"
+            "2. Open with 'আসসালামু আলাইকুম!' once per conversation only — do not "
+            "force this greeting if the conversation has already started.\n"
+            "3. Use the financial context (wallet balance, grace overdraft, micro-FDR, "
+            "spending pattern, reliability score, deficit forecast) to give specific, "
+            "actionable guidance. Reference real numbers when relevant.\n"
+            "4. Keep replies under 3-4 concise sentences. No bullet lists, no headers, "
+            "no markdown. Conversational prose only.\n"
+            "5. Never invent products, interest rates, or policies that are not "
+            "supported by the context. If asked about something outside your scope, "
+            "say so honestly.\n"
+            "6. Do not label, tag, or prepend category names like 'Balance Inquiry' "
+            "or 'Grace Eligibility' to your reply. Just answer naturally.\n"
+            "7. If the user greets you or introduces themselves, respond warmly in "
+            "Bengali without reciting their financial details unprompted."
         )
 
         prompt = (
@@ -250,8 +195,8 @@ class GeminiProvider(AIProvider):
                 ]
             }],
             "generationConfig": {
-                "temperature": 0.3,
-                "maxOutputTokens": 1024
+                "temperature": 0.7,
+                "maxOutputTokens": 512
             }
         }
         payload_bytes = json.dumps(payload).encode("utf-8")
@@ -275,7 +220,7 @@ class GeminiProvider(AIProvider):
 
             text = self._try_model(model, payload_bytes, attempt_timeout)
             if text is not None:
-                return text, self._classify_intent(query)
+                return text
 
         # Resilient offline fallback if all cloud models fail, timeout, or rate-limit.
         logger.warning(
@@ -283,6 +228,7 @@ class GeminiProvider(AIProvider):
             self.TOTAL_REQUEST_BUDGET_S,
         )
         return self.fallback.generate_financial_advice(query, context)
+
 
 def get_ai_provider() -> AIProvider:
     """Factory to retrieve active AI provider based on configuration."""

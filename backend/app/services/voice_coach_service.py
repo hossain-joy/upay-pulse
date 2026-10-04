@@ -50,7 +50,7 @@ class VoiceCoachService:
         # 2. Execute AI Provider with latency benchmark
         t_start = time.perf_counter()
         provider = get_ai_provider()
-        response_text, intent = provider.generate_financial_advice(req.query, context)
+        response_text = provider.generate_financial_advice(req.query, context)
         latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)
         safe_latency = min(float(latency_ms), 99999.99)
 
@@ -65,7 +65,7 @@ class VoiceCoachService:
                 query_text=req.query.strip(),
                 response_bangla=response_text,
                 audio_url=audio_url,
-                intent=intent,
+                intent=None,
                 latency_ms=Decimal(str(round(safe_latency, 2)))
             )
             db.add(db_session)
@@ -79,7 +79,7 @@ class VoiceCoachService:
             session_id=session_id,
             query_text=req.query.strip(),
             response_bangla=response_text,
-            intent=intent,
+            intent=None,
             latency_ms=safe_latency,
             audio_url=audio_url,
             context_summary={

@@ -10,7 +10,7 @@ class VoiceQueryResponse(BaseModel):
     session_id: str
     query_text: str
     response_bangla: str
-    intent: str
+    intent: Optional[str] = None
     latency_ms: float
     audio_url: Optional[str] = None
     context_summary: Dict[str, Any]
@@ -19,7 +19,7 @@ class VoiceSessionHistoryItem(BaseModel):
     id: str
     query_text: str
     response_bangla: str
-    intent: str
+    intent: Optional[str] = None
     latency_ms: float
     created_at: Optional[datetime] = None
 
