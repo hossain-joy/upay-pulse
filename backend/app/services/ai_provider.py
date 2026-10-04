@@ -93,7 +93,7 @@ class MockLocalProvider(AIProvider):
         else:
             intent = "GENERAL_GUIDE"
             response = (
-                f"নমস্কার! আমি উপায় পালস ডিজিটাল আর্থিক পরামর্শক। আপনার অ্যাকাউন্টে ব্যালেন্স ৳{balance:.2f} টাকা। "
+                f"আসসালামু আলাইকুম! আমি উপায় পালস ডিজিটাল আর্থিক পরামর্শক। আপনার অ্যাকাউন্টে ব্যালেন্স ৳{balance:.2f} টাকা। "
                 f"আপনি আমাকে ব্যালেন্স পরীক্ষা, উপায় গ্রেস লোন, মাইক্রো-এফডিআর সঞ্চয় অথবা আসন্ন বিল সংক্রান্ত যেকোনো প্রশ্ন করতে পারেন।"
             )
 
@@ -126,7 +126,7 @@ class GeminiProvider(AIProvider):
         system_instruction = (
             "You are the empathetic, culturally aware, dialect-sensitive AI Financial Coach for 'upay Pulse' Mobile Financial Services (MFS) in Bangladesh. "
             "The user is an everyday citizen, small merchant, or garment worker. "
-            "Always reply in natural, friendly, polite colloquial Bengali (বাংলা). "
+            "Always reply in natural, friendly, polite colloquial Bengali (বাংলা), starting with 'আসসালামু আলাইকুম!'. "
             "Reference the user's real financial context provided (wallet balance, grace overdraft, micro-FDR, and spending patterns). "
             "Offer actionable tips on managing balance, preventing cash-flow deficits, utilizing 'upay Grace' micro-overdrafts, or opening Micro-FDRs. "
             "Keep responses under 3-4 concise sentences."

@@ -213,7 +213,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
     {
       id: "welcome",
       sender: "coach",
-      text: "নমস্কার! আমি উপায় পালস এআই আর্থিক পরামর্শক (Google Gemini AI চালিত)। আপনার ব্যালেন্স, গ্রেস লোন বা আসন্ন বিল সম্পর্কে যেকোনো প্রশ্ন করুন।",
+      text: "আসসালামু আলাইকুম! আমি উপায় পালস এআই আর্থিক পরামর্শক (Google Gemini AI চালিত)। আপনার ব্যালেন্স, গ্রেস লোন বা আসন্ন বিল সম্পর্কে যেকোনো প্রশ্ন করুন।",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -539,7 +539,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
       const graceLimit = graceEligibility?.approved_limit ?? 50;
       const pattern = currentUser.profile?.profession || "নিত্যপ্রয়োজনীয় খরচ";
 
-      let responseText = `নমস্কার! আপনার বর্তমান ওয়ালেট ব্যালেন্স ৳${Number(bal).toLocaleString('en-IN', { minimumFractionDigits: 2 })} টাকা। আপনি আমাকে ব্যালেন্স, উপায় গ্রেস লোন অথবা মাইক্রো-এফডিআর সঞ্চয় সম্পর্কে যেকোনো প্রশ্ন করতে পারেন।`;
+      let responseText = `আসসালামু আলাইকুম! আপনার বর্তমান ওয়ালেট ব্যালেন্স ৳${Number(bal).toLocaleString('en-IN', { minimumFractionDigits: 2 })} টাকা। আপনি আমাকে ব্যালেন্স, উপায় গ্রেস লোন অথবা মাইক্রো-এফডিআর সঞ্চয় সম্পর্কে যেকোনো প্রশ্ন করতে পারেন।`;
       let detectedIntent = "GENERAL_GUIDE";
 
       if (q.includes("ব্যালেন্স") || q.includes("টাকা আছে") || q.includes("কত টাকা") || q.includes("balance")) {
