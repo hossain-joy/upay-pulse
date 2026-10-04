@@ -10,6 +10,14 @@ class Settings(BaseSettings):
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
 
+    @field_validator("DEBUG", mode="before")
+    @classmethod
+    def parse_debug(cls, v):
+        if isinstance(v, bool):
+            return v
+        s = str(v).strip().lower()
+        return s in ("1", "true", "yes", "on")
+
     # Security
     SECRET_KEY: str = "upay_pulse_super_secure_demo_secret_key_change_in_production"
     ALGORITHM: str = "HS256"
