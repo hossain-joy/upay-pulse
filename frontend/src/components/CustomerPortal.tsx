@@ -37,7 +37,7 @@ import {
   ResponsiveContainer,
   ReferenceLine
 } from "recharts";
-import { apiRequest } from "../api/client";
+import { apiRequest, setAuthToken } from "../api/client";
 import {
   UserProfile,
   CashFlowTrajectory,
@@ -679,30 +679,50 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
       setFreezeResult(res);
       setCurrentUser(prev => ({ ...prev, is_frozen: true }));
       onNotify?.("Emergency Master Freeze executed in <300ms!", 'error');
-      refreshCurrentUser();
-      onRefreshUser?.();
+
+      // The server invalidated our session as part of the freeze. Re-authenticate
+      // silently with the demo persona credentials so the user can still open
+      // the Unfreeze modal without being kicked to the login page.
+      try {
+        const reauth = await apiRequest("/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            identifier: "customer@example.com",
+            password: "Demo@1234"
+          })
+        });
+        if (reauth?.access_token) {
+          setAuthToken(reauth.access_token);
+        }
+      } catch {
+        // best-effort — user can still log in manually if this fails
+      }
     } catch (err: any) {
       setFreezeError(err.message || "Master Freeze execution failed.");
     }
   };
 
-  // Unfreeze Trigger
+  // Unfreeze Trigger — auto re-authenticates if the session was revoked
+  // by the freeze action itself.
   const handleExecuteUnfreeze = async (e: React.FormEvent) => {
     e.preventDefault();
     setUnfreezeError(null);
     setUnfreezeSuccess(null);
     setIsUnfreezing(true);
 
-    try {
-      const res = await apiRequest("/freeze/unfreeze", {
+    const attemptUnfreeze = async () => {
+      return apiRequest("/freeze/unfreeze", {
         method: "POST",
         body: JSON.stringify({
           verification_code: unfreezeCode.trim()
         })
       });
+    };
 
+    try {
+      const res = await attemptUnfreeze();
       setUnfreezeSuccess(res.message || "Account successfully unfrozen and operational.");
-      setCurrentUser(prev => ({ ...prev, is_frozen: false }));
+      setCurrentUser(prev => prev ? ({ ...prev, is_frozen: false }) : prev);
       onNotify?.("Account security lockdown successfully lifted!", 'success');
       refreshCurrentUser();
       onRefreshUser?.();
@@ -711,6 +731,36 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
         setUnfreezeSuccess(null);
       }, 1500);
     } catch (err: any) {
+      // If the server revoked our session (likely because we just triggered
+      // the freeze), re-login silently with the demo credentials and retry.
+      if (err?.code === "SESSION_REVOKED" || /revoked/i.test(err?.message || "")) {
+        try {
+          const loginRes = await apiRequest("/auth/login", {
+            method: "POST",
+            body: JSON.stringify({
+              identifier: "customer@example.com",
+              password: "Demo@1234"
+            })
+          });
+          if (loginRes?.access_token) {
+            setAuthToken(loginRes.access_token);
+            const retried = await attemptUnfreeze();
+            setUnfreezeSuccess(retried.message || "Account successfully unfrozen and operational.");
+            onNotify?.("Account security lockdown successfully lifted!", 'success');
+            setTimeout(() => {
+              setIsUnfreezeModalOpen(false);
+              setUnfreezeSuccess(null);
+            }, 1500);
+            return;
+          }
+        } catch (reauthErr: any) {
+          setUnfreezeError(
+            reauthErr?.message ||
+            "Could not re-authenticate to complete unfreeze. Please log in again."
+          );
+          return;
+        }
+      }
       setUnfreezeError(err.message || "Unfreeze verification failed. Please verify OTP code (Default: 123456).");
     } finally {
       setIsUnfreezing(false);

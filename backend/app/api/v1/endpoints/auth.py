@@ -182,6 +182,12 @@ def login(req: UserLoginRequest, db: Session = Depends(get_db)):
             status_code=status.HTTP_403_FORBIDDEN
         )
 
+    # A successful login re-validates the user's session. If the previous
+    # session was revoked (e.g., by a Master Freeze), the freshly issued token
+    # must be accepted — otherwise they could not log back in to complete the
+    # unfreeze flow.
+    user.token_revoked_at = None
+
     # Audit login
     db.add(AuditLog(
         actor_id=user.id,
