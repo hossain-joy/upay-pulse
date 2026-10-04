@@ -26,15 +26,27 @@ logger = logging.getLogger("upay_pulse")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup actions
+    # Startup actions — wrapped defensively so a transient failure in any
+    # optional component does not prevent the API from becoming ready.
+    # Render will otherwise mark the deploy as failed when uvicorn never
+    # finishes startup.
     logger.info("Initializing upay Pulse API server (Version: %s)...", settings.VERSION)
-    await event_bus.initialize()
-    db_status = check_db_health()
-    logger.info("Database health check: %s (%s)", db_status.get("status"), db_status.get("dialect"))
-    # Pre-warm Risk Model
-    from backend.app.services.risk_scoring_service import RiskScoringService
-    _ = RiskScoringService.get_model()
-    logger.info("SecurityAI LightGBM model pre-warmed in memory.")
+    try:
+        await event_bus.initialize()
+    except Exception as e:
+        logger.warning("EventBus init failed (continuing): %s", e)
+    try:
+        db_status = check_db_health()
+        logger.info("Database health check: %s (%s)", db_status.get("status"), db_status.get("dialect"))
+    except Exception as e:
+        logger.warning("Database health check failed (continuing): %s", e)
+    # Pre-warm Risk Model — best-effort; lazy-loaded on first request anyway.
+    try:
+        from backend.app.services.risk_scoring_service import RiskScoringService
+        _ = RiskScoringService.get_model()
+        logger.info("SecurityAI LightGBM model pre-warmed in memory.")
+    except Exception as e:
+        logger.warning("Risk model pre-warm failed (will lazy-load on first request): %s", e)
     yield
     # Shutdown actions
     logger.info("Shutting down upay Pulse API server...")
