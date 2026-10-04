@@ -38,6 +38,8 @@ export const App: React.FC = () => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   };
 
+  const [activeUser, setActiveUser] = useState<any>(null);
+
   // Switch demo token automatically when switching roles
   useEffect(() => {
     const autoLoginPersona = async () => {
@@ -61,7 +63,10 @@ export const App: React.FC = () => {
 
         if (res.ok) {
           const data = await res.json();
-          if (data.access_token) setAuthToken(data.access_token);
+          if (data.access_token) {
+            setAuthToken(data.access_token);
+            setActiveUser(data.user || null);
+          }
         }
       } catch (e) {
         console.warn('Auto persona token setup notice:', e);
@@ -163,7 +168,7 @@ export const App: React.FC = () => {
 
         {/* Dynamic Pillar View */}
         {role === 'CUSTOMER' && (
-          <CustomerPortal onNotify={addToast} />
+          <CustomerPortal user={activeUser} key={`cust-${activeUser?.id || role}`} onNotify={addToast} />
         )}
 
         {role === 'AGENT' && (

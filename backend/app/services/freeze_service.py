@@ -33,8 +33,6 @@ class MasterFreezeService:
         4. Cancels any pending cash-outs or reviews.
         5. Emits security events & audit records.
         """
-        t_start = time.perf_counter()
-
         # 1. Validate authenticated customer freeze PIN
         if not user.freeze_pin_hash:
             raise AppException(
@@ -51,6 +49,9 @@ class MasterFreezeService:
                 code="INVALID_FREEZE_PIN",
                 status_code=401
             )
+
+        # Start lockdown execution latency measurement post-auth
+        t_start = time.perf_counter()
 
         # 2. Transition State Machine to FROZEN
         user.is_frozen = True

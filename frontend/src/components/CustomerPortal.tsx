@@ -25,7 +25,8 @@ import {
   FileText,
   BadgeCheck,
   Building2,
-  Receipt
+  Receipt,
+  Search
 } from "lucide-react";
 import {
   AreaChart,
@@ -72,24 +73,6 @@ const defaultUser: UserProfile = {
 
 export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, onRefreshUser, onNotify }) => {
   const [currentUser, setCurrentUser] = useState<UserProfile>(propUser || defaultUser);
-
-  const refreshCurrentUser = async () => {
-    try {
-      const res = await apiRequest<UserProfile>('/auth/me');
-      if (res && res.id) {
-        setCurrentUser(res);
-      }
-    } catch {}
-  };
-
-  useEffect(() => {
-    if (propUser) {
-      setCurrentUser(propUser);
-    } else {
-      refreshCurrentUser();
-    }
-  }, [propUser]);
-
   const user = currentUser;
 
   // Tabs
@@ -105,6 +88,70 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
+  const fetchCustomerAIData = async () => {
+    setIsLoading(true);
+    try {
+      const [traj, grace, rec, accounts] = await Promise.all([
+        apiRequest<CashFlowTrajectory>("/customer-ai/trajectory").catch(() => null),
+        apiRequest<GraceEligibility>("/customer-ai/grace/eligibility").catch(() => null),
+        apiRequest<FDRRecommendation>("/customer-ai/fdr/recommendation").catch(() => null),
+        apiRequest<FDRAccount[]>("/customer-ai/fdr/accounts").catch(() => []),
+      ]);
+
+      if (traj) setTrajectory(traj);
+      if (grace) setGraceEligibility(grace);
+      if (rec) setFdrRec(rec);
+      if (accounts) setFdrAccounts(accounts);
+    } catch (err) {
+      console.error("Error loading CustomerAI data:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchTransactionHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const data = await apiRequest<any>("/transactions/history?page=1&page_size=50");
+      if (data && data.items) {
+        setTransactions(data.items);
+      }
+    } catch (err) {
+      console.warn("Could not load transaction history:", err);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  const refreshCurrentUser = async () => {
+    try {
+      const res = await apiRequest<UserProfile>('/auth/me');
+      if (res && res.id) {
+        setCurrentUser(res);
+        fetchCustomerAIData();
+        fetchTransactionHistory();
+      }
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (propUser && propUser.id) {
+      setCurrentUser(propUser);
+      fetchCustomerAIData();
+      fetchTransactionHistory();
+    } else {
+      refreshCurrentUser();
+    }
+  }, [propUser?.id]);
+
+  useEffect(() => {
+    if (activeTab === "history") {
+      fetchTransactionHistory();
+    } else if (activeTab === "fdr" || activeTab === "cashflow" || activeTab === "grace") {
+      fetchCustomerAIData();
+    }
+  }, [activeTab]);
+
   // Send Money Form
   const [sendRecipient, setSendRecipient] = useState("+8801700000002");
   const [sendAmount, setSendAmount] = useState("50");
@@ -119,6 +166,10 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
   const [cashOutSuccessMsg, setCashOutSuccessMsg] = useState<string | null>(null);
   const [cashOutErrorMsg, setCashOutErrorMsg] = useState<string | null>(null);
   const [isCashOutLoading, setIsCashOutLoading] = useState(false);
+
+  // Transaction Ledger Filter & Search
+  const [ledgerFilter, setLedgerFilter] = useState<"ALL" | "CASH_IN" | "SEND" | "CASH_OUT" | "FLAGGED">("ALL");
+  const [ledgerSearch, setLedgerSearch] = useState("");
 
   // Dynamic Badge Modal & Nonce Countdown
   const [activeBadge, setActiveBadge] = useState<any | null>(null);
@@ -350,36 +401,27 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
     return () => clearInterval(timer);
   }, [activeBadge]);
 
-  const fetchCustomerAIData = async () => {
-    setIsLoading(true);
-    try {
-      const [traj, grace, rec, accounts] = await Promise.all([
-        apiRequest<CashFlowTrajectory>("/customer-ai/trajectory").catch(() => null),
-        apiRequest<GraceEligibility>("/customer-ai/grace/eligibility").catch(() => null),
-        apiRequest<FDRRecommendation>("/customer-ai/fdr/recommendation").catch(() => null),
-        apiRequest<FDRAccount[]>("/customer-ai/fdr/accounts").catch(() => []),
-      ]);
-
-      if (traj) setTrajectory(traj);
-      if (grace) setGraceEligibility(grace);
-      if (rec) setFdrRec(rec);
-      if (accounts) setFdrAccounts(accounts);
-    } catch (err) {
-      console.error("Error loading CustomerAI data:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const fetchTransactionHistory = async () => {
+  // Simulate Quick Test Transfer for instant verification
+  const handleQuickDemoTransfer = async () => {
     setIsLoadingHistory(true);
     try {
-      const data = await apiRequest<any>("/transactions/history?page=1&page_size=20");
-      if (data && data.items) {
-        setTransactions(data.items);
-      }
-    } catch (err) {
-      console.warn("Could not load transaction history:", err);
+      const res = await apiRequest<any>("/transactions/send", {
+        method: "POST",
+        body: JSON.stringify({
+          receiver_identifier: "+8801700000002",
+          amount: 25.0,
+          category: "PeerTransfer",
+          description: "Ledger Quick Verification Test",
+          apply_grace_if_needed: true,
+          idempotency_key: `DEMO-${Date.now()}`
+        })
+      });
+      onNotify?.(`Test transfer complete! Ref: ${res.transaction_reference}`, 'success');
+      refreshCurrentUser();
+      onRefreshUser?.();
+      await fetchTransactionHistory();
+    } catch (err: any) {
+      onNotify?.(err.message || "Failed to create test transfer", 'error');
     } finally {
       setIsLoadingHistory(false);
     }
@@ -702,8 +744,12 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
   const handleCreateFDR = async () => {
     setFdrSuccessMsg(null);
     const amount = parseFloat(fdrDepositInput);
-    if (isNaN(amount) || amount < 200) {
-      alert("Micro-FDR এর জন্য সর্বনিম্ন ৳২০০ জমা করা আবশ্যক।");
+    if (isNaN(amount) || amount < 10) {
+      alert("Micro-FDR এর জন্য সর্বনিম্ন ৳১০ জমা করা আবশ্যক।");
+      return;
+    }
+    if (amount > walletBalance) {
+      alert(`আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই। বর্তমান ব্যালেন্স ৳${walletBalance.toFixed(2)}।`);
       return;
     }
 
@@ -716,7 +762,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
         })
       });
       setFdrSuccessMsg(`৳${res.principal_amount} সফলভাবে ${res.term_days} দিনের Micro-FDR এ জমা হয়েছে! মেয়াদ শেষে প্রদেয়: ৳${res.total_at_maturity}`);
-      onNotify?.(`Micro-FDR created: ৳${res.principal_amount} locked at 8.50%+ yield.`, 'success');
+      onNotify?.(`Micro-FDR created: ৳${res.principal_amount} locked at ${currentInterestRate}% yield.`, 'success');
       refreshCurrentUser();
       onRefreshUser?.();
       fetchCustomerAIData();
@@ -733,11 +779,15 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
 
     setLiquidatingFdrId(fdrId);
     try {
-      const res = await apiRequest(`/customer-ai/fdr/${fdrId}/liquidate`, {
+      const res = await apiRequest<any>(`/customer-ai/fdr/${fdrId}/liquidate`, {
         method: "POST"
       });
 
-      onNotify?.(`FDR liquidated! ৳${res.refund_amount} refunded to wallet (Principal: ৳${res.principal}, Profit: ৳${res.profit})`, 'success');
+      const refunded = res.total_refunded ?? res.refund_amount ?? 0;
+      const principal = res.principal_amount ?? res.principal ?? 0;
+      const profit = res.profit_paid ?? res.profit ?? 0;
+
+      onNotify?.(`FDR liquidated! ৳${refunded} refunded to wallet (Principal: ৳${principal}, Profit: ৳${profit})`, 'success');
       refreshCurrentUser();
       onRefreshUser?.();
       fetchCustomerAIData();
@@ -761,8 +811,8 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
   const walletBalance = user.profile?.wallet_balance ?? 0.0;
   const graceBalance = user.profile?.grace_balance ?? 0.0;
 
-  // Real-time FDR profit calculation for custom deposit input
-  const currentInterestRate = selectedTerm === 90 ? 9.5 : selectedTerm === 60 ? 9.0 : 8.5;
+  // Real-time FDR profit calculation for custom deposit input (7d: 6.50%, 30d: 7.50%, 90d: 8.50%)
+  const currentInterestRate = selectedTerm === 90 ? 8.50 : selectedTerm === 30 ? 7.50 : 6.50;
   const previewDeposit = parseFloat(fdrDepositInput) || 0;
   const previewProfit = previewDeposit > 0 ? (previewDeposit * (currentInterestRate / 100) * (selectedTerm / 365)) : 0;
   const previewTotal = previewDeposit + previewProfit;
@@ -1728,280 +1778,501 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
       )}
 
       {/* TAB 5: MICRO-FDR */}
-      {activeTab === "fdr" && fdrRec && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-          <div className="border-b border-slate-800 pb-4">
-            <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-              <CreditCard className="w-6 h-6 text-cyan-400" />
-              <span>upay Micro-FDR (অলস টাকার উচ্চ মুনাফা সঞ্চয়)</span>
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">{fdrRec.message}</p>
-          </div>
+      {activeTab === "fdr" && (() => {
+        const fallbackOptions = [
+          { term_days: 7, interest_rate_pct: 6.50, projected_profit: Math.round(parseFloat(fdrDepositInput || "200") * 0.065 * 7 / 365 * 100) / 100, total_maturity_amount: Math.round((parseFloat(fdrDepositInput || "200") + parseFloat(fdrDepositInput || "200") * 0.065 * 7 / 365) * 100) / 100 },
+          { term_days: 30, interest_rate_pct: 7.50, projected_profit: Math.round(parseFloat(fdrDepositInput || "200") * 0.075 * 30 / 365 * 100) / 100, total_maturity_amount: Math.round((parseFloat(fdrDepositInput || "200") + parseFloat(fdrDepositInput || "200") * 0.075 * 30 / 365) * 100) / 100 },
+          { term_days: 90, interest_rate_pct: 8.50, projected_profit: Math.round(parseFloat(fdrDepositInput || "200") * 0.085 * 90 / 365 * 100) / 100, total_maturity_amount: Math.round((parseFloat(fdrDepositInput || "200") + parseFloat(fdrDepositInput || "200") * 0.085 * 90 / 365) * 100) / 100 }
+        ];
+        const activeOptions = fdrRec?.options && fdrRec.options.length > 0 ? fdrRec.options : fallbackOptions;
+        const depositVal = parseFloat(fdrDepositInput || "0");
 
-          {/* Custom Deposit Calculation Bar */}
-          <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
-            <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">
-                Deposit Amount (BDT, Min ৳200)
-              </label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold">৳</span>
-                <input
-                  type="number"
-                  min="200"
-                  step="50"
-                  value={fdrDepositInput}
-                  onChange={(e) => setFdrDepositInput(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-3 py-2 text-white font-bold text-base focus:outline-none focus:border-cyan-500"
-                />
+        return (
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+                  <CreditCard className="w-6 h-6 text-cyan-400" />
+                  <span>upay Micro-FDR (অলস টাকার উচ্চ মুনাফা সঞ্চয়)</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  {fdrRec?.message || "Lock idle wallet balance into high-yield micro-deposits earning up to 8.50% annual profit."}
+                </p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-xs text-slate-400">Available Wallet Balance:</span>
+                <span className="text-xs font-bold text-emerald-400 font-mono">৳{walletBalance.toFixed(2)}</span>
               </div>
             </div>
 
-            <div>
-              <label className="text-xs font-semibold text-slate-400 block mb-1">
-                Select Maturity Tenure
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {[30, 60, 90].map((t) => (
+            {/* Custom Deposit Calculation Bar */}
+            <div className="p-4 sm:p-5 rounded-2xl bg-slate-950 border border-slate-800 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+                <div>
+                  <label className="text-xs font-semibold text-slate-400 block mb-1">
+                    Deposit Amount (BDT, Min ৳10)
+                  </label>
+                  <div className="relative">
+                    <span className="absolute left-3.5 top-2.5 text-slate-400 font-bold">৳</span>
+                    <input
+                      type="number"
+                      min="10"
+                      step="50"
+                      value={fdrDepositInput}
+                      onChange={(e) => setFdrDepositInput(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl pl-8 pr-3 py-2 text-white font-bold text-base focus:outline-none focus:border-cyan-500"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs font-semibold text-slate-400 block mb-1">
+                    Select Maturity Tenure (দিন)
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {[7, 30, 90].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setSelectedTerm(t)}
+                        className={`py-2 rounded-xl text-xs font-bold transition border ${
+                          selectedTerm === t
+                            ? "bg-cyan-600 text-white border-cyan-400 shadow-md shadow-cyan-600/20"
+                            : "bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600"
+                        }`}
+                      >
+                        {t} Days
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-left sm:text-right flex flex-col justify-center">
+                  <span className="text-xs text-slate-400">Total at Maturity ({selectedTerm} Days @ {currentInterestRate}%):</span>
+                  <span className="text-xl font-black text-emerald-400 font-mono">
+                    ৳{previewTotal.toFixed(2)}
+                  </span>
+                  <span className="text-[11px] text-cyan-300">
+                    (Guaranteed Profit: +৳{previewProfit.toFixed(2)})
+                  </span>
+                </div>
+              </div>
+
+              {/* Quick Amount Chips */}
+              <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/80">
+                <span className="text-xs text-slate-400 mr-1">Quick Select:</span>
+                {[
+                  { label: "৳50", amt: 50 },
+                  { label: "৳100", amt: 100 },
+                  { label: "৳200", amt: 200 },
+                  { label: "৳500", amt: 500 },
+                  { label: `All Idle Cash (৳${Math.round(Math.max(10, walletBalance * 0.40))})`, amt: Math.round(Math.max(10, walletBalance * 0.40)) }
+                ].map((chip) => (
                   <button
-                    key={t}
+                    key={chip.label}
                     type="button"
-                    onClick={() => setSelectedTerm(t)}
-                    className={`py-2 rounded-xl text-xs font-bold transition border ${
-                      selectedTerm === t
-                        ? "bg-cyan-600 text-white border-cyan-400 shadow-md shadow-cyan-600/20"
-                        : "bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-600"
-                    }`}
+                    onClick={() => setFdrDepositInput(String(Math.min(chip.amt, walletBalance)))}
+                    className="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700 text-xs transition"
                   >
-                    {t} Days
+                    {chip.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            <div className="text-right flex flex-col justify-center">
-              <span className="text-xs text-slate-400">Total at Maturity ({selectedTerm} Days @ {currentInterestRate}%):</span>
-              <span className="text-xl font-black text-emerald-400 font-mono">
-                ৳{previewTotal.toFixed(2)}
-              </span>
-              <span className="text-[11px] text-cyan-300">
-                (Profit: +৳{previewProfit.toFixed(2)})
-              </span>
-            </div>
-          </div>
-
-          {/* FDR Option Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {fdrRec.options.map((opt) => (
-              <div
-                key={opt.term_days}
-                onClick={() => setSelectedTerm(opt.term_days)}
-                className={`p-5 rounded-2xl border transition cursor-pointer flex flex-col justify-between ${
-                  selectedTerm === opt.term_days
-                    ? "bg-cyan-950/40 border-cyan-500 shadow-xl shadow-cyan-500/10"
-                    : "bg-slate-950/60 border-slate-800 hover:border-slate-700"
-                }`}
-              >
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">{opt.term_days} Days Tenure</span>
-                    <span className="text-sm font-extrabold text-white">{opt.interest_rate_pct}% p.a.</span>
-                  </div>
-                  <h4 className="text-2xl font-bold text-white mt-3">৳{fdrDepositInput} Deposit</h4>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Projected Profit: <span className="text-emerald-400 font-bold">+৳{(parseFloat(fdrDepositInput || "0") * (opt.interest_rate_pct / 100) * (opt.term_days / 365)).toFixed(2)}</span>
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCreateFDR}
-                  disabled={user.is_frozen}
-                  className="mt-5 w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition disabled:opacity-50"
+            {/* FDR Option Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+              {activeOptions.map((opt) => (
+                <div
+                  key={opt.term_days}
+                  onClick={() => setSelectedTerm(opt.term_days)}
+                  className={`p-5 rounded-2xl border transition cursor-pointer flex flex-col justify-between ${
+                    selectedTerm === opt.term_days
+                      ? "bg-cyan-950/40 border-cyan-500 shadow-xl shadow-cyan-500/10"
+                      : "bg-slate-950/60 border-slate-800 hover:border-slate-700"
+                  }`}
                 >
-                  Lock into Micro-FDR
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {fdrSuccessMsg && (
-            <div className="p-4 rounded-2xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-200 text-sm flex items-center space-x-3">
-              <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
-              <span>{fdrSuccessMsg}</span>
-            </div>
-          )}
-
-          {/* Active FDR Accounts with Liquidation Option */}
-          <div className="pt-4 border-t border-slate-800">
-            <h4 className="text-base font-bold text-white mb-3">All Active & Matured Micro-FDR Accounts</h4>
-            {fdrAccounts.length === 0 ? (
-              <p className="text-xs text-slate-500">No active FDR accounts registered.</p>
-            ) : (
-              <div className="space-y-3">
-                {fdrAccounts.map((account) => (
-                  <div
-                    key={account.id}
-                    className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
-                  >
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <span className="font-bold text-white text-sm">৳{account.principal_amount.toFixed(2)}</span>
-                        <span className="px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 font-mono text-[10px]">
-                          {account.term_days} Days ({account.interest_rate_pct}%)
-                        </span>
-                        <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
-                          account.status === 'ACTIVE' ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'
-                        }`}>
-                          {account.status}
-                        </span>
-                      </div>
-                      <p className="text-slate-400 mt-1">
-                        Started: {account.start_date} • Maturity: <strong className="text-slate-200">{account.maturity_date}</strong>
-                      </p>
+                  <div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">{opt.term_days} Days Tenure</span>
+                      <span className="text-sm font-extrabold text-white">{opt.interest_rate_pct}% p.a.</span>
                     </div>
-
-                    <div className="flex items-center justify-between sm:justify-end gap-4">
-                      <div className="text-left sm:text-right">
-                        <span className="text-[10px] text-slate-500 block">Total at Maturity</span>
-                        <span className="font-mono font-bold text-emerald-400 text-sm">৳{account.total_at_maturity.toFixed(2)}</span>
-                      </div>
-
-                      {account.status === 'ACTIVE' && (
-                        <button
-                          onClick={() => handleLiquidateFDR(account.id)}
-                          disabled={liquidatingFdrId === account.id || user.is_frozen}
-                          className="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 font-bold transition disabled:opacity-50"
-                        >
-                          {liquidatingFdrId === account.id ? "Liquidating..." : "Withdraw / Liquidate"}
-                        </button>
-                      )}
-                    </div>
+                    <h4 className="text-2xl font-bold text-white mt-3">৳{depositVal > 0 ? depositVal.toLocaleString() : "100"} Deposit</h4>
+                    <p className="text-xs text-slate-400 mt-1">
+                      Projected Profit: <span className="text-emerald-400 font-bold">+৳{(depositVal * (opt.interest_rate_pct / 100) * (opt.term_days / 365)).toFixed(2)}</span>
+                    </p>
                   </div>
-                ))}
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedTerm(opt.term_days);
+                      handleCreateFDR();
+                    }}
+                    disabled={user.is_frozen || depositVal <= 0 || depositVal > walletBalance}
+                    className="mt-5 w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition disabled:opacity-50"
+                  >
+                    Lock into {opt.term_days}-Day Micro-FDR
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {fdrSuccessMsg && (
+              <div className="p-4 rounded-2xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-200 text-sm flex items-center space-x-3">
+                <CheckCircle2 className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                <span>{fdrSuccessMsg}</span>
               </div>
             )}
-          </div>
-        </div>
-      )}
 
-      {/* TAB 6: TRANSACTION HISTORY & LIVE RECEIPTS */}
-      {activeTab === "history" && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
-            <div>
-              <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-                <Clock className="w-6 h-6 text-emerald-400" />
-                <span>Transaction Ledger & Cryptographic Receipts</span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">
-                Zero-trust audit ledger with live dynamic anti-screenshot badge verification.
-              </p>
-            </div>
-            <button
-              onClick={fetchTransactionHistory}
-              disabled={isLoadingHistory}
-              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center space-x-1.5 transition self-start sm:self-auto"
-            >
-              <RefreshCw className={`w-4 h-4 ${isLoadingHistory ? 'animate-spin text-emerald-400' : ''}`} />
-              <span>Refresh Ledger</span>
-            </button>
-          </div>
+            {/* Active FDR Accounts with Liquidation Option */}
+            <div className="pt-4 border-t border-slate-800">
+              <div className="flex justify-between items-center mb-3">
+                <h4 className="text-base font-bold text-white">All Active & Matured Micro-FDR Accounts</h4>
+                <span className="text-xs text-slate-400">{fdrAccounts.length} Registered Accounts</span>
+              </div>
 
-          {isLoadingHistory ? (
-            <div className="py-12 text-center text-slate-400 text-xs">
-              <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-emerald-400" />
-              Loading real-time ledger entries...
-            </div>
-          ) : transactions.length === 0 ? (
-            <div className="py-12 text-center text-slate-500 text-xs">
-              No transactions found on this account yet.
-            </div>
-          ) : (
-            <div className="space-y-3">
-              {transactions.map((tx) => {
-                const isDebit = tx.sender_id === user.id || tx.transaction_type === 'CASH_OUT';
-                return (
-                  <div
-                    key={tx.id}
-                    className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs hover:border-slate-700 transition"
-                  >
-                    <div className="flex items-start space-x-3">
-                      <div className={`p-2.5 rounded-xl shrink-0 ${
-                        tx.transaction_type === 'CASH_OUT'
-                          ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
-                          : tx.transaction_type === 'CASH_IN'
-                          ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                          : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
-                      }`}>
-                        {tx.transaction_type === 'CASH_OUT' ? (
-                          <Building2 className="w-4 h-4" />
-                        ) : tx.transaction_type === 'CASH_IN' ? (
-                          <ArrowDownLeft className="w-4 h-4" />
-                        ) : (
-                          <ArrowUpRight className="w-4 h-4" />
-                        )}
+              {fdrAccounts.length === 0 ? (
+                <div className="p-6 rounded-2xl bg-slate-950/60 border border-slate-800 text-center space-y-2">
+                  <p className="text-xs font-semibold text-slate-300">No active Micro-FDR accounts created yet.</p>
+                  <p className="text-[11px] text-slate-500">
+                    Choose 7, 30, or 90 days above to lock idle savings and earn up to 8.50% profit.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {fdrAccounts.map((account) => (
+                    <div
+                      key={account.id}
+                      className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                    >
+                      <div>
+                        <div className="flex items-center space-x-2">
+                          <span className="font-bold text-white text-sm">৳{account.principal_amount.toFixed(2)}</span>
+                          <span className="px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 font-mono text-[10px]">
+                            {account.term_days} Days ({account.interest_rate_pct}%)
+                          </span>
+                          <span className={`px-2 py-0.5 rounded-full font-bold text-[10px] ${
+                            account.status === 'ACTIVE' ? 'bg-emerald-950 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                          }`}>
+                            {account.status}
+                          </span>
+                        </div>
+                        <p className="text-slate-400 mt-1">
+                          Started: {account.start_date} • Maturity: <strong className="text-slate-200">{account.maturity_date}</strong>
+                        </p>
                       </div>
 
-                      <div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-bold text-white text-sm">
-                            {tx.transaction_type.replace('_', ' ')}
-                          </span>
-                          <span className="font-mono text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
-                            {tx.transaction_reference}
-                          </span>
-                          {tx.is_flagged_fraud && (
-                            <span className="text-[10px] bg-red-950 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full font-bold">
-                              Flagged Fraud
-                            </span>
+                      <div className="flex items-center justify-between sm:justify-end gap-4">
+                        <div className="text-left sm:text-right">
+                          <span className="text-[10px] text-slate-500 block">Total at Maturity</span>
+                          <span className="font-mono font-bold text-emerald-400 text-sm">৳{account.total_at_maturity.toFixed(2)}</span>
+                        </div>
+
+                        {account.status === 'ACTIVE' && (
+                          <button
+                            onClick={() => handleLiquidateFDR(account.id)}
+                            disabled={liquidatingFdrId === account.id || user.is_frozen}
+                            className="px-4 py-2 rounded-xl bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 font-bold transition disabled:opacity-50"
+                          >
+                            {liquidatingFdrId === account.id ? "Liquidating..." : "Withdraw / Liquidate"}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      })()}
+
+      {/* TAB 6: TRANSACTION HISTORY & LIVE RECEIPTS */}
+      {activeTab === "history" && (() => {
+        // Dynamic stats
+        const totalCount = transactions.length;
+        const cashInCount = transactions.filter(t => t.transaction_type === 'CASH_IN').length;
+        const sendCount = transactions.filter(t => t.transaction_type === 'SEND_MONEY').length;
+        const cashOutCount = transactions.filter(t => t.transaction_type === 'CASH_OUT').length;
+        const flaggedCount = transactions.filter(t => t.is_flagged_fraud).length;
+
+        const totalVolume = transactions.reduce((acc, t) => acc + (t.amount || 0), 0);
+        const totalInflow = transactions
+          .filter(t => t.transaction_type === 'CASH_IN' || (t.transaction_type === 'SEND_MONEY' && (t.receiver_id === user.id || t.receiver_phone === user.phone)))
+          .reduce((acc, t) => acc + (t.amount || 0), 0);
+        const totalOutflow = transactions
+          .filter(t => t.transaction_type === 'CASH_OUT' || (t.transaction_type === 'SEND_MONEY' && (t.sender_id === user.id || !t.receiver_id)))
+          .reduce((acc, t) => acc + (t.amount || 0), 0);
+
+        const filteredTransactions = transactions.filter((tx) => {
+          if (ledgerFilter === "CASH_IN" && tx.transaction_type !== "CASH_IN") return false;
+          if (ledgerFilter === "CASH_OUT" && tx.transaction_type !== "CASH_OUT") return false;
+          if (ledgerFilter === "SEND" && tx.transaction_type !== "SEND_MONEY") return false;
+          if (ledgerFilter === "FLAGGED" && !tx.is_flagged_fraud) return false;
+
+          if (ledgerSearch.trim()) {
+            const q = ledgerSearch.toLowerCase().trim();
+            const ref = (tx.transaction_reference || "").toLowerCase();
+            const rPhone = (tx.receiver_phone || "").toLowerCase();
+            const sPhone = (tx.sender_phone || "").toLowerCase();
+            const rName = (tx.receiver_name || "").toLowerCase();
+            const sName = (tx.sender_name || "").toLowerCase();
+            const desc = (tx.description || "").toLowerCase();
+            const cat = (tx.category || "").toLowerCase();
+            const agt = (tx.agent_code || "").toLowerCase();
+            return ref.includes(q) || rPhone.includes(q) || sPhone.includes(q) || rName.includes(q) || sName.includes(q) || desc.includes(q) || cat.includes(q) || agt.includes(q);
+          }
+          return true;
+        });
+
+        return (
+          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-4 sm:p-6 shadow-xl space-y-6">
+            {/* Header & Controls */}
+            <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-slate-800 pb-4">
+              <div>
+                <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+                  <Clock className="w-6 h-6 text-emerald-400" />
+                  <span>Transaction Ledger & Cryptographic Receipts</span>
+                </h3>
+                <p className="text-xs text-slate-400 mt-1">
+                  Zero-trust audit ledger with live dynamic anti-screenshot badge verification.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2 self-start sm:self-auto">
+                <button
+                  onClick={handleQuickDemoTransfer}
+                  disabled={isLoadingHistory || user.is_frozen}
+                  className="px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-xs font-semibold flex items-center space-x-1.5 transition disabled:opacity-50"
+                  title="Simulate instant transfer to test ledger"
+                >
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Test Transfer (৳25)</span>
+                </button>
+
+                <button
+                  onClick={fetchTransactionHistory}
+                  disabled={isLoadingHistory}
+                  className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold flex items-center space-x-1.5 transition"
+                >
+                  <RefreshCw className={`w-4 h-4 ${isLoadingHistory ? 'animate-spin text-emerald-400' : ''}`} />
+                  <span className="hidden sm:inline">Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Summary Metrics */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                <span className="text-slate-400">Total Ledger Volume</span>
+                <p className="text-lg font-mono font-bold text-white mt-1">৳{totalVolume.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
+                <span className="text-[10px] text-slate-500">{totalCount} total operations</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-emerald-950/20 border border-emerald-500/20">
+                <span className="text-emerald-400">Total Inflow / Deposits</span>
+                <p className="text-lg font-mono font-bold text-emerald-300 mt-1">৳{totalInflow.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
+                <span className="text-[10px] text-emerald-400/70">{cashInCount} inbound entries</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-rose-950/20 border border-rose-500/20">
+                <span className="text-rose-400">Total Outflow / Spent</span>
+                <p className="text-lg font-mono font-bold text-rose-300 mt-1">৳{totalOutflow.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
+                <span className="text-[10px] text-rose-400/70">{sendCount + cashOutCount} outbound entries</span>
+              </div>
+              <div className="p-3.5 rounded-2xl bg-slate-950/60 border border-slate-800">
+                <span className="text-slate-400">Security Interception</span>
+                <p className="text-lg font-mono font-bold text-cyan-400 mt-1">100% Cryptographic</p>
+                <span className="text-[10px] text-slate-500">{flaggedCount} flagged anomalies</span>
+              </div>
+            </div>
+
+            {/* Search & Filter Bar */}
+            <div className="flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+              {/* Filter Pills */}
+              <div className="flex space-x-1.5 overflow-x-auto scrollbar-none pb-1">
+                {[
+                  { key: "ALL", label: `All (${totalCount})` },
+                  { key: "CASH_IN", label: `Cash In (${cashInCount})` },
+                  { key: "SEND", label: `Send Money (${sendCount})` },
+                  { key: "CASH_OUT", label: `Cash Out (${cashOutCount})` },
+                  { key: "FLAGGED", label: `Flagged (${flaggedCount})` },
+                ].map((f) => (
+                  <button
+                    key={f.key}
+                    type="button"
+                    onClick={() => setLedgerFilter(f.key as any)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition ${
+                      ledgerFilter === f.key
+                        ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
+                        : "bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 border border-slate-700/60"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Box */}
+              <div className="relative min-w-[240px] flex-1 max-w-sm">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <input
+                  type="text"
+                  value={ledgerSearch}
+                  onChange={(e) => setLedgerSearch(e.target.value)}
+                  placeholder="Search reference, phone, note..."
+                  className="w-full bg-slate-800/80 border border-slate-700 rounded-xl pl-9 pr-8 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
+                />
+                {ledgerSearch && (
+                  <button
+                    type="button"
+                    onClick={() => setLedgerSearch("")}
+                    className="absolute right-2.5 top-2.5 text-slate-400 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* List / Loading / Empty */}
+            {isLoadingHistory ? (
+              <div className="py-16 text-center text-slate-400 text-xs">
+                <RefreshCw className="w-8 h-8 animate-spin mx-auto mb-3 text-emerald-400" />
+                <p className="font-semibold text-slate-300">Synchronizing cryptographic ledger with upay backend...</p>
+              </div>
+            ) : totalCount === 0 ? (
+              <div className="py-12 px-4 rounded-3xl bg-slate-950/60 border border-slate-800 text-center space-y-4 max-w-md mx-auto">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center border border-emerald-500/20">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-white text-base">No Transaction Ledger Records Yet</h4>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Your zero-trust audit ledger will show every send, cash-out, deposit, and dynamic nonce verification badge.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab("overview")}
+                    className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition"
+                  >
+                    Send Money Now
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleQuickDemoTransfer}
+                    className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-semibold text-xs transition"
+                  >
+                    Create Test Transfer (৳25)
+                  </button>
+                </div>
+              </div>
+            ) : filteredTransactions.length === 0 ? (
+              <div className="py-12 text-center text-slate-400 text-xs space-y-2">
+                <p>No transactions match your current search and filter criteria.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLedgerFilter("ALL");
+                    setLedgerSearch("");
+                  }}
+                  className="text-emerald-400 underline font-semibold"
+                >
+                  Reset All Filters
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredTransactions.map((tx) => {
+                  const isDebit = tx.transaction_type === 'CASH_OUT' || (tx.transaction_type === 'SEND_MONEY' && (tx.sender_id === user.id || !tx.receiver_id));
+                  return (
+                    <div
+                      key={tx.id}
+                      className="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs hover:border-slate-700 transition"
+                    >
+                      <div className="flex items-start space-x-3">
+                        <div className={`p-2.5 rounded-xl shrink-0 ${
+                          tx.transaction_type === 'CASH_OUT'
+                            ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20'
+                            : tx.transaction_type === 'CASH_IN'
+                            ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                            : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                        }`}>
+                          {tx.transaction_type === 'CASH_OUT' ? (
+                            <Building2 className="w-4 h-4" />
+                          ) : tx.transaction_type === 'CASH_IN' ? (
+                            <ArrowDownLeft className="w-4 h-4" />
+                          ) : (
+                            <ArrowUpRight className="w-4 h-4" />
                           )}
                         </div>
 
-                        <p className="text-slate-400 text-[11px] mt-1">
-                          {tx.created_at ? new Date(tx.created_at).toLocaleString() : 'Recent'} • 
-                          {tx.receiver_phone ? ` To: ${tx.receiver_phone}` : ''}
-                          {tx.agent_code ? ` Agent: ${tx.agent_code}` : ''}
-                          {tx.applied_grace_amount > 0 ? ` (Grace settled: ৳${tx.applied_grace_amount})` : ''}
-                        </p>
+                        <div>
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span className="font-bold text-white text-sm">
+                              {tx.transaction_type.replace('_', ' ')}
+                            </span>
+                            <span className="font-mono text-[10px] text-slate-400 bg-slate-800 px-2 py-0.5 rounded">
+                              {tx.transaction_reference}
+                            </span>
+                            {tx.is_flagged_fraud && (
+                              <span className="text-[10px] bg-red-950 text-red-300 border border-red-500/30 px-2 py-0.5 rounded-full font-bold flex items-center space-x-1">
+                                <AlertTriangle className="w-3 h-3 inline mr-1 text-red-400" />
+                                Flagged Fraud
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-slate-400 text-[11px] mt-1">
+                            {tx.created_at ? new Date(tx.created_at).toLocaleString() : 'Recent'} • 
+                            {tx.receiver_phone ? ` To: ${tx.receiver_phone}` : ''}
+                            {tx.sender_phone && tx.transaction_type === 'CASH_IN' ? ` From: ${tx.sender_phone}` : ''}
+                            {tx.agent_code ? ` Agent: ${tx.agent_code}` : ''}
+                            {tx.applied_grace_amount > 0 ? ` (Grace settled: ৳${tx.applied_grace_amount})` : ''}
+                            {tx.description ? ` • "${tx.description}"` : ''}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between sm:justify-end gap-4">
+                        <div className="text-left sm:text-right">
+                          <span className={`text-base font-black font-mono ${isDebit ? 'text-rose-400' : 'text-emerald-400'}`}>
+                            {isDebit ? '-' : '+'}৳{tx.amount.toFixed(2)}
+                          </span>
+                          {tx.fee > 0 && (
+                            <span className="text-[10px] text-slate-500 block">Fee: ৳{tx.fee.toFixed(2)}</span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => handleViewReceiptBadge(tx.transaction_reference)}
+                            className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-semibold transition flex items-center space-x-1"
+                            title="Generate Anti-Screenshot Live Badge"
+                          >
+                            <BadgeCheck className="w-3.5 h-3.5" />
+                            <span>Receipt</span>
+                          </button>
+
+                          <button
+                            onClick={() => handleOpenScamReport(tx.receiver_phone || tx.agent_code || "", tx.id)}
+                            className="px-2 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-semibold transition flex items-center space-x-1"
+                            title="Report suspicious transaction to SecurityAI"
+                          >
+                            <Flag className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="flex items-center justify-between sm:justify-end gap-4">
-                      <div className="text-left sm:text-right">
-                        <span className={`text-base font-black font-mono ${isDebit ? 'text-rose-400' : 'text-emerald-400'}`}>
-                          {isDebit ? '-' : '+'}৳{tx.amount.toFixed(2)}
-                        </span>
-                        {tx.fee > 0 && (
-                          <span className="text-[10px] text-slate-500 block">Fee: ৳{tx.fee.toFixed(2)}</span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={() => handleViewReceiptBadge(tx.transaction_reference)}
-                          className="px-2.5 py-1.5 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-semibold transition flex items-center space-x-1"
-                          title="Generate Anti-Screenshot Live Badge"
-                        >
-                          <BadgeCheck className="w-3.5 h-3.5" />
-                          <span>Receipt</span>
-                        </button>
-
-                        <button
-                          onClick={() => handleOpenScamReport(tx.receiver_phone || tx.agent_code || "", tx.id)}
-                          className="px-2 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-semibold transition flex items-center space-x-1"
-                          title="Report suspicious transaction to SecurityAI"
-                        >
-                          <Flag className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      )}
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* DYNAMIC BADGE MODAL (ANTI-SCREENSHOT) */}
       {activeBadge && (
