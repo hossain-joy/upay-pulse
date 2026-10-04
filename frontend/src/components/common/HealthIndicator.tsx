@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Activity, Database, Radio, CheckCircle, AlertTriangle } from 'lucide-react';
 import { API_BASE_URL } from '../../api/client';
 
 interface HealthData {
@@ -10,7 +9,6 @@ interface HealthData {
 
 export const HealthIndicator: React.FC = () => {
   const [health, setHealth] = useState<HealthData | null>(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHealth = async () => {
@@ -23,10 +21,8 @@ export const HealthIndicator: React.FC = () => {
         } else {
           setHealth({ status: 'unhealthy' });
         }
-      } catch (err) {
+      } catch {
         setHealth({ status: 'offline' });
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -35,35 +31,22 @@ export const HealthIndicator: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-800/80 border border-slate-700 text-xs text-slate-400">
-        <Activity className="w-3.5 h-3.5 animate-spin text-cyan-400" />
-        <span>Connecting Core...</span>
-      </div>
-    );
-  }
-
-  const isHealthy = health?.status === 'ready';
+  const isReady = health?.status === 'ready';
+  const dialect = health?.database?.dialect?.toLowerCase();
+  const busMode = health?.event_bus?.mode === 'redis' ? 'redis' : 'memory';
 
   return (
-    <div className="flex items-center gap-2 sm:gap-3">
-      <div className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium border ${
-        isHealthy 
-          ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
-          : 'bg-amber-950/60 border-amber-500/40 text-amber-300'
-      }`}>
-        <span className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${isHealthy ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-        <span>{isHealthy ? 'Live' : 'Standby'}</span>
-      </div>
-
-      <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900/60">
-        <Database className="w-3.5 h-3.5 text-cyan-400" />
-        <span>{health?.database?.dialect?.toUpperCase() || 'POSTGRES'}</span>
-        <span className="text-slate-600">|</span>
-        <Radio className="w-3.5 h-3.5 text-indigo-400" />
-        <span>{health?.event_bus?.mode === 'redis' ? 'REDIS' : 'EVENT-BUS'}</span>
-      </div>
+    <div className="hidden md:flex items-center gap-2 text-[11px] font-medium text-slate-400">
+      <span className="flex items-center gap-1.5">
+        <span
+          className={`w-1.5 h-1.5 rounded-full ${isReady ? 'bg-emerald-400' : 'bg-slate-600'}`}
+        />
+        <span className="text-slate-300">{isReady ? 'Live' : 'Offline'}</span>
+      </span>
+      <span className="text-slate-700">·</span>
+      <span className="font-mono uppercase tracking-wider text-[10px]">
+        {dialect || '—'} · {busMode}
+      </span>
     </div>
   );
 };
