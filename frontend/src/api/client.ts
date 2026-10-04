@@ -1,16 +1,23 @@
 const isLocal = typeof window !== "undefined" &&
   (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
-export const API_BASE_URL: string =
-  (import.meta as any).env?.VITE_API_BASE_URL ||
-  (isLocal ? "http://localhost:8000/api/v1" : "");
+const resolveApiBaseUrl = (): string => {
+  const envUrl = (import.meta as any).env?.VITE_API_BASE_URL;
+  if (envUrl && typeof envUrl === "string" && envUrl.trim().length > 0) {
+    const trimmed = envUrl.trim().replace(/\/+$/, "");
+    return trimmed.endsWith("/api/v1") ? trimmed : `${trimmed}/api/v1`;
+  }
+  return isLocal ? "http://localhost:8000/api/v1" : "/api/v1";
+};
+
+export const API_BASE_URL: string = resolveApiBaseUrl();
 
 export const getWebSocketUrl = (): string => {
   if ((import.meta as any).env?.VITE_WS_URL) {
     return (import.meta as any).env.VITE_WS_URL;
   }
   // Derive WebSocket URL from API_BASE_URL if available
-  if (API_BASE_URL) {
+  if (API_BASE_URL && API_BASE_URL.startsWith("http")) {
     return API_BASE_URL
       .replace(/^https:\/\//, "wss://")
       .replace(/^http:\/\//, "ws://")
@@ -54,7 +61,15 @@ export async function apiRequest<T = any>(
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  let finalUrl: string;
+  if (cleanEndpoint.startsWith("/api/v1/")) {
+    finalUrl = `${API_BASE_URL.replace(/\/api\/v1$/, "")}${cleanEndpoint}`;
+  } else {
+    finalUrl = `${API_BASE_URL}${cleanEndpoint}`;
+  }
+
+  const response = await fetch(finalUrl, {
     ...options,
     headers,
   });

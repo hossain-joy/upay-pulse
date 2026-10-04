@@ -389,8 +389,24 @@ class TransactionService:
         if not agent_profile:
             raise AppException("Only authorized agents can perform Cash-In operations.", code="AGENT_PROFILE_REQUIRED", status_code=403)
 
-        customer_phone = req.customer_phone.strip()
-        customer_user = db.query(User).filter(User.phone == customer_phone, User.role == UserRole.CUSTOMER).first()
+        raw_phone = req.customer_phone.strip()
+        clean_digits = "".join(ch for ch in raw_phone if ch.isdigit())
+        candidates = {raw_phone}
+        if clean_digits.startswith("880") and len(clean_digits) == 13:
+            candidates.add(f"+{clean_digits}")
+            candidates.add(clean_digits[2:])
+        elif clean_digits.startswith("0") and len(clean_digits) == 11:
+            candidates.add(f"+88{clean_digits}")
+            candidates.add(clean_digits)
+        elif len(clean_digits) == 10:
+            candidates.add(f"+880{clean_digits}")
+            candidates.add(f"0{clean_digits}")
+
+        customer_user = db.query(User).filter(
+            (User.phone.in_(candidates)) | (User.email == raw_phone) | (User.id == raw_phone),
+            User.role == UserRole.CUSTOMER
+        ).first()
+
         if not customer_user or not customer_user.customer_profile:
             raise AppException("Customer account not found for this mobile number.", code="CUSTOMER_NOT_FOUND", status_code=404)
 
@@ -466,7 +482,7 @@ class TransactionService:
         db.commit()
         db.refresh(txn)
 
-        return format_transaction_response(txn)
+        return format_transaction_response(txn, applied_grace=float(repaid_grace))
 
     @staticmethod
     def get_history(

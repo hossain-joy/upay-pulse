@@ -38,10 +38,11 @@ import { apiRequest } from '../api/client';
 import { AgentLiquidityForecast } from '../types';
 
 interface AgentTerminalProps {
+  user?: any;
   onNotify?: (msg: string, type: 'success' | 'error' | 'info') => void;
 }
 
-export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
+export const AgentTerminal: React.FC<AgentTerminalProps> = ({ user, onNotify }) => {
   // Forecast State
   const [forecast, setForecast] = useState<AgentLiquidityForecast | null>(null);
   const [loadingForecast, setLoadingForecast] = useState<boolean>(true);
@@ -114,7 +115,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
 
   useEffect(() => {
     fetchForecast();
-  }, []);
+  }, [user?.id]);
 
   // Web Audio API chord synthesis for Software Soundbox
   const playSoundboxChime = async (amount: number = 500) => {
@@ -191,11 +192,19 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
     setCashInResult(null);
     setCashInError(null);
 
+    // Normalize phone format
+    let targetPhone = cashInPhone.trim();
+    if (targetPhone.startsWith('01') && targetPhone.length === 11) {
+      targetPhone = `+88${targetPhone}`;
+    } else if (!targetPhone.startsWith('+') && targetPhone.startsWith('880')) {
+      targetPhone = `+${targetPhone}`;
+    }
+
     try {
       const res = await apiRequest('/transactions/cash-in', {
         method: 'POST',
         body: JSON.stringify({
-          customer_phone: cashInPhone.trim(),
+          customer_phone: targetPhone,
           amount: cashInAmount,
           idempotency_key: `CASHIN-${Date.now()}`
         })
@@ -208,16 +217,51 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
       playSoundboxChime(cashInAmount);
 
       if (onNotify) {
-        onNotify(`৳${cashInAmount.toLocaleString()} Cash-In deposited to ${cashInPhone}!`, 'success');
+        onNotify(`৳${cashInAmount.toLocaleString()} Cash-In deposited to ${targetPhone}!`, 'success');
       }
 
       fetchForecast();
     } catch (err: any) {
       console.warn('Cash-In API call error:', err);
-      setCashInError(err.message || 'Cash-In deposit failed.');
-      if (onNotify) onNotify(err.message || 'Cash-In failed', 'error');
+      const msg = err.message || '';
+      let displayError = msg;
+      if (msg.toLowerCase().includes('not found') || msg.toLowerCase().includes('404')) {
+        displayError = `গ্রাহক অ্যাকাউন্ট পাওয়া যায়নি (${targetPhone})। অনুগ্রহ করে সঠিক মোবাইল নম্বর নিশ্চিত করুন (যেমন: +8801700000001)।`;
+      } else if (msg.toLowerCase().includes('insufficient_float') || msg.toLowerCase().includes('float')) {
+        displayError = `এজেন্টের ওয়ালেটে পর্যাপ্ত ফ্লোট ব্যালেন্স নেই। অনুগ্রহ করে ক্যাশ ব্যালেন্স ফ্লোটে রূপান্তর (Rebalance) করুন।`;
+      }
+      setCashInError(displayError);
+      if (onNotify) onNotify(displayError, 'error');
     } finally {
       setIsProcessingCashIn(false);
+    }
+  };
+
+  // Instant Demo Cash-In & Soundbox Trigger
+  const handleSimulatedCashIn = () => {
+    const demoRef = `TXN-DEMO-${Math.random().toString(16).slice(2, 8).toUpperCase()}`;
+    const demoRes = {
+      id: `txn-sim-${Date.now()}`,
+      transaction_reference: demoRef,
+      amount: cashInAmount,
+      fee: 0.0,
+      receiver_phone: cashInPhone,
+      applied_grace_amount: cashInAmount >= 50 ? 50.0 : 0.0,
+      status: 'COMPLETED'
+    };
+    setCashInResult(demoRes);
+    setCashInError(null);
+    setLastChimeAmount(cashInAmount);
+    playSoundboxChime(cashInAmount);
+    if (onNotify) {
+      onNotify(`৳${cashInAmount.toLocaleString()} Cash-In simulated successfully! Soundbox chime triggered.`, 'success');
+    }
+    if (forecast) {
+      setForecast({
+        ...forecast,
+        current_float_balance: Math.max(0, forecast.current_float_balance - cashInAmount),
+        current_cash_balance: forecast.current_cash_balance + cashInAmount
+      });
     }
   };
 
@@ -525,9 +569,18 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
         )}
 
         {cashInError && (
-          <div className="mb-6 p-4 rounded-2xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs sm:text-sm flex items-center space-x-2">
-            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
-            <span>{cashInError}</span>
+          <div className="mb-6 p-4 rounded-2xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs sm:text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xl animate-fade-in">
+            <div className="flex items-center space-x-2">
+              <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
+              <span>{cashInError}</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleSimulatedCashIn}
+              className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 font-bold text-xs shrink-0 transition"
+            >
+              Demo Cash-In & Soundbox →
+            </button>
           </div>
         )}
 

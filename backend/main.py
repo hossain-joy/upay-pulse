@@ -100,6 +100,8 @@ def root():
 
 # Mount v1 API
 app.include_router(api_router, prefix="/api/v1")
+# Also mount api_router directly without prefix for seamless client compatibility
+app.include_router(api_router)
 
 if __name__ == "__main__":
     import uvicorn

@@ -172,11 +172,11 @@ export const App: React.FC = () => {
         )}
 
         {role === 'AGENT' && (
-          <AgentTerminal onNotify={addToast} />
+          <AgentTerminal user={activeUser} key={`agent-${activeUser?.id || role}`} onNotify={addToast} />
         )}
 
         {role === 'RISK_ANALYST' && (
-          <RiskConsole onNotify={addToast} />
+          <RiskConsole key={`risk-${activeUser?.id || role}`} onNotify={addToast} />
         )}
 
       </main>
