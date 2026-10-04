@@ -88,6 +88,23 @@ def test_grace_credit_eligibility_and_advance(client):
     assert declined_res.status_code == 400
     assert declined_res.json()["error"]["code"] == "GRACE_INELIGIBLE"
 
+    # 4. Repay the active grace advance directly from wallet
+    repay_res = client.post("/api/v1/customer-ai/grace/repay", json={}, headers=c_headers)
+    assert repay_res.status_code == 200
+    repay_data = repay_res.json()
+    assert repay_data["repaid_amount"] == 20.00
+    assert repay_data["remaining_grace_balance"] == 0.00
+
+    # Verify wallet and grace balance
+    me_cleared = client.get("/api/v1/auth/me", headers=c_headers)
+    assert me_cleared.json()["profile"]["grace_balance"] == 0.00
+    assert me_cleared.json()["profile"]["wallet_balance"] == initial_wallet  # +20 from loan, -20 from repayment
+
+    # Eligibility restored
+    elig_cleared = client.get("/api/v1/customer-ai/grace/eligibility", headers=c_headers)
+    assert elig_cleared.status_code == 200
+    assert elig_cleared.json()["eligible"] is True
+
 def test_micro_fdr_flow(client):
     c_token = get_auth_token(client, "customer@example.com")
     c_headers = {"Authorization": f"Bearer {c_token}"}

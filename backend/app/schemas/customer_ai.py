@@ -53,6 +53,16 @@ class GraceRequestResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class GraceRepayRequest(BaseModel):
+    repay_amount: Optional[float] = Field(None, gt=0.0, description="Amount to repay. If omitted, repays full outstanding grace balance.")
+
+class GraceRepayResponse(BaseModel):
+    customer_id: str
+    repaid_amount: float
+    remaining_grace_balance: float
+    new_wallet_balance: float
+    message: str
+
 class FDROptionSchema(BaseModel):
     term_days: int
     interest_rate_pct: float

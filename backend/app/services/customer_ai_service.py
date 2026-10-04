@@ -23,6 +23,7 @@ from backend.app.models.notification import Notification, NotificationType
 from backend.app.models.audit import AuditLog
 from backend.app.schemas.customer_ai import (
     GraceRequestCreate,
+    GraceRepayRequest,
     FDRCreateRequest
 )
 from ml.customer.cashflow_forecaster import CashFlowForecaster
@@ -169,6 +170,88 @@ class CustomerAIService:
         db.commit()
         db.refresh(grace_req)
         return grace_req
+
+    @classmethod
+    def repay_grace_advance(cls, db: Session, user: User, req: Optional[GraceRepayRequest] = None) -> Dict[str, Any]:
+        """
+        Customer repays their active upay Grace micro-loan advance directly from their wallet balance.
+        """
+        profile: CustomerProfile = user.customer_profile
+        if not profile:
+            raise AppException("Customer profile required.", code="PROFILE_MISSING", status_code=400)
+
+        current_debt = Decimal(str(profile.grace_balance or 0.0))
+        if current_debt <= Decimal("0.00"):
+            raise AppException("You do not have any active upay Grace overdraft to repay.", code="NO_ACTIVE_GRACE", status_code=400)
+
+        # Repay requested amount or full balance
+        repay_target = current_debt
+        if req and req.repay_amount is not None and req.repay_amount > 0:
+            repay_target = min(Decimal(str(req.repay_amount)), current_debt)
+
+        if profile.wallet_balance < repay_target:
+            raise AppException(
+                message=f"Insufficient wallet balance to repay overdraft. Required: ৳{float(repay_target):.2f}, Available: ৳{float(profile.wallet_balance):.2f}.",
+                code="INSUFFICIENT_FUNDS",
+                status_code=400
+            )
+
+        # Deduct from wallet and reduce grace obligation
+        profile.wallet_balance -= repay_target
+        profile.grace_balance -= repay_target
+
+        # Update pending/approved grace requests
+        grace_requests = db.query(GraceOverdraftRequest).filter(
+            GraceOverdraftRequest.customer_id == profile.id,
+            GraceOverdraftRequest.status == GraceStatus.APPROVED
+        ).order_by(GraceOverdraftRequest.created_at.asc()).all()
+
+        remaining_to_allocate = repay_target
+        for gr in grace_requests:
+            unpaid = gr.requested_amount - gr.repaid_amount
+            if unpaid <= 0:
+                gr.status = GraceStatus.REPAID
+                continue
+            pay_this = min(unpaid, remaining_to_allocate)
+            gr.repaid_amount += pay_this
+            remaining_to_allocate -= pay_this
+            if gr.repaid_amount >= gr.requested_amount:
+                gr.status = GraceStatus.REPAID
+            if remaining_to_allocate <= Decimal("0.00"):
+                break
+
+        # Audit & Notification
+        db.add(AuditLog(
+            actor_id=user.id,
+            actor_role="CUSTOMER",
+            action="GRACE_OVERDRAFT_REPAID",
+            resource="WALLET",
+            resource_id=profile.id,
+            details=f'{{"repaid_amount": {float(repay_target)}, "remaining_grace_balance": {float(profile.grace_balance)}, "new_wallet_balance": {float(profile.wallet_balance)}}}'
+        ))
+
+        db.add(Notification(
+            user_id=user.id,
+            title="upay Grace Overdraft Repaid",
+            message=f"৳{float(repay_target):.2f} repaid from your wallet. Remaining grace balance: ৳{float(profile.grace_balance):.2f}.",
+            notification_type=NotificationType.TRANSACTION_UPDATE
+        ))
+
+        event_bus.publish_sync("customer.grace_repaid", {
+            "customer_id": profile.id,
+            "repaid_amount": float(repay_target),
+            "phone": user.phone
+        })
+
+        db.commit()
+
+        return {
+            "customer_id": profile.id,
+            "repaid_amount": float(repay_target),
+            "remaining_grace_balance": float(profile.grace_balance),
+            "new_wallet_balance": float(profile.wallet_balance),
+            "message": f"৳{float(repay_target):.2f} successfully repaid. Your credit limit is restored!"
+        }
 
     @classmethod
     def get_fdr_recommendations(cls, db: Session, user: User) -> Dict[str, Any]:

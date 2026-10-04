@@ -10,6 +10,8 @@ from backend.app.schemas.customer_ai import (
     GraceEligibilityResponse,
     GraceRequestCreate,
     GraceRequestResponse,
+    GraceRepayRequest,
+    GraceRepayResponse,
     FDRRecommendationResponse,
     FDRCreateRequest,
     FDRResponse
@@ -54,6 +56,17 @@ def request_grace_advance(
     Request instant disbursement of upay Grace micro-overdraft funds directly into customer wallet.
     """
     return CustomerAIService.request_grace_advance(db=db, user=current_user, req=req)
+
+@router.post("/grace/repay", response_model=GraceRepayResponse)
+def repay_grace_advance(
+    req: Optional[GraceRepayRequest] = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_customer)
+):
+    """
+    Repay active upay Grace micro-overdraft loan directly from wallet balance to restore credit limit.
+    """
+    return CustomerAIService.repay_grace_advance(db=db, user=current_user, req=req)
 
 @router.get("/fdr/recommendation", response_model=FDRRecommendationResponse)
 def get_fdr_recommendations(
