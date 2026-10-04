@@ -11,7 +11,7 @@ class VoiceCoachSession(Base, TimestampMixin):
     response_bangla = Column(Text, nullable=False)
     audio_url = Column(String(255), nullable=True)
     intent = Column(String(50), default="SPENDING_INSIGHT", nullable=False)
-    latency_ms = Column(Numeric(6, 2), default=0.00, nullable=False)
+    latency_ms = Column(Numeric(10, 2), default=0.00, nullable=False)
 
     def __repr__(self):
         return f"<VoiceCoachSession customer={self.customer_id} intent={self.intent}>"

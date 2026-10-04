@@ -105,6 +105,13 @@ class GeminiProvider(AIProvider):
     Falls back gracefully to MockLocalProvider if API key is not configured or network fails.
     """
 
+    CANDIDATE_MODELS = [
+        "gemini-flash-lite-latest",
+        "gemini-2.0-flash",
+        "gemini-1.5-flash",
+        "gemini-2.5-flash"
+    ]
+
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.fallback = MockLocalProvider()
@@ -113,69 +120,73 @@ class GeminiProvider(AIProvider):
         if not self.api_key or self.api_key.strip() == "":
             return self.fallback.generate_financial_advice(query, context)
 
-        try:
-            import urllib.request
-            import json
+        import urllib.request
+        import json
 
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.api_key}"
-            system_instruction = (
-                "You are the empathetic, culturally aware, dialect-sensitive AI Financial Coach for 'upay Pulse' Mobile Financial Services (MFS) in Bangladesh. "
-                "The user is an everyday citizen, small merchant, or garment worker. "
-                "Always reply in natural, friendly, polite colloquial Bengali (বাংলা). "
-                "Reference the user's real financial context provided (wallet balance, grace overdraft, micro-FDR, and spending patterns). "
-                "Offer actionable tips on managing balance, preventing cash-flow deficits, utilizing 'upay Grace' micro-overdrafts, or opening Micro-FDRs. "
-                "Keep responses under 3-4 concise sentences."
-            )
+        system_instruction = (
+            "You are the empathetic, culturally aware, dialect-sensitive AI Financial Coach for 'upay Pulse' Mobile Financial Services (MFS) in Bangladesh. "
+            "The user is an everyday citizen, small merchant, or garment worker. "
+            "Always reply in natural, friendly, polite colloquial Bengali (বাংলা). "
+            "Reference the user's real financial context provided (wallet balance, grace overdraft, micro-FDR, and spending patterns). "
+            "Offer actionable tips on managing balance, preventing cash-flow deficits, utilizing 'upay Grace' micro-overdrafts, or opening Micro-FDRs. "
+            "Keep responses under 3-4 concise sentences."
+        )
 
-            prompt = (
-                f"User Query: {query}\n"
-                f"User Financial Context: {json.dumps(context, ensure_ascii=False)}"
-            )
+        prompt = (
+            f"User Query: {query}\n"
+            f"User Financial Context: {json.dumps(context, ensure_ascii=False)}"
+        )
 
-            payload = {
-                "contents": [{
-                    "parts": [
-                        {"text": system_instruction},
-                        {"text": prompt}
-                    ]
-                }],
-                "generationConfig": {
-                    "temperature": 0.3,
-                    "maxOutputTokens": 1024
-                }
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": system_instruction},
+                    {"text": prompt}
+                ]
+            }],
+            "generationConfig": {
+                "temperature": 0.3,
+                "maxOutputTokens": 1024
             }
+        }
 
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(payload).encode("utf-8"),
-                headers={"Content-Type": "application/json"},
-                method="POST"
-            )
+        # Try candidate models in order of speed and availability
+        for model in self.CANDIDATE_MODELS:
+            try:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={self.api_key}"
+                req = urllib.request.Request(
+                    url,
+                    data=json.dumps(payload).encode("utf-8"),
+                    headers={"Content-Type": "application/json"},
+                    method="POST"
+                )
 
-            with urllib.request.urlopen(req, timeout=5.0) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
-                text = result["candidates"][0]["content"]["parts"][0]["text"].strip()
+                with urllib.request.urlopen(req, timeout=3.5) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
+                    text = result["candidates"][0]["content"]["parts"][0]["text"].strip()
 
-                # Infer intent category for analytics
-                q_low = query.lower()
-                if any(w in q_low for w in ["ব্যালেন্স", "টাকা আছে", "balance"]):
-                    intent = "BALANCE_INQUIRY"
-                elif any(w in q_low for w in ["বিল", "বাকি", "ঘাটতি", "bill"]):
-                    intent = "DEFICIT_ALERT"
-                elif any(w in q_low for w in ["গ্রেস", "লোন", "ধার", "grace", "loan"]):
-                    intent = "GRACE_ELIGIBILITY"
-                elif any(w in q_low for w in ["এফডিআর", "সঞ্চয়", "fdr", "saving"]):
-                    intent = "MICRO_FDR"
-                elif any(w in q_low for w in ["কোথায় খরচ", "খরচ বেশি", "spending"]):
-                    intent = "SPENDING_INSIGHT"
-                else:
-                    intent = "GENERAL_GUIDE"
+                    # Infer intent category for analytics
+                    q_low = query.lower()
+                    if any(w in q_low for w in ["ব্যালেন্স", "টাকা আছে", "balance"]):
+                        intent = "BALANCE_INQUIRY"
+                    elif any(w in q_low for w in ["বিল", "বাকি", "ঘাটতি", "bill"]):
+                        intent = "DEFICIT_ALERT"
+                    elif any(w in q_low for w in ["গ্রেস", "লোন", "ধার", "grace", "loan"]):
+                        intent = "GRACE_ELIGIBILITY"
+                    elif any(w in q_low for w in ["এফডিআর", "সঞ্চয়", "fdr", "saving"]):
+                        intent = "MICRO_FDR"
+                    elif any(w in q_low for w in ["কোথায় খরচ", "খরচ বেশি", "spending"]):
+                        intent = "SPENDING_INSIGHT"
+                    else:
+                        intent = "GENERAL_GUIDE"
 
-                return text, intent
+                    return text, intent
 
-        except Exception as e:
-            # Resilient fallback on any cloud API timeout or network outage
-            return self.fallback.generate_financial_advice(query, context)
+            except Exception:
+                continue
+
+        # Resilient offline fallback if all cloud models fail, timeout, or rate-limit
+        return self.fallback.generate_financial_advice(query, context)
 
 def get_ai_provider() -> AIProvider:
     """Factory to retrieve active AI provider based on configuration."""

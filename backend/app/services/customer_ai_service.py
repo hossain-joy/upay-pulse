@@ -39,7 +39,7 @@ class CustomerAIService:
         if not profile:
             raise AppException("Customer profile required for cash-flow forecasting.", code="PROFILE_MISSING", status_code=400)
 
-        current_bal = float(profile.wallet_balance)
+        current_bal = float(profile.wallet_balance or 0.0)
         inflow = float(profile.avg_monthly_inflow or 20000.0)
         outflow = float(profile.avg_monthly_outflow or 18000.0)
         pattern = profile.spending_pattern or "General"
@@ -51,24 +51,26 @@ class CustomerAIService:
             spending_pattern=pattern
         )
 
-        # Proactive Deficit Alert Notification
+        # Proactive Deficit Alert Notification (Safe background notification)
         if forecast.get("has_deficit_alert"):
-            alert = forecast["deficit_alert"]
-            # Check if recent alert already exists to avoid spamming
-            existing_notif = db.query(Notification).filter(
-                Notification.user_id == user.id,
-                Notification.notification_type == NotificationType.GRACE_OFFER,
-                Notification.title == "CustomerAI Cash-Flow Deficit Warning"
-            ).first()
+            try:
+                alert = forecast["deficit_alert"]
+                existing_notif = db.query(Notification).filter(
+                    Notification.user_id == user.id,
+                    Notification.notification_type == NotificationType.GRACE_OFFER,
+                    Notification.title == "CustomerAI Cash-Flow Deficit Warning"
+                ).first()
 
-            if not existing_notif:
-                db.add(Notification(
-                    user_id=user.id,
-                    title="CustomerAI Cash-Flow Deficit Warning",
-                    message=alert["recommended_action"],
-                    notification_type=NotificationType.GRACE_OFFER
-                ))
-                db.commit()
+                if not existing_notif:
+                    db.add(Notification(
+                        user_id=user.id,
+                        title="CustomerAI Cash-Flow Deficit Warning",
+                        message=alert["recommended_action"],
+                        notification_type=NotificationType.GRACE_OFFER
+                    ))
+                    db.commit()
+            except Exception:
+                db.rollback()
 
         return forecast
 

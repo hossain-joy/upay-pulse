@@ -36,15 +36,15 @@ class VoiceCoachService:
         grace_eligibility = CustomerAIService.get_grace_eligibility(db, user)
 
         context = {
-            "full_name": profile.full_name,
+            "full_name": profile.full_name or "সম্মানিত গ্রাহক",
             "profession": profile.profession or "General",
-            "wallet_balance": float(profile.wallet_balance),
-            "grace_balance": float(profile.grace_balance),
-            "approved_grace_limit": grace_eligibility.get("approved_limit", 50.0),
+            "wallet_balance": float(profile.wallet_balance or 0.0),
+            "grace_balance": float(profile.grace_balance or 0.0),
+            "approved_grace_limit": float(grace_eligibility.get("approved_limit", 50.0)),
             "spending_pattern": profile.spending_pattern or "নিত্যপ্রয়োজনীয় খরচ",
-            "has_deficit_alert": trajectory.get("has_deficit_alert", False),
+            "has_deficit_alert": bool(trajectory.get("has_deficit_alert", False)),
             "deficit_date": trajectory.get("deficit_alert", {}).get("deficit_date") if trajectory.get("has_deficit_alert") else None,
-            "reliability_score": float(profile.reliability_score)
+            "reliability_score": float(profile.reliability_score or 0.85)
         }
 
         # 2. Execute AI Provider with latency benchmark
@@ -52,29 +52,35 @@ class VoiceCoachService:
         provider = get_ai_provider()
         response_text, intent = provider.generate_financial_advice(req.query, context)
         latency_ms = round((time.perf_counter() - t_start) * 1000.0, 2)
+        safe_latency = min(float(latency_ms), 99999.99)
 
-        # 3. Persist coaching session in database
+        # 3. Persist coaching session in database (resilient to commit errors)
         session_id = str(secrets.token_hex(16))
         audio_url = f"/api/v1/customer-ai/voice-coach/audio/{session_id}"
 
-        db_session = VoiceCoachSession(
-            id=session_id,
-            customer_id=user.id,
-            query_text=req.query.strip(),
-            response_bangla=response_text,
-            audio_url=audio_url,
-            intent=intent,
-            latency_ms=Decimal(str(latency_ms))
-        )
-        db.add(db_session)
-        db.commit()
+        try:
+            db_session = VoiceCoachSession(
+                id=session_id,
+                customer_id=user.id,
+                query_text=req.query.strip(),
+                response_bangla=response_text,
+                audio_url=audio_url,
+                intent=intent,
+                latency_ms=Decimal(str(round(safe_latency, 2)))
+            )
+            db.add(db_session)
+            db.commit()
+        except Exception as db_err:
+            db.rollback()
+            import logging
+            logging.getLogger("upay_pulse").warning("Voice coach session save notice: %s", db_err)
 
         return VoiceQueryResponse(
             session_id=session_id,
             query_text=req.query.strip(),
             response_bangla=response_text,
             intent=intent,
-            latency_ms=latency_ms,
+            latency_ms=safe_latency,
             audio_url=audio_url,
             context_summary={
                 "wallet_balance": context["wallet_balance"],
