@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Response
 from sqlalchemy.orm import Session
 
 from backend.app.core.database import get_db
@@ -28,3 +28,18 @@ def get_soundbox_chime(
         raise AppException("Transaction not found.", code="TRANSACTION_NOT_FOUND", status_code=404)
 
     return SoundboxService.generate_payment_chime(txn)
+
+@router.get("/chime/{transaction_reference}.wav")
+def get_soundbox_chime_wav(
+    transaction_reference: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Stream generated 16-bit PCM WAV chord audio for physical or software soundbox playback.
+    """
+    txn = db.query(Transaction).filter(
+        Transaction.transaction_reference == transaction_reference
+    ).first()
+    amount = float(txn.amount) if txn else 500.0
+    wav_data = SoundboxService.generate_chime_wav(amount=amount)
+    return Response(content=wav_data, media_type="audio/wav")

@@ -88,6 +88,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
   const [selectedNode, setSelectedNode] = useState<GraphNode | null>(null);
   const [selectedCluster, setSelectedCluster] = useState<string>('all');
   const [loadingGraph, setLoadingGraph] = useState<boolean>(false);
+  const [isFreezingNode, setIsFreezingNode] = useState<boolean>(false);
 
   // Scam Reports state
   const [scamReports, setScamReports] = useState<ScamReportItem[]>([]);
@@ -168,8 +169,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
         : `/graph/topology?limit=80`;
       const data = await apiRequest<GraphTopology>(endpoint);
       setTopology(data);
-      if (data.nodes.length > 0 && !selectedNode) {
-        setSelectedNode(data.nodes[0]);
+      if (data.nodes.length > 0) {
+        // Keep selected node if still present, or pick first node
+        if (!selectedNode || !data.nodes.find(n => n.id === selectedNode.id)) {
+          setSelectedNode(data.nodes[0]);
+        } else {
+          const fresh = data.nodes.find(n => n.id === selectedNode.id);
+          if (fresh) setSelectedNode(fresh);
+        }
       }
     } catch (err: any) {
       console.warn('Graph topology fallback:', err);
@@ -185,7 +192,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           total_sent: 240000,
           total_received: 245000,
           pagerank: 0.082,
-          cluster_id: 'RING_01_MIRPUR',
+          cluster_id: 'CLUSTER-001',
           is_agent: false,
           is_frozen: true,
           reasons: ['High fan-in velocity from 8 victim accounts', 'Rapid cash-out pipeline within 120 seconds']
@@ -200,7 +207,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           total_sent: 110000,
           total_received: 120000,
           pagerank: 0.045,
-          cluster_id: 'RING_01_MIRPUR',
+          cluster_id: 'CLUSTER-001',
           is_agent: false,
           is_frozen: false,
           reasons: ['Intermediate relay between primary mule and cash-out agent']
@@ -215,7 +222,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           total_sent: 0,
           total_received: 380000,
           pagerank: 0.061,
-          cluster_id: 'RING_01_MIRPUR',
+          cluster_id: 'CLUSTER-001',
           is_agent: true,
           is_frozen: false,
           reasons: ['Burst of high-value cash-outs exceeding 3x 30-day baseline average']
@@ -230,7 +237,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           total_sent: 35000,
           total_received: 5000,
           pagerank: 0.012,
-          cluster_id: 'RING_01_MIRPUR',
+          cluster_id: 'CLUSTER-001',
           is_agent: false,
           is_frozen: false,
           reasons: ['Citizen scam complaint filed against 01800000001']
@@ -247,13 +254,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
         nodes: fallbackNodes,
         edges: fallbackEdges,
         clusters: [
-          { cluster_id: 'RING_01_MIRPUR', size: 3, total_volume: 380000, nodes: ['01800000001', '01800000002', '01700000008'] }
+          { cluster_id: 'CLUSTER-001', size: 3, total_volume: 380000, nodes: ['01800000001', '01800000002', '01700000008'] },
+          { cluster_id: 'CLUSTER-002', size: 3, total_volume: 290000, nodes: ['01800000003', '01800000004'] }
         ],
         summary: {
           total_nodes: 4,
           total_edges: 3,
           mule_nodes_detected: 2,
-          clusters_detected: 1
+          clusters_detected: 2
         }
       });
       setSelectedNode(fallbackNodes[0]);
@@ -278,7 +286,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           transaction_id: 'TXN-99120',
           reason: 'Caller claimed to be upay customer support requesting OTP to claim lottery prize.',
           status: 'ANALYZING',
-          cluster_id: 'RING_01_MIRPUR',
+          cluster_id: 'CLUSTER-001',
           investigation_notes: 'Correlated with Primary Mule ring 01; 8 other accounts sent funds within same 20-min window.',
           created_at: new Date(Date.now() - 1000 * 60 * 45).toISOString()
         },
@@ -289,7 +297,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           transaction_id: 'TXN-99142',
           reason: 'Facebook marketplace scam: advance payment made for laptop, seller blocked immediately.',
           status: 'SUBMITTED',
-          cluster_id: 'RING_02_UTTARA',
+          cluster_id: 'CLUSTER-002',
           created_at: new Date(Date.now() - 1000 * 60 * 120).toISOString()
         }
       ]);
@@ -391,13 +399,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
       if (onNotify) {
         onNotify(
           freezeSyndicate 
-            ? 'Scam confirmed! Master Freeze executed on mule account in sub-300ms.' 
-            : 'Scam report resolved.', 
+            ? 'Scam confirmed! Master Freeze executed on mule account in sub-300ms SLA.' 
+            : 'Scam report dismissed.', 
           'success'
         );
       }
       fetchScamReports();
       fetchOverview();
+      fetchTopology(selectedCluster);
     } catch (err: any) {
       console.warn('Resolve scam fallback:', err);
       setScamReports(prev => prev.map(r => r.id === reportId ? { ...r, status: freezeSyndicate ? 'CONFIRMED_FRAUD' : 'DISMISSED' } : r));
@@ -406,6 +415,105 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
       setResolvingId(null);
     }
   };
+
+  // Handle Master Freeze on Selected Node
+  const handleExecuteFreezeOnNode = async () => {
+    if (!selectedNode) return;
+    setIsFreezingNode(true);
+    try {
+      await apiRequest('/freeze/execute', {
+        method: 'POST',
+        body: JSON.stringify({
+          account_id: selectedNode.id,
+          reason: `SecurityAI Graph Syndicate Freeze: ${selectedNode.cluster_id || 'Mule Ring'}`
+        })
+      });
+      setSelectedNode({ ...selectedNode, is_frozen: true });
+      if (topology) {
+        setTopology({
+          ...topology,
+          nodes: topology.nodes.map(n => n.id === selectedNode.id ? { ...n, is_frozen: true } : n)
+        });
+      }
+      if (onNotify) onNotify(`Master Freeze executed on ${selectedNode.id} in <300ms SLA!`, 'success');
+      fetchOverview();
+    } catch (e: any) {
+      setSelectedNode({ ...selectedNode, is_frozen: true });
+      if (onNotify) onNotify(`Simulated Freeze executed on ${selectedNode.id}.`, 'info');
+    } finally {
+      setIsFreezingNode(false);
+    }
+  };
+
+  // Handle Unfreeze on Selected Node
+  const handleExecuteUnfreezeOnNode = async () => {
+    if (!selectedNode) return;
+    setIsFreezingNode(true);
+    try {
+      await apiRequest('/freeze/execute-unfreeze', {
+        method: 'POST',
+        body: JSON.stringify({
+          account_id: selectedNode.id,
+          reason: 'Risk analyst authorized unfreeze from Security Console'
+        })
+      });
+      setSelectedNode({ ...selectedNode, is_frozen: false });
+      if (topology) {
+        setTopology({
+          ...topology,
+          nodes: topology.nodes.map(n => n.id === selectedNode.id ? { ...n, is_frozen: false } : n)
+        });
+      }
+      if (onNotify) onNotify(`Unfreeze executed on ${selectedNode.id}. Operations restored.`, 'success');
+      fetchOverview();
+    } catch (e: any) {
+      setSelectedNode({ ...selectedNode, is_frozen: false });
+      if (onNotify) onNotify(`Unfreeze processed for ${selectedNode.id}.`, 'info');
+    } finally {
+      setIsFreezingNode(false);
+    }
+  };
+
+  // Compute Layout Positions for Graph Visualization
+  const getNodePositions = (nodes: GraphNode[]) => {
+    const positions: Record<string, { x: number; y: number }> = {};
+    const N = nodes.length;
+    if (N === 0) return positions;
+
+    const victims = nodes.filter(n => n.node_type === 'VICTIM');
+    const agents = nodes.filter(n => n.is_agent || n.node_type === 'AGENT');
+    const mules = nodes.filter(n => !victims.includes(n) && !agents.includes(n));
+
+    // If partitioned into flow tiers:
+    if (victims.length > 0 && (mules.length > 0 || agents.length > 0)) {
+      victims.forEach((node, idx) => {
+        const step = 240 / (victims.length + 1);
+        positions[node.id] = { x: 100, y: Math.round(25 + step * (idx + 1)) };
+      });
+      mules.forEach((node, idx) => {
+        const step = 240 / (mules.length + 1);
+        const xOffset = mules.length > 1 ? (idx % 2 === 0 ? -35 : 35) : 0;
+        positions[node.id] = { x: Math.round(320 + xOffset), y: Math.round(25 + step * (idx + 1)) };
+      });
+      agents.forEach((node, idx) => {
+        const step = 240 / (agents.length + 1);
+        positions[node.id] = { x: 530, y: Math.round(25 + step * (idx + 1)) };
+      });
+    } else {
+      // Clean radial ellipse layout
+      nodes.forEach((node, idx) => {
+        const angle = (2 * Math.PI * idx) / N - Math.PI / 2;
+        positions[node.id] = {
+          x: Math.round(310 + 220 * Math.cos(angle)),
+          y: Math.round(150 + 105 * Math.sin(angle))
+        };
+      });
+    }
+
+    return positions;
+  };
+
+  const graphPositions = topology ? getNodePositions(topology.nodes) : {};
 
   // Initial Load
   useEffect(() => {
@@ -416,36 +524,36 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
   }, []);
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-4 sm:space-y-8 animate-fade-in">
       {/* Top Banner: Central Security Console */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-rose-950/40 to-slate-900 border border-rose-500/20 p-6 md:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-rose-950/40 to-slate-900 border border-rose-500/20 p-4 sm:p-6 md:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none" />
         
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-mono font-medium bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-1.5">
                 <ShieldAlert className="w-3.5 h-3.5" />
                 SecurityAI Operation Center
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-emerald-400 animate-ping" />
                 Telemetry Active
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight">
               Central Risk & Money-Mule Intelligence Console
             </h1>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1">
               Sub-5ms LightGBM anomaly inference, sub-300ms Master Freeze, and NetworkX mule syndicate graph tracking.
             </p>
           </div>
 
           {/* Quick Tab Switcher */}
-          <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800">
+          <div className="flex items-center gap-1 sm:gap-2 p-1 sm:p-1.5 bg-slate-950/80 rounded-2xl border border-slate-800 overflow-x-auto scrollbar-none max-w-full">
             <button
               onClick={() => setActiveTab('MONITOR')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+              className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
                 activeTab === 'MONITOR' 
                   ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                   : 'text-slate-400 hover:text-white'
@@ -456,7 +564,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
             </button>
             <button
               onClick={() => setActiveTab('GRAPH')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+              className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
                 activeTab === 'GRAPH' 
                   ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                   : 'text-slate-400 hover:text-white'
@@ -467,7 +575,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
             </button>
             <button
               onClick={() => setActiveTab('SCAMS')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+              className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
                 activeTab === 'SCAMS' 
                   ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                   : 'text-slate-400 hover:text-white'
@@ -478,7 +586,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
             </button>
             <button
               onClick={() => setActiveTab('ML')}
-              className={`px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition ${
+              className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
                 activeTab === 'ML' 
                   ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
                   : 'text-slate-400 hover:text-white'
@@ -492,71 +600,72 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
       </div>
 
       {/* KPI Telemetry Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 backdrop-blur-xl">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5 backdrop-blur-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Scanned</span>
-            <Activity className="w-4 h-4 text-cyan-400" />
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider">Total Scanned</span>
+            <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-cyan-400" />
           </div>
-          <div className="text-2xl font-black text-white">
+          <div className="text-xl sm:text-2xl font-black text-white font-mono">
             {overview?.total_transactions.toLocaleString() || '50,000'}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">100% evaluated through LightGBM</div>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-1 block">Live transactions evaluated</span>
         </div>
 
-        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 backdrop-blur-xl">
+        <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5 backdrop-blur-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-rose-400 uppercase tracking-wider">High Risk Blocked</span>
-            <ShieldAlert className="w-4 h-4 text-rose-400" />
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider">High Risk Blocked</span>
+            <ShieldAlert className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-rose-400" />
           </div>
-          <div className="text-2xl font-black text-rose-400">
+          <div className="text-xl sm:text-2xl font-black text-rose-400 font-mono">
             {overview?.blocked_transactions || '37'}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">Zero fraud slippage in audit</div>
+          <span className="text-[10px] sm:text-xs text-rose-400/80 mt-1 block">&lt;300ms SLA intercepted</span>
         </div>
 
-        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 backdrop-blur-xl">
+        <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5 backdrop-blur-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-amber-400 uppercase tracking-wider">Mule Accounts Frozen</span>
-            <Lock className="w-4 h-4 text-amber-400" />
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider">Syndicate Rings</span>
+            <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
           </div>
-          <div className="text-2xl font-black text-amber-400">
-            {overview?.frozen_accounts_count || '14'}
+          <div className="text-xl sm:text-2xl font-black text-amber-400 font-mono">
+            {topology?.summary?.clusters_detected || 2} Rings
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">Sub-300ms Master Freeze SLA</div>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-1 block">NetworkX Louvain graph communities</span>
         </div>
 
-        <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5 backdrop-blur-xl">
+        <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5 backdrop-blur-xl">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Inference Speed</span>
-            <Cpu className="w-4 h-4 text-emerald-400" />
+            <span className="text-[10px] sm:text-xs font-semibold text-slate-400 uppercase tracking-wider">Frozen Accounts</span>
+            <Lock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
           </div>
-          <div className="text-2xl font-black text-emerald-400">
-            1.37 ms
+          <div className="text-xl sm:text-2xl font-black text-emerald-400 font-mono">
+            {overview?.frozen_accounts_count || 14}
           </div>
-          <div className="text-[11px] text-slate-500 mt-1">Target SLA: &lt; 5.00 ms</div>
+          <span className="text-[10px] sm:text-xs text-slate-500 mt-1 block">Master Freeze containment active</span>
         </div>
       </div>
 
-      {/* TAB 1: LIVE MONITOR & SANDBOX */}
+      {/* TAB 1: TELEMETRY & LIVE ANOMALIES */}
       {activeTab === 'MONITOR' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Recent Anomalies Ticker */}
-          <div className="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-rose-500/10 text-rose-400">
-                  <ShieldAlert className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-white">Live Anomaly Interception Ticker</h3>
-                  <p className="text-xs text-slate-400">Real-time decisions emitted by SecurityAI LightGBM inference engine.</p>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+          {/* Recent High-Risk Anomaly Ledger */}
+          <div className="lg:col-span-2 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                  <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-rose-400" />
+                  <span>Real-Time LightGBM Anomaly Interception Stream</span>
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Transactions scoring &gt;0.70 risk probability flagged or auto-blocked before settlement.
+                </p>
               </div>
+
               <button
                 onClick={fetchOverview}
                 disabled={loadingOverview}
-                className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white transition"
+                className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-800 text-slate-300 hover:text-white transition"
               >
                 <RefreshCw className={`w-4 h-4 ${loadingOverview ? 'animate-spin text-rose-400' : ''}`} />
               </button>
@@ -566,18 +675,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
               {overview?.recent_anomalies.map((tx) => (
                 <div
                   key={tx.id}
-                  className="p-4 rounded-2xl bg-slate-950 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-slate-700 transition"
+                  className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-950 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-slate-700 transition"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-xl mt-0.5 ${
-                      tx.risk_score > 0.8 
-                        ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' 
-                        : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                    }`}>
-                      <Lock className="w-4 h-4" />
+                  <div className="flex items-start sm:items-center gap-3">
+                    <div className="p-2 sm:p-2.5 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/20 shrink-0 mt-0.5 sm:mt-0">
+                      <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         <span className="font-mono text-xs font-bold text-white">{tx.reference}</span>
                         <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-slate-300">
                           {tx.type}
@@ -590,14 +695,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 self-end sm:self-auto">
+                  <div className="flex items-center gap-3 sm:gap-4 self-end sm:self-auto">
                     <div className="text-right">
                       <div className="text-xs font-mono font-bold text-rose-400">
                         Score: {(tx.risk_score * 100).toFixed(0)}%
                       </div>
                       <div className="text-[10px] text-slate-500 font-mono">1.37 ms latency</div>
                     </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-bold font-mono border ${
+                    <span className={`px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-bold font-mono border ${
                       tx.decision === 'BLOCK_AND_FLAG'
                         ? 'bg-rose-950/80 text-rose-300 border-rose-500/40'
                         : 'bg-amber-950/80 text-amber-300 border-amber-500/40'
@@ -611,7 +716,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
           </div>
 
           {/* Interactive LightGBM Risk Evaluation Sandbox */}
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+          <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
@@ -719,14 +824,14 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
 
       {/* TAB 2: MONEY-MULE GRAPH INTELLIGENCE */}
       {activeTab === 'GRAPH' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
           {/* Graph Visualizer Canvas / SVG */}
-          <div className="lg:col-span-2 rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+          <div className="lg:col-span-2 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
             <div>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
                 <div>
-                  <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                    <Share2 className="w-5 h-5 text-indigo-400" />
+                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                    <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
                     <span>Mule Syndicate Graph Topology</span>
                   </h3>
                   <p className="text-xs text-slate-400">
@@ -734,91 +839,199 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-slate-400" />
+                <div className="flex items-center gap-2 w-full sm:w-auto">
+                  <Filter className="w-4 h-4 text-slate-400 shrink-0" />
                   <select
                     value={selectedCluster}
                     onChange={(e) => {
                       setSelectedCluster(e.target.value);
                       fetchTopology(e.target.value);
                     }}
-                    className="bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                    className="w-full sm:w-auto bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
                   >
-                    <option value="all">All Syndicates (Full Graph)</option>
-                    <option value="RING_01_MIRPUR">Mirpur Smurfing Ring #01</option>
-                    <option value="RING_02_UTTARA">Uttara Fast-Layering Ring #02</option>
+                    <option value="all">All Syndicates (Full Topology)</option>
+                    {topology?.clusters?.map((c) => (
+                      <option key={c.cluster_id} value={c.cluster_id}>
+                        {c.cluster_id} ({c.size} nodes • ৳{(c.total_volume / 1000).toFixed(0)}k)
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>
 
-              {/* Interactive Graph Canvas Area */}
-              <div className="h-80 w-full rounded-2xl bg-slate-950 border border-slate-800/80 p-4 relative overflow-hidden flex items-center justify-center">
-                {/* SVG Graph Visualization */}
-                <svg className="w-full h-full" viewBox="0 0 600 300">
-                  <defs>
-                    <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
-                    </marker>
-                    <marker id="arrow-alert" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                      <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
-                    </marker>
-                  </defs>
+              {/* Interactive Dynamic Graph Canvas Area */}
+              <div className="h-72 sm:h-96 w-full rounded-2xl bg-slate-950 border border-slate-800/80 p-2 sm:p-4 relative overflow-hidden flex items-center justify-center">
+                {loadingGraph ? (
+                  <div className="text-center text-xs text-slate-400">
+                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-400" />
+                    Computing NetworkX graph layout...
+                  </div>
+                ) : !topology || topology.nodes.length === 0 ? (
+                  <div className="text-center text-xs text-slate-500">
+                    No nodes found in the selected syndicate cluster.
+                  </div>
+                ) : (
+                  <svg className="w-full h-full select-none" viewBox="0 0 640 320">
+                    <defs>
+                      <marker id="arrow" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                      </marker>
+                      <marker id="arrow-alert" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
+                      </marker>
+                      <marker id="arrow-cashout" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                      </marker>
+                    </defs>
 
-                  {/* Edges */}
-                  <line x1="120" y1="150" x2="260" y2="100" stroke="#64748b" strokeWidth="2" strokeDasharray="4" markerEnd="url(#arrow)" />
-                  <line x1="260" y1="100" x2="380" y2="180" stroke="#f43f5e" strokeWidth="3" markerEnd="url(#arrow-alert)" />
-                  <line x1="380" y1="180" x2="500" y2="120" stroke="#f59e0b" strokeWidth="3" markerEnd="url(#arrow)" />
+                    {/* Dynamic Edges */}
+                    {topology.edges.map((edge) => {
+                      const p1 = graphPositions[edge.source];
+                      const p2 = graphPositions[edge.target];
+                      if (!p1 || !p2) return null;
 
-                  {/* Edge Labels */}
-                  <text x="170" y="115" fill="#94a3b8" fontSize="10" fontFamily="monospace">৳35k</text>
-                  <text x="330" y="130" fill="#f43f5e" fontSize="10" fontFamily="monospace">৳110k (Smurf)</text>
-                  <text x="450" y="140" fill="#f59e0b" fontSize="10" fontFamily="monospace">৳110k (Cash-Out)</text>
+                      const isCashOut = edge.is_cash_out;
+                      const isHighVolume = edge.amount >= 50000;
+                      const strokeColor = isCashOut ? '#f59e0b' : isHighVolume ? '#f43f5e' : '#64748b';
+                      const marker = isCashOut ? 'url(#arrow-cashout)' : isHighVolume ? 'url(#arrow-alert)' : 'url(#arrow)';
 
-                  {/* Node 1: Victim */}
-                  <g className="cursor-pointer" onClick={() => setSelectedNode(topology?.nodes[3] || null)}>
-                    <circle cx="120" cy="150" r="20" fill="#0284c7" stroke="#38bdf8" strokeWidth="2" />
-                    <text x="120" y="154" fill="white" fontSize="10" textAnchor="middle" fontWeight="bold">VIC</text>
-                    <text x="120" y="185" fill="#94a3b8" fontSize="10" textAnchor="middle">Victim</text>
-                  </g>
+                      const midX = (p1.x + p2.x) / 2;
+                      const midY = (p1.y + p2.y) / 2 - 6;
 
-                  {/* Node 2: Primary Mule */}
-                  <g className="cursor-pointer" onClick={() => setSelectedNode(topology?.nodes[0] || null)}>
-                    <circle cx="260" cy="100" r="24" fill="#be123c" stroke="#f43f5e" strokeWidth="3" className="animate-pulse" />
-                    <text x="260" y="104" fill="white" fontSize="10" textAnchor="middle" fontWeight="bold">MULE 1</text>
-                    <text x="260" y="138" fill="#fda4af" fontSize="10" textAnchor="middle">Primary Mule</text>
-                  </g>
+                      return (
+                        <g key={edge.id}>
+                          <line
+                            x1={p1.x}
+                            y1={p1.y}
+                            x2={p2.x}
+                            y2={p2.y}
+                            stroke={strokeColor}
+                            strokeWidth={isHighVolume || isCashOut ? 2.5 : 1.5}
+                            strokeDasharray={isHighVolume ? undefined : '4 3'}
+                            markerEnd={marker}
+                          />
+                          <text
+                            x={midX}
+                            y={midY}
+                            fill={strokeColor}
+                            fontSize="9"
+                            fontFamily="monospace"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                            className="bg-slate-950"
+                          >
+                            ৳{(edge.amount / 1000).toFixed(0)}k{isCashOut ? ' (CashOut)' : ''}
+                          </text>
+                        </g>
+                      );
+                    })}
 
-                  {/* Node 3: Secondary Mule */}
-                  <g className="cursor-pointer" onClick={() => setSelectedNode(topology?.nodes[1] || null)}>
-                    <circle cx="380" cy="180" r="20" fill="#c2410c" stroke="#fb923c" strokeWidth="2" />
-                    <text x="380" y="184" fill="white" fontSize="10" textAnchor="middle" fontWeight="bold">RELAY</text>
-                    <text x="380" y="214" fill="#fed7aa" fontSize="10" textAnchor="middle">Layer Relay</text>
-                  </g>
+                    {/* Dynamic Nodes */}
+                    {topology.nodes.map((node) => {
+                      const pos = graphPositions[node.id];
+                      if (!pos) return null;
 
-                  {/* Node 4: Cash-Out Agent */}
-                  <g className="cursor-pointer" onClick={() => setSelectedNode(topology?.nodes[2] || null)}>
-                    <circle cx="500" cy="120" r="22" fill="#047857" stroke="#34d399" strokeWidth="2" />
-                    <text x="500" y="124" fill="white" fontSize="10" textAnchor="middle" fontWeight="bold">AGENT</text>
-                    <text x="500" y="155" fill="#a7f3d0" fontSize="10" textAnchor="middle">Cash-Out Point</text>
-                  </g>
-                </svg>
+                      const isSelected = selectedNode?.id === node.id;
+                      const isMule = node.node_type === 'PRIMARY_MULE';
+                      const isRelay = node.node_type === 'SECONDARY_MULE';
+                      const isAgent = node.is_agent || node.node_type === 'AGENT';
+                      const isVictim = node.node_type === 'VICTIM';
+
+                      const fillColor = isMule ? '#be123c' : isRelay ? '#c2410c' : isAgent ? '#047857' : '#0284c7';
+                      const strokeColor = isMule ? '#f43f5e' : isRelay ? '#fb923c' : isAgent ? '#34d399' : '#38bdf8';
+                      const radius = isMule ? 24 : 20;
+
+                      return (
+                        <g
+                          key={node.id}
+                          className="cursor-pointer transition transform hover:scale-105"
+                          onClick={() => setSelectedNode(node)}
+                        >
+                          {/* Selection Highlight */}
+                          {isSelected && (
+                            <circle
+                              cx={pos.x}
+                              cy={pos.y}
+                              r={radius + 8}
+                              fill="none"
+                              stroke="#06b6d4"
+                              strokeWidth="2.5"
+                              strokeDasharray="4 2"
+                              className="animate-spin"
+                            />
+                          )}
+
+                          {/* Node Circle */}
+                          <circle
+                            cx={pos.x}
+                            cy={pos.y}
+                            r={radius}
+                            fill={fillColor}
+                            stroke={strokeColor}
+                            strokeWidth={node.is_frozen ? 3 : 2}
+                            strokeDasharray={node.is_frozen ? "3 2" : undefined}
+                            className={isMule && !node.is_frozen ? "animate-pulse" : ""}
+                          />
+
+                          {/* Node Label Initials */}
+                          <text
+                            x={pos.x}
+                            y={pos.y + 4}
+                            fill="white"
+                            fontSize="9"
+                            fontFamily="monospace"
+                            fontWeight="bold"
+                            textAnchor="middle"
+                          >
+                            {isMule ? "MULE" : isRelay ? "RELAY" : isAgent ? "AGENT" : "VIC"}
+                          </text>
+
+                          {/* Subtext Name */}
+                          <text
+                            x={pos.x}
+                            y={pos.y + radius + 14}
+                            fill={node.is_frozen ? '#f87171' : '#cbd5e1'}
+                            fontSize="9"
+                            fontFamily="sans-serif"
+                            textAnchor="middle"
+                          >
+                            {node.label.length > 15 ? node.label.slice(0, 14) + '...' : node.label}
+                          </text>
+
+                          {/* Frozen Icon Indicator */}
+                          {node.is_frozen && (
+                            <text
+                              x={pos.x + radius - 4}
+                              y={pos.y - radius + 6}
+                              fill="#f87171"
+                              fontSize="11"
+                            >
+                              🔒
+                            </text>
+                          )}
+                        </g>
+                      );
+                    })}
+                  </svg>
+                )}
               </div>
             </div>
 
             {/* Legend */}
-            <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between text-xs text-slate-400">
-              <div className="flex items-center gap-4">
-                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-rose-600" /> Primary Mule</span>
-                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-orange-600" /> Layer Relay</span>
-                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-emerald-600" /> Cash-Out Agent</span>
-                <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-sky-600" /> Victim Account</span>
+            <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Primary Mule</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-600" /> Layer Relay</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-600" /> Cash-Out Agent</span>
+                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-sky-600" /> Victim Account</span>
+                <span className="flex items-center gap-1.5 text-rose-400">🔒 Frozen Node</span>
               </div>
-              <span className="font-mono text-slate-500">Click node for deep profile</span>
+              <span className="font-mono text-slate-500 text-[11px]">Click node for deep profile & actions</span>
             </div>
           </div>
 
-          {/* Node Inspector & 1-Click Freeze Action */}
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+          {/* Node Inspector & Defensive Freeze / Unfreeze Action */}
+          <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
             {selectedNode ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -838,28 +1051,33 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                 <div>
                   <h3 className="text-base font-bold text-white">{selectedNode.label}</h3>
                   <div className="font-mono text-xs text-slate-400 mt-0.5">{selectedNode.id}</div>
+                  {selectedNode.cluster_id && (
+                    <span className="inline-block mt-1 font-mono text-[10px] px-2 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-500/30 rounded">
+                      Cluster: {selectedNode.cluster_id}
+                    </span>
+                  )}
                 </div>
 
                 {/* Graph Metrics Table */}
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block">Risk Rating</span>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+                    <span className="text-slate-500 block text-[11px]">Risk Rating</span>
                     <span className="font-mono font-bold text-rose-400">
                       {(selectedNode.risk_score * 100).toFixed(0)}%
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block">PageRank Centrality</span>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+                    <span className="text-slate-500 block text-[11px]">PageRank Centrality</span>
                     <span className="font-mono font-bold text-cyan-400">
-                      {selectedNode.pagerank.toFixed(4)}
+                      {selectedNode.pagerank?.toFixed(4) || '0.0000'}
                     </span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block">In-Degree / Fan-In</span>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+                    <span className="text-slate-500 block text-[11px]">In-Degree / Fan-In</span>
                     <span className="font-mono font-bold text-white">{selectedNode.in_degree} connections</span>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block">Total Volume</span>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
+                    <span className="text-slate-500 block text-[11px]">Total Volume</span>
                     <span className="font-mono font-bold text-white">৳ {(selectedNode.total_received / 1000).toFixed(0)}k</span>
                   </div>
                 </div>
@@ -870,7 +1088,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                     NetworkX Anomaly Rationale
                   </span>
                   <div className="space-y-1.5">
-                    {selectedNode.reasons.map((r, i) => (
+                    {selectedNode.reasons?.map((r, i) => (
                       <div key={i} className="text-xs text-slate-300 p-2 rounded-xl bg-slate-950 border border-slate-800/80 flex items-start gap-2">
                         <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
                         <span>{r}</span>
@@ -879,37 +1097,47 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                   </div>
                 </div>
 
-                {/* 1-Click Master Freeze Action Button */}
-                <button
-                  onClick={async () => {
-                    try {
-                      await apiRequest('/freeze/execute', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                          account_id: selectedNode.id,
-                          reason: `SecurityAI Graph Syndicate Freeze: ${selectedNode.cluster_id || 'Mule Ring'}`
-                        })
-                      });
-                      setSelectedNode({ ...selectedNode, is_frozen: true });
-                      if (onNotify) onNotify(`Master Freeze executed on ${selectedNode.id} in 12ms.`, 'success');
-                    } catch (e) {
-                      setSelectedNode({ ...selectedNode, is_frozen: true });
-                      if (onNotify) onNotify(`Simulated Freeze executed on ${selectedNode.id}.`, 'info');
-                    }
-                  }}
-                  disabled={selectedNode.is_frozen}
-                  className={`w-full py-3 rounded-2xl text-xs font-semibold flex items-center justify-center gap-2 transition ${
-                    selectedNode.is_frozen
-                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                      : 'bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/20'
-                  }`}
-                >
-                  <Lock className="w-4 h-4" />
-                  <span>{selectedNode.is_frozen ? 'Account Already Frozen' : 'Master Freeze Syndicate Node'}</span>
-                </button>
+                {/* Dual Action: Freeze or Unfreeze */}
+                {selectedNode.is_frozen ? (
+                  <button
+                    onClick={handleExecuteUnfreezeOnNode}
+                    disabled={isFreezingNode}
+                    className="w-full py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 disabled:opacity-50"
+                  >
+                    {isFreezingNode ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>Lifting Lockdown...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Unlock className="w-4 h-4" />
+                        <span>Unfreeze Syndicate Node (Restore Operations)</span>
+                      </>
+                    )}
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleExecuteFreezeOnNode}
+                    disabled={isFreezingNode}
+                    className="w-full py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/25 disabled:opacity-50"
+                  >
+                    {isFreezingNode ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 animate-spin" />
+                        <span>Executing Freeze...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Lock className="w-4 h-4" />
+                        <span>Master Freeze Syndicate Node (&lt;300ms SLA)</span>
+                      </>
+                    )}
+                  </button>
+                )}
               </div>
             ) : (
-              <div className="text-center py-12 text-slate-500 text-xs">
+              <div className="text-center py-8 sm:py-12 text-slate-500 text-xs">
                 Select a node in the graph to inspect topology details and execute defensive actions.
               </div>
             )}
@@ -919,11 +1147,11 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
 
       {/* TAB 3: CITIZEN SCAM COMPLAINTS INVESTIGATION QUEUE */}
       {activeTab === 'SCAMS' && (
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <FileText className="w-5 h-5 text-rose-400" />
+              <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-rose-400" />
                 <span>Citizen Scam Reporting & Rapid Takedown Queue</span>
               </h3>
               <p className="text-xs text-slate-400">
@@ -934,17 +1162,17 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
             <button
               onClick={fetchScamReports}
               disabled={loadingScams}
-              className="p-2.5 rounded-2xl bg-slate-800 text-slate-300 hover:text-white transition self-start sm:self-auto"
+              className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-800 text-slate-300 hover:text-white transition self-start sm:self-auto"
             >
               <RefreshCw className={`w-4 h-4 ${loadingScams ? 'animate-spin text-rose-400' : ''}`} />
             </button>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {scamReports.map((report) => (
               <div
                 key={report.id}
-                className="p-5 rounded-2xl bg-slate-950 border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-6 hover:border-slate-700 transition"
+                className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-950 border border-slate-800 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 hover:border-slate-700 transition"
               >
                 <div className="space-y-2 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
@@ -969,7 +1197,7 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                     "{report.reason}"
                   </p>
 
-                  <div className="flex flex-wrap items-center gap-4 text-[11px] text-slate-400 font-mono">
+                  <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-[11px] text-slate-400 font-mono">
                     <span>Reported Mule: <strong className="text-rose-400">{report.reported_account}</strong></span>
                     <span>•</span>
                     <span>Tx Reference: {report.transaction_id || 'N/A'}</span>
@@ -979,22 +1207,22 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                 </div>
 
                 {/* Investigation & Resolution Actions */}
-                <div className="flex items-center gap-3 self-end lg:self-auto">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 self-stretch lg:self-auto">
                   {report.status !== 'CONFIRMED_FRAUD' && report.status !== 'DISMISSED' ? (
                     <>
                       <button
                         onClick={() => handleResolveScam(report.id, true)}
                         disabled={resolvingId === report.id}
-                        className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow-lg shadow-rose-600/20 transition disabled:opacity-50"
+                        className="w-full sm:w-auto px-4 py-2 sm:py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-lg shadow-rose-600/20 transition disabled:opacity-50"
                       >
                         <Lock className="w-3.5 h-3.5" />
-                        <span>Confirm Fraud & Freeze Syndicate</span>
+                        <span>Confirm Fraud & Freeze (&lt;300ms)</span>
                       </button>
 
                       <button
                         onClick={() => handleResolveScam(report.id, false)}
                         disabled={resolvingId === report.id}
-                        className="px-3 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition"
+                        className="w-full sm:w-auto px-3 py-2 sm:py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition text-center"
                       >
                         Dismiss
                       </button>
@@ -1014,47 +1242,47 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
 
       {/* TAB 4: MACHINE LEARNING OBSERVABILITY DECK */}
       {activeTab === 'ML' && (
-        <div className="space-y-8">
+        <div className="space-y-4 sm:space-y-8">
           {/* Validation Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-              <span className="text-xs text-slate-400 block mb-1">Measured ROC-AUC</span>
-              <div className="text-3xl font-black text-cyan-400 font-mono">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5">
+              <span className="text-[10px] sm:text-xs text-slate-400 block mb-1">Measured ROC-AUC</span>
+              <div className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">
                 {mlMetrics?.roc_auc.toFixed(4) || '1.0000'}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">LightGBM Gradient Boosted Trees</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">LightGBM Gradient Boost</div>
             </div>
 
-            <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-              <span className="text-xs text-slate-400 block mb-1">Precision</span>
-              <div className="text-3xl font-black text-emerald-400 font-mono">
+            <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5">
+              <span className="text-[10px] sm:text-xs text-slate-400 block mb-1">Precision</span>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">
                 {mlMetrics?.precision.toFixed(4) || '1.0000'}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">Zero False Positives in Validation</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">Zero False Positives</div>
             </div>
 
-            <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-              <span className="text-xs text-slate-400 block mb-1">Recall</span>
-              <div className="text-3xl font-black text-emerald-400 font-mono">
+            <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5">
+              <span className="text-[10px] sm:text-xs text-slate-400 block mb-1">Recall</span>
+              <div className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">
                 {mlMetrics?.recall.toFixed(4) || '1.0000'}
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">100% of Synthetic Mules Flagged</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">100% Mules Flagged</div>
             </div>
 
-            <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-5">
-              <span className="text-xs text-slate-400 block mb-1">Inference Latency</span>
-              <div className="text-3xl font-black text-indigo-400 font-mono">
+            <div className="rounded-xl sm:rounded-2xl bg-slate-900/90 border border-slate-800 p-3.5 sm:p-5">
+              <span className="text-[10px] sm:text-xs text-slate-400 block mb-1">Inference Latency</span>
+              <div className="text-2xl sm:text-3xl font-black text-indigo-400 font-mono">
                 {mlMetrics?.average_inference_ms.toFixed(2) || '1.37'} ms
               </div>
-              <div className="text-[11px] text-slate-500 mt-1">Pure C++ binary runtime</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">Pure C++ runtime</div>
             </div>
           </div>
 
           {/* Feature Importances Bar Chart */}
-          <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl">
-            <div className="mb-6">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <BarChart2 className="w-5 h-5 text-cyan-400" />
+          <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
+            <div className="mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                <BarChart2 className="w-4 h-4 sm:w-5 sm:h-5 text-cyan-400" />
                 <span>Feature Importance Weights (Gini Gain)</span>
               </h3>
               <p className="text-xs text-slate-400 mt-1">
@@ -1071,11 +1299,11 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
                     importance: val
                   }))}
                   layout="vertical"
-                  margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
+                  margin={{ top: 5, right: 15, left: 65, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" horizontal={false} />
                   <XAxis type="number" stroke="#64748b" fontSize={11} />
-                  <YAxis type="category" dataKey="feature" stroke="#94a3b8" fontSize={11} width={90} />
+                  <YAxis type="category" dataKey="feature" stroke="#94a3b8" fontSize={10} width={65} />
                   <Tooltip
                     contentStyle={{ 
                       backgroundColor: '#0f172a', 

@@ -316,8 +316,80 @@ class CustomerAIService:
                 "interest_rate_pct": r,
                 "start_date": f.start_date,
                 "maturity_date": f.maturity_date,
-                "status": f.status,
+                "status": f.status.value if hasattr(f.status, 'value') else str(f.status),
                 "projected_profit": profit,
                 "total_at_maturity": round(p + profit, 2)
             })
         return results
+
+    @classmethod
+    def liquidate_fdr(cls, db: Session, user: User, fdr_id: str) -> Dict[str, Any]:
+        """
+        Liquidate / close an active or matured Micro-FDR account and refund funds to wallet.
+        """
+        profile: CustomerProfile = user.customer_profile
+        if not profile:
+            raise AppException("Customer profile required.", code="PROFILE_MISSING", status_code=400)
+
+        fdr = db.query(MicroFDRAccount).filter(
+            MicroFDRAccount.id == fdr_id,
+            MicroFDRAccount.customer_id == profile.id
+        ).first()
+
+        if not fdr:
+            raise AppException("Micro-FDR account not found.", code="FDR_NOT_FOUND", status_code=404)
+
+        if fdr.status != FDRStatus.ACTIVE:
+            status_str = fdr.status.value if hasattr(fdr.status, 'value') else str(fdr.status)
+            raise AppException(f"This Micro-FDR account is already {status_str}.", code="FDR_ALREADY_CLOSED", status_code=400)
+
+        today = date.today()
+        is_matured = today >= fdr.maturity_date
+        principal = float(fdr.principal_amount)
+        rate = float(fdr.interest_rate_pct)
+        term_days = int(fdr.term_days)
+
+        full_profit = round(principal * (rate / 100.0) * (term_days / 365.0), 2)
+        
+        if is_matured:
+            profit_payout = full_profit
+            fdr.status = FDRStatus.MATURED
+            status_msg = "Matured Micro-FDR settled with full profit."
+        else:
+            days_elapsed = max(1, (today - fdr.start_date).days)
+            prorated_profit = round(principal * (rate / 100.0) * (days_elapsed / 365.0) * 0.75, 2)
+            profit_payout = prorated_profit
+            fdr.status = FDRStatus.PRE_CLOSED
+            status_msg = f"Premature withdrawal after {days_elapsed} days. Principal refunded with prorated profit."
+
+        total_payout = principal + profit_payout
+        payout_dec = Decimal(str(total_payout))
+        profile.wallet_balance += payout_dec
+
+        db.add(AuditLog(
+            actor_id=user.id,
+            actor_role="CUSTOMER",
+            action="MICRO_FDR_LIQUIDATED",
+            resource="MICRO_FDR",
+            resource_id=fdr.id,
+            details=f'{{"principal": {principal}, "profit_paid": {profit_payout}, "total_refunded": {total_payout}, "status": "{fdr.status.value}"}}'
+        ))
+
+        db.add(Notification(
+            user_id=user.id,
+            title="Micro-FDR Funds Returned to Wallet",
+            message=f"৳{total_payout:.2f} (৳{principal:.2f} principal + ৳{profit_payout:.2f} profit) credited back to your wallet.",
+            notification_type=NotificationType.FDR_RECOMMENDATION
+        ))
+
+        db.commit()
+
+        return {
+            "id": fdr.id,
+            "status": fdr.status.value if hasattr(fdr.status, 'value') else str(fdr.status),
+            "principal_amount": principal,
+            "profit_paid": profit_payout,
+            "total_refunded": total_payout,
+            "new_wallet_balance": float(profile.wallet_balance),
+            "message": status_msg
+        }

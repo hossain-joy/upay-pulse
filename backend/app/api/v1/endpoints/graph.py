@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from backend.app.core.database import get_db
-from backend.app.api.deps import require_admin
+from backend.app.api.deps import require_risk_analyst
 from backend.app.models.user import User
 from backend.app.schemas.graph import GraphTopologyResponse, MuleClusterSchema
 from backend.app.services.graph_intelligence_service import GraphIntelligenceService
@@ -16,7 +16,7 @@ def get_graph_topology(
     min_amount: float = Query(0.0, ge=0.0),
     limit: int = Query(1000, ge=10, le=10000),
     db: Session = Depends(get_db),
-    current_admin: User = Depends(require_admin)
+    current_admin: User = Depends(require_risk_analyst)
 ):
     """
     Retrieve full or cluster-filtered transaction graph topology for Risk Console visualizer.
@@ -33,7 +33,7 @@ def get_ego_graph(
     account_identifier: str,
     radius: int = Query(2, ge=1, le=3),
     db: Session = Depends(get_db),
-    current_admin: User = Depends(require_admin)
+    current_admin: User = Depends(require_risk_analyst)
 ):
     """
     Extract 1-hop or 2-hop local ego network around a specific suspect or victim account.
@@ -47,7 +47,7 @@ def get_ego_graph(
 @router.get("/mule-rings", response_model=List[MuleClusterSchema])
 def get_mule_rings(
     db: Session = Depends(get_db),
-    current_admin: User = Depends(require_admin)
+    current_admin: User = Depends(require_risk_analyst)
 ):
     """
     List all detected money-mule syndicate clusters and their membership.
@@ -57,7 +57,7 @@ def get_mule_rings(
 @router.post("/sync")
 def sync_graph_tables(
     db: Session = Depends(get_db),
-    current_admin: User = Depends(require_admin)
+    current_admin: User = Depends(require_risk_analyst)
 ):
     """
     Trigger batch graph analysis and persist mule nodes and edges into DB tables.

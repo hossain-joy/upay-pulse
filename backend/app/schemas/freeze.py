@@ -19,3 +19,11 @@ class MasterFreezeResponse(BaseModel):
 class UnfreezeRequest(BaseModel):
     verification_code: str = Field(..., description="SMS OTP or Administrator verification code")
     admin_notes: Optional[str] = None
+
+class FreezeExecuteRequest(BaseModel):
+    account_id: str = Field(..., description="Target phone number, account number, or user ID to freeze")
+    reason: Optional[str] = Field("SecurityAI Master Freeze action", max_length=255)
+
+class AdminUnfreezeRequest(BaseModel):
+    account_id: str = Field(..., description="Target phone number, account number, or user ID to unfreeze")
+    reason: Optional[str] = Field("Admin cleared account", max_length=255)

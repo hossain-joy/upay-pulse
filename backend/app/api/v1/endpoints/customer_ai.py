@@ -86,6 +86,17 @@ def list_micro_fdr_accounts(
     """
     return CustomerAIService.list_fdrs(db=db, user=current_user)
 
+@router.post("/fdr/{fdr_id}/liquidate")
+def liquidate_micro_fdr(
+    fdr_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_customer)
+):
+    """
+    Liquidate an active or matured Micro-FDR account and refund principal + earned profit to wallet.
+    """
+    return CustomerAIService.liquidate_fdr(db=db, user=current_user, fdr_id=fdr_id)
+
 @router.post("/voice-coach/chat", response_model=VoiceQueryResponse)
 def voice_coach_chat(
     req: VoiceQueryRequest,
@@ -106,4 +117,17 @@ def voice_coach_history(
     Retrieve past voice coach consultation history.
     """
     return VoiceCoachService.get_history(db=db, user=current_user)
+
+@router.get("/voice-coach/audio/{session_id}")
+def get_voice_coach_audio(
+    session_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Serve synthesized PCM WAV audio chime for voice coach interaction.
+    """
+    from fastapi import Response
+    from backend.app.services.soundbox_service import SoundboxService
+    wav_bytes = SoundboxService.generate_chime_wav(amount=100.0)
+    return Response(content=wav_bytes, media_type="audio/wav")
 

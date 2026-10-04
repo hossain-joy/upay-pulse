@@ -4,6 +4,10 @@ Generates auditory payment confirmation chimes and Bengali voice notification me
 for MFS merchant & agent terminals upon successful cash-in / merchant payment.
 """
 
+import io
+import wave
+import struct
+import math
 from typing import Dict, Any, Optional
 from backend.app.core.exceptions import AppException
 from backend.app.models.transaction import Transaction, TransactionStatus
@@ -44,3 +48,31 @@ class SoundboxService:
             "audio_url": f"/api/v1/soundbox/chime/{ref}.wav",
             "soundbox_status": "BROADCAST_READY"
         }
+
+    @classmethod
+    def generate_chime_wav(cls, amount: float = 500.0) -> bytes:
+        """Synthesize pure C5-E5-G5 acoustic triad chime as a 16-bit PCM WAV file."""
+        sample_rate = 22050
+        duration = 1.2
+        total_samples = int(sample_rate * duration)
+        freqs = [523.25, 659.25, 783.99]
+        buffer = io.BytesIO()
+        with wave.open(buffer, 'wb') as wav:
+            wav.setnchannels(1)
+            wav.setsampwidth(2)
+            wav.setframerate(sample_rate)
+            frames = bytearray()
+            for i in range(total_samples):
+                t = float(i) / sample_rate
+                sample_val = 0.0
+                for idx, freq in enumerate(freqs):
+                    delay = idx * 0.08
+                    if t >= delay:
+                        sub_t = t - delay
+                        sub_env = math.exp(-3.5 * sub_t)
+                        sample_val += math.sin(2.0 * math.pi * freq * sub_t) * sub_env
+                sample_val = (sample_val / len(freqs)) * 32767.0 * 0.7
+                sample_int = int(max(-32767, min(32767, sample_val)))
+                frames.extend(struct.pack('<h', sample_int))
+            wav.writeframes(frames)
+        return buffer.getvalue()

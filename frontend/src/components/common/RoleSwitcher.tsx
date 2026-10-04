@@ -37,16 +37,16 @@ const roles: { id: UserRole; label: string; sub: string; icon: React.ReactNode; 
 
 export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ currentRole, onRoleChange }) => {
   return (
-    <nav className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-900/80 border border-slate-700/60 backdrop-blur-md shadow-xl">
+    <nav className="flex items-center gap-1 sm:gap-1.5 p-1 rounded-2xl bg-slate-900/90 border border-slate-700/60 backdrop-blur-md shadow-xl max-w-full overflow-x-auto scrollbar-none">
       {roles.map((r) => {
         const isActive = currentRole === r.id;
         return (
           <button
             key={r.id}
             onClick={() => onRoleChange(r.id)}
-            className={`relative flex items-center gap-2.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all duration-300 ${
+            className={`relative flex items-center gap-1.5 sm:gap-2.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs font-semibold transition-all duration-300 shrink-0 ${
               isActive
-                ? `bg-gradient-to-r ${r.accent} text-white shadow-lg ${r.glow} scale-[1.03]`
+                ? `bg-gradient-to-r ${r.accent} text-white shadow-lg ${r.glow} scale-[1.02] sm:scale-[1.03]`
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/70'
             }`}
           >
@@ -54,13 +54,13 @@ export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ currentRole, onRoleC
               {r.icon}
             </span>
             <span className="flex flex-col items-start leading-none gap-0.5">
-              <span className="font-bold tracking-wide">{r.label}</span>
-              <span className={`text-[10px] font-normal transition-opacity ${isActive ? 'opacity-80' : 'opacity-0 group-hover:opacity-60'}`}>
+              <span className="font-bold tracking-wide text-[11px] sm:text-xs">{r.label}</span>
+              <span className={`hidden md:inline text-[10px] font-normal transition-opacity ${isActive ? 'opacity-80' : 'opacity-0 group-hover:opacity-60'}`}>
                 {r.sub}
               </span>
             </span>
             {isActive && (
-              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full bg-white/60" />
+              <span className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-4 sm:w-6 h-0.5 rounded-full bg-white/60" />
             )}
           </button>
         );

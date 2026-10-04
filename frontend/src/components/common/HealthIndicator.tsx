@@ -47,14 +47,14 @@ export const HealthIndicator: React.FC = () => {
   const isHealthy = health?.status === 'ready';
 
   return (
-    <div className="flex items-center gap-3">
-      <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border ${
+    <div className="flex items-center gap-2 sm:gap-3">
+      <div className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium border ${
         isHealthy 
           ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-300' 
           : 'bg-amber-950/60 border-amber-500/40 text-amber-300'
       }`}>
-        <span className={`w-2 h-2 rounded-full ${isHealthy ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
-        <span>Backend {isHealthy ? 'Live' : 'Standby'}</span>
+        <span className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${isHealthy ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+        <span>{isHealthy ? 'Live' : 'Standby'}</span>
       </div>
 
       <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400 border border-slate-800 rounded-lg px-2.5 py-1 bg-slate-900/60">

@@ -11,6 +11,7 @@ import {
   ShieldAlert, 
   CheckCircle2, 
   ArrowRightLeft, 
+  ArrowDownLeft,
   Calendar, 
   Sparkles, 
   Radio, 
@@ -18,7 +19,9 @@ import {
   QrCode, 
   Zap,
   Info,
-  Play
+  Play,
+  Send,
+  UserCheck
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -39,12 +42,21 @@ interface AgentTerminalProps {
 }
 
 export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
-  // State
+  // Forecast State
   const [forecast, setForecast] = useState<AgentLiquidityForecast | null>(null);
   const [loadingForecast, setLoadingForecast] = useState<boolean>(true);
+
+  // Rebalance State
   const [rebalanceAction, setRebalanceAction] = useState<'FLOAT_TO_CASH' | 'CASH_TO_FLOAT'>('FLOAT_TO_CASH');
   const [rebalanceAmount, setRebalanceAmount] = useState<number>(10000);
   const [isRebalancing, setIsRebalancing] = useState<boolean>(false);
+
+  // Cash-In Terminal State
+  const [cashInPhone, setCashInPhone] = useState<string>('+8801700000001');
+  const [cashInAmount, setCashInAmount] = useState<number>(500);
+  const [isProcessingCashIn, setIsProcessingCashIn] = useState<boolean>(false);
+  const [cashInResult, setCashInResult] = useState<any | null>(null);
+  const [cashInError, setCashInError] = useState<string | null>(null);
 
   // Soundbox State
   const [isPlayingChime, setIsPlayingChime] = useState<boolean>(false);
@@ -69,7 +81,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
       setForecast(data);
     } catch (err: any) {
       console.warn('Failed to load agent forecast, using simulated fallback:', err);
-      // Fallback fallback data for standalone resilience
+      // Fallback data for standalone resilience
       setForecast({
         agent_code: 'AGT-8821-SVR',
         store_name: 'Bismillah Telecom & MFS Point',
@@ -171,6 +183,44 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
     }
   };
 
+  // Agent Cash-In Handler
+  const handleCashIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cashInAmount || cashInAmount <= 0) return;
+    setIsProcessingCashIn(true);
+    setCashInResult(null);
+    setCashInError(null);
+
+    try {
+      const res = await apiRequest('/transactions/cash-in', {
+        method: 'POST',
+        body: JSON.stringify({
+          customer_phone: cashInPhone.trim(),
+          amount: cashInAmount,
+          idempotency_key: `CASHIN-${Date.now()}`
+        })
+      });
+
+      setCashInResult(res);
+      setLastChimeAmount(cashInAmount);
+
+      // Play Soundbox Chime + Bengali Audio Confirmation
+      playSoundboxChime(cashInAmount);
+
+      if (onNotify) {
+        onNotify(`৳${cashInAmount.toLocaleString()} Cash-In deposited to ${cashInPhone}!`, 'success');
+      }
+
+      fetchForecast();
+    } catch (err: any) {
+      console.warn('Cash-In API call error:', err);
+      setCashInError(err.message || 'Cash-In deposit failed.');
+      if (onNotify) onNotify(err.message || 'Cash-In failed', 'error');
+    } finally {
+      setIsProcessingCashIn(false);
+    }
+  };
+
   // Rebalance Handler
   const handleRebalance = async () => {
     if (!rebalanceAmount || rebalanceAmount <= 0) return;
@@ -259,29 +309,29 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
   const cashPct = 100 - floatPct;
 
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-4 sm:space-y-8 animate-fade-in">
       {/* Top Banner: Store Identification & Factory Zone Badge */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/20 p-6 md:p-8 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/20 p-4 sm:p-6 md:p-8 shadow-2xl">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
         
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6 relative z-10">
           <div>
-            <div className="flex items-center gap-3 mb-2">
-              <span className="px-3 py-1 rounded-full text-xs font-mono font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+              <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-mono font-medium bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5">
                 <Building2 className="w-3.5 h-3.5" />
                 {forecast?.agent_code || 'AGT-8821-SVR'}
               </span>
               {forecast?.is_factory_zone && (
-                <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 animate-pulse">
+                <span className="px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full text-[11px] sm:text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1.5 animate-pulse">
                   <AlertTriangle className="w-3.5 h-3.5" />
                   RMG Garment Export Zone
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight">
               {forecast?.store_name || 'Bismillah Telecom & MFS Center'}
             </h1>
-            <p className="text-sm text-slate-400 mt-1 flex items-center gap-2">
+            <p className="text-xs sm:text-sm text-slate-400 mt-1 flex flex-wrap items-center gap-1.5 sm:gap-2">
               <span>{forecast?.location_cluster || 'Savar RMG Export Industrial Zone, Dhaka'}</span>
               <span>•</span>
               <span className="text-emerald-400 font-medium">Terminal Online (POS #01)</span>
@@ -289,11 +339,11 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
           </div>
 
           {/* Quick Actions */}
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
             <button
               onClick={() => playSoundboxChime(lastChimeAmount)}
               disabled={isPlayingChime}
-              className={`px-4 py-2.5 rounded-2xl font-semibold text-xs flex items-center gap-2 transition shadow-lg ${
+              className={`px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl font-semibold text-xs flex items-center gap-2 transition shadow-lg ${
                 isPlayingChime 
                   ? 'bg-indigo-900/60 text-indigo-300 border border-indigo-500/30' 
                   : 'bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-indigo-500/20'
@@ -306,7 +356,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
             <button
               onClick={fetchForecast}
               disabled={loadingForecast}
-              className="p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700 transition"
+              className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-slate-800/80 hover:bg-slate-700/80 text-slate-300 hover:text-white border border-slate-700 transition"
               title="Refresh Forecast & Balances"
             >
               <RefreshCw className={`w-4 h-4 ${loadingForecast ? 'animate-spin text-cyan-400' : ''}`} />
@@ -316,10 +366,10 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
       </div>
 
       {/* Grid: Liquidity Balance Gauges & Stockout Risk Card */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
         
         {/* Physical Cash Drawer Card */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 backdrop-blur-xl relative overflow-hidden group hover:border-emerald-500/40 transition">
+        <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 backdrop-blur-xl relative overflow-hidden group hover:border-emerald-500/40 transition">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
               <div className="p-2.5 rounded-2xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -352,11 +402,11 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
         </div>
 
         {/* Digital Float MFS Balance Card */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 backdrop-blur-xl relative overflow-hidden group hover:border-cyan-500/40 transition">
+        <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 backdrop-blur-xl relative overflow-hidden group hover:border-cyan-500/40 transition">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className="p-2.5 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                <Coins className="w-5 h-5" />
+              <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                <Coins className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Digital Float</span>
@@ -368,7 +418,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
             </span>
           </div>
 
-          <div className="text-3xl font-black text-white tracking-tight mb-2">
+          <div className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
             ৳ {forecast?.current_float_balance?.toLocaleString() || '62,000'}
           </div>
 
@@ -385,7 +435,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
         </div>
 
         {/* Stockout Risk Indicator Card */}
-        <div className={`rounded-3xl p-6 backdrop-blur-xl border relative overflow-hidden transition ${
+        <div className={`rounded-2xl sm:rounded-3xl p-4 sm:p-6 backdrop-blur-xl border relative overflow-hidden transition ${
           forecast?.stockout_risk === 'CRITICAL'
             ? 'bg-rose-950/20 border-rose-500/40'
             : forecast?.stockout_risk === 'WARNING'
@@ -394,12 +444,12 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
         }`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className={`p-2.5 rounded-2xl border ${
+              <div className={`p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border ${
                 forecast?.stockout_risk === 'CRITICAL' 
                   ? 'bg-rose-500/10 text-rose-400 border-rose-500/30' 
                   : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/30'
               }`}>
-                <AlertTriangle className="w-5 h-5" />
+                <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
               </div>
               <div>
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">AgentAI Radar</span>
@@ -415,7 +465,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
             </span>
           </div>
 
-          <div className="text-3xl font-black text-white tracking-tight mb-2">
+          <div className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-2">
             {forecast?.days_until_stockout ? `${forecast.days_until_stockout} Days Left` : 'Safe Buffer'}
           </div>
 
@@ -433,9 +483,134 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
 
       </div>
 
+      {/* AGENT CASH-IN TERMINAL (AUTOMATED SOUNDBOX + REPAYMENT) */}
+      <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950/20 to-slate-900 border border-emerald-500/30 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-2xl">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6 border-b border-slate-800/80 pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 sm:p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+              <ArrowDownLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+            </div>
+            <div>
+              <h3 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+                <span>Agent Cash-In Terminal (গ্রাহক ক্যাশ-ইন)</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30">
+                  Zero Fee
+                </span>
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Collect physical cash and credit customer wallet. Outstanding upay Grace overdrafts auto-settle upon deposit!
+              </p>
+            </div>
+          </div>
+          <span className="text-xs text-emerald-400 font-mono bg-emerald-950/60 px-3 py-1 rounded-full border border-emerald-500/30 self-start sm:self-auto">
+            Soundbox Automated
+          </span>
+        </div>
+
+        {cashInResult && (
+          <div className="mb-6 p-4 rounded-2xl bg-emerald-950/70 border border-emerald-500/50 text-emerald-200 text-xs sm:text-sm space-y-1.5 shadow-xl animate-fade-in">
+            <div className="flex items-center space-x-2 font-bold text-emerald-300">
+              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <span>Cash-In Successful! Ref: {cashInResult.transaction_reference}</span>
+            </div>
+            <p className="text-slate-300 pl-7">
+              Amount Credited: <strong className="text-white font-mono">৳{cashInResult.amount?.toFixed(2)}</strong> to {cashInResult.receiver_phone || cashInPhone}.
+            </p>
+            {cashInResult.applied_grace_amount > 0 && (
+              <p className="text-amber-300 pl-7 font-semibold">
+                ⚡ Auto-Repayment: ৳{cashInResult.applied_grace_amount.toFixed(2)} outstanding upay Grace overdraft was settled and recovered!
+              </p>
+            )}
+          </div>
+        )}
+
+        {cashInError && (
+          <div className="mb-6 p-4 rounded-2xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs sm:text-sm flex items-center space-x-2">
+            <AlertTriangle className="w-5 h-5 text-red-400 shrink-0" />
+            <span>{cashInError}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleCashIn} className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 items-end">
+          <div>
+            <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
+              Customer Mobile Number
+            </label>
+            <input
+              type="text"
+              value={cashInPhone}
+              onChange={(e) => setCashInPhone(e.target.value)}
+              placeholder="+8801700000001"
+              className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3 px-4 text-white font-mono text-sm focus:outline-none focus:border-emerald-500 transition"
+              required
+            />
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                Deposit Amount (BDT)
+              </label>
+              <span className="text-[11px] text-emerald-400 font-mono">Free Deposit</span>
+            </div>
+            <div className="relative">
+              <span className="absolute left-4 top-3 text-slate-400 font-bold text-sm">৳</span>
+              <input
+                type="number"
+                min="10"
+                step="1"
+                value={cashInAmount}
+                onChange={(e) => setCashInAmount(Number(e.target.value))}
+                className="w-full bg-slate-950 border border-slate-800 rounded-2xl py-3 pl-9 pr-4 text-white font-bold font-mono text-sm focus:outline-none focus:border-emerald-500 transition"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isProcessingCashIn || cashInAmount <= 0}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-xl shadow-emerald-600/25 transition disabled:opacity-50"
+            >
+              {isProcessingCashIn ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Processing Deposit...</span>
+                </>
+              ) : (
+                <>
+                  <ArrowDownLeft className="w-4 h-4" />
+                  <span>Execute Cash-In (৳{cashInAmount.toLocaleString()})</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+
+        {/* Quick Amount Chips */}
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-3 border-t border-slate-800/60">
+          <span className="text-xs text-slate-500 mr-1">Quick Amounts:</span>
+          {[200, 500, 1000, 2000, 5000].map((amt) => (
+            <button
+              key={amt}
+              type="button"
+              onClick={() => setCashInAmount(amt)}
+              className={`px-3 py-1 rounded-xl text-xs font-mono font-medium border transition ${
+                cashInAmount === amt
+                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-300'
+                  : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              ৳{amt}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* 7-Day Liquidity Radar & Demand Forecast Chart */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
           <div>
             <div className="flex items-center gap-2">
               <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400">
@@ -531,10 +706,10 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
       </div>
 
       {/* Grid: Float Rebalancer Tool & Software Soundbox Terminal */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
         
         {/* Float Rebalancing Engine Card */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+        <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
@@ -657,35 +832,35 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
         </div>
 
         {/* Software Soundbox Hardware Simulation */}
-        <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
+        <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-2.5 rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  <Radio className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <Radio className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-white">Software Soundbox IoT</h3>
+                  <h3 className="text-base sm:text-lg font-bold text-white">Software Soundbox IoT</h3>
                   <p className="text-xs text-slate-400">Zero-cost acoustic payment confirmation for high-rush retail stalls.</p>
                 </div>
               </div>
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+              <span className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                <span className="w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full bg-emerald-400 animate-ping" />
                 Speaker Live
               </span>
             </div>
 
             {/* Soundbox Physical Speaker Mockup */}
-            <div className="my-6 p-6 rounded-2xl bg-gradient-to-b from-slate-950 to-slate-900 border border-slate-800 flex flex-col items-center justify-center text-center relative overflow-hidden">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-tr from-cyan-600/20 to-indigo-600/30 border-2 border-cyan-500/30 flex items-center justify-center mb-4 relative">
+            <div className="my-4 sm:my-6 p-4 sm:p-6 rounded-2xl bg-gradient-to-b from-slate-950 to-slate-900 border border-slate-800 flex flex-col items-center justify-center text-center relative overflow-hidden">
+              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-tr from-cyan-600/20 to-indigo-600/30 border-2 border-cyan-500/30 flex items-center justify-center mb-3 sm:mb-4 relative">
                 {isPlayingChime && (
                   <span className="absolute inset-0 rounded-full border border-cyan-400 animate-ping" />
                 )}
-                <Volume2 className={`w-10 h-10 ${isPlayingChime ? 'text-cyan-400 animate-pulse' : 'text-slate-500'}`} />
+                <Volume2 className={`w-8 h-8 sm:w-10 sm:h-10 ${isPlayingChime ? 'text-cyan-400 animate-pulse' : 'text-slate-500'}`} />
               </div>
 
               {/* Dynamic Sound Wave Visualizer */}
-              <div className="flex items-end justify-center gap-1.5 h-10 mb-3">
+              <div className="flex items-end justify-center gap-1.5 h-8 sm:h-10 mb-3">
                 {[12, 28, 16, 36, 24, 40, 18, 32, 14].map((h, i) => (
                   <div
                     key={i}
@@ -708,9 +883,9 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
             </div>
 
             {/* Trigger Simulation */}
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block">
-                Simulate Customer Payment Chime
+                Manual Acoustic Chime Trigger
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {[200, 500, 1500].map((amt) => (
@@ -722,7 +897,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
                       playSoundboxChime(amt);
                     }}
                     disabled={isPlayingChime}
-                    className="py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-mono font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-1.5 transition"
+                    className="py-2 sm:py-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-xs font-mono font-semibold text-slate-200 hover:text-white flex items-center justify-center gap-1.5 transition"
                   >
                     <Play className="w-3 h-3 text-cyan-400" />
                     <span>৳{amt}</span>
@@ -732,7 +907,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
             <span>Hardware Cost Saved: ~৳3,500/terminal</span>
             <span className="text-cyan-400 font-mono">100% Web Audio API</span>
           </div>
@@ -741,14 +916,14 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
       </div>
 
       {/* Anti-Screenshot Dynamic Nonce Badge Verification Terminal */}
-      <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-6 md:p-8 backdrop-blur-xl shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
-              <QrCode className="w-5 h-5" />
+      <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-rose-500/10 text-rose-400 border border-rose-500/20">
+              <QrCode className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Merchant Anti-Screenshot Badge Verifier</h3>
+              <h3 className="text-base sm:text-lg font-bold text-white">Merchant Anti-Screenshot Badge Verifier</h3>
               <p className="text-xs text-slate-400">
                 Instantly validates customer dynamic nonces against Central Ledger to prevent forged screenshot fraud.
               </p>
@@ -760,10 +935,10 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
           {/* Input Form */}
           <div className="md:col-span-2 space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
                   Transaction Reference
@@ -792,11 +967,11 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
               </div>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
               <button
                 onClick={handleVerifyBadge}
                 disabled={isVerifying || verifyNonce.length !== 6}
-                className="px-6 py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center gap-2 shadow-lg shadow-cyan-600/20 transition"
+                className="w-full sm:w-auto px-5 sm:px-6 py-2.5 sm:py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-cyan-600/20 transition"
               >
                 {isVerifying ? (
                   <>
@@ -817,7 +992,7 @@ export const AgentTerminal: React.FC<AgentTerminalProps> = ({ onNotify }) => {
                   setVerifyTxRef('TXN-DEMO-001');
                   setVerifyNonce('A1B2C3');
                 }}
-                className="px-4 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition"
+                className="w-full sm:w-auto px-4 py-2.5 sm:py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition text-center"
               >
                 Load Sample Nonce
               </button>

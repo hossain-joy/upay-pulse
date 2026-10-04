@@ -130,10 +130,10 @@ class ScamService:
         freeze_executed = False
         frozen_user_id = None
 
-        if req.status == ScamReportStatus.CONFIRMED_FRAUD and req.auto_freeze_account:
+        if req.status == ScamReportStatus.CONFIRMED_FRAUD and req.execute_freeze:
             # Look up suspect user by phone or email
             suspect = db.query(User).filter(
-                (User.phone == report.reported_account) | (User.email == report.reported_account)
+                (User.phone == report.reported_account) | (User.email == report.reported_account) | (User.id == report.reported_account)
             ).first()
 
             if suspect and not suspect.is_frozen:
@@ -145,6 +145,12 @@ class ScamService:
                 )
                 freeze_executed = True
                 frozen_user_id = suspect.id
+
+            # Also freeze any associated MuleGraphNode
+            m_node = db.query(MuleGraphNode).filter(MuleGraphNode.account_number == report.reported_account).first()
+            if m_node:
+                m_node.is_frozen = True
+                freeze_executed = True
 
         # Audit resolution
         db.add(AuditLog(

@@ -13,6 +13,13 @@ class ScamReportResolve(BaseModel):
     status: ScamReportStatus = Field(..., description="Target status: CONFIRMED_FRAUD or DISMISSED")
     investigation_notes: Optional[str] = Field(None, description="Investigator notes on findings")
     auto_freeze_account: bool = Field(True, description="If CONFIRMED_FRAUD, immediately invoke Master Freeze on reported account")
+    freeze_account: Optional[bool] = Field(None, description="Alias for auto_freeze_account")
+
+    @property
+    def execute_freeze(self) -> bool:
+        if self.freeze_account is not None:
+            return self.freeze_account
+        return self.auto_freeze_account
 
 class ScamReportResponse(BaseModel):
     id: str

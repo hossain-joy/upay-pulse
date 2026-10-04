@@ -129,33 +129,33 @@ export const App: React.FC = () => {
       <Header currentRole={role} onRoleChange={setRole} />
 
       {/* Main Workspace Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
         
         {/* Top Intelligence Banner */}
-        <div className="mb-6 p-4 rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-              <Bot className="w-5 h-5" />
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-500/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 shadow-xl">
+          <div className="flex items-start sm:items-center gap-2.5 sm:gap-3">
+            <div className="p-2 sm:p-2.5 rounded-xl sm:rounded-2xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shrink-0 mt-0.5 sm:mt-0">
+              <Bot className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-sm font-bold text-white">Google AI Studio Gemini 2.5 Flash Active</h2>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                <h2 className="text-xs sm:text-sm font-bold text-white">Google AI Studio Gemini 2.5 Flash Active</h2>
+                <span className="text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/30">
                   Exact AI Execution
                 </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5">
+                <span className="text-[9px] sm:text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/30 flex items-center gap-1.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${isWsConnected ? 'bg-cyan-400 animate-ping' : 'bg-slate-500'}`} />
                   {isWsConnected ? 'WebSocket Live' : 'Connecting Stream...'}
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-[11px] sm:text-xs text-slate-400 mt-1">
                 Live natural language Bangla Voice Financial Coach • Sub-5ms LightGBM risk scoring • Real-time NetworkX graph intelligence.
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto">
-            <span className="text-xs font-mono text-cyan-400 bg-slate-950/80 px-3 py-1 rounded-full border border-cyan-500/30">
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+            <span className="text-[11px] sm:text-xs font-mono text-cyan-400 bg-slate-950/80 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full border border-cyan-500/30">
               {role === 'CUSTOMER' ? 'CustomerAI Pillar' : role === 'AGENT' ? 'AgentAI Pillar' : 'SecurityAI Pillar'}
             </span>
           </div>
@@ -195,7 +195,7 @@ export const App: React.FC = () => {
       </footer>
 
       {/* Toast Notification Container */}
-      <div className="fixed bottom-6 right-6 z-50 space-y-2 max-w-sm w-full pointer-events-none">
+      <div className="fixed bottom-4 sm:bottom-6 right-4 sm:right-6 left-4 sm:left-auto z-50 space-y-2 max-w-sm w-auto sm:w-full pointer-events-none">
         {toasts.map((toast) => (
           <div
             key={toast.id}
