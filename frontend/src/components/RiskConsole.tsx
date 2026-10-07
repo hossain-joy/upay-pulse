@@ -36,6 +36,7 @@ import {
 } from 'recharts';
 import { apiRequest } from '../api/client';
 import { GraphTopology, GraphNode, ScamReportItem, AppealItem, EvolutionDataset, EvolutionDatasetList, EvolutionSnapshot, EvolutionDiff, EmergingMulesResponse, EmergingMule } from '../types';
+import { MuleGraphPanel } from './MuleGraphPanel';
 
 interface RiskConsoleProps {
   onNotify?: (msg: string, type: 'success' | 'error' | 'info') => void;
@@ -891,41 +892,32 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
     if (onNotify) onNotify(`Framed transaction ${tx.reference} in Mule Syndicate Graph.`, 'info');
   };
 
-  // Compute Layout Positions for Graph Visualization
+  // Layered flow layout: VICTIM → PRIMARY_MULE → SECONDARY_MULE → CASH_OUT_AGENT
   const getNodePositions = (nodes: GraphNode[]) => {
     const positions: Record<string, { x: number; y: number }> = {};
-    const N = nodes.length;
-    if (N === 0) return positions;
+    if (nodes.length === 0) return positions;
 
-    const victims = nodes.filter(n => n.node_type === 'VICTIM');
-    const agents = nodes.filter(n => n.is_agent || n.node_type === 'AGENT');
-    const mules = nodes.filter(n => !victims.includes(n) && !agents.includes(n));
+    const layers: Record<string, GraphNode[]> = {
+      VICTIM: nodes.filter(n => n.node_type === 'VICTIM'),
+      PRIMARY_MULE: nodes.filter(n => n.node_type === 'PRIMARY_MULE'),
+      SECONDARY_MULE: nodes.filter(n => n.node_type === 'SECONDARY_MULE'),
+      CASH_OUT_AGENT: nodes.filter(n => n.is_agent || n.node_type === 'CASH_OUT_AGENT' || n.node_type === 'AGENT'),
+      NORMAL_USER: nodes.filter(n => n.node_type === 'NORMAL_USER'),
+    };
 
-    // If partitioned into flow tiers:
-    if (victims.length > 0 && (mules.length > 0 || agents.length > 0)) {
-      victims.forEach((node, idx) => {
-        const step = 240 / (victims.length + 1);
-        positions[node.id] = { x: 100, y: Math.round(25 + step * (idx + 1)) };
+    const layerX: Record<string, number> = {
+      VICTIM: 90, PRIMARY_MULE: 250, SECONDARY_MULE: 410, CASH_OUT_AGENT: 570, NORMAL_USER: 330,
+    };
+
+    const SVG_H = 380;
+    Object.entries(layers).forEach(([type, group]) => {
+      if (group.length === 0) return;
+      const x = layerX[type];
+      group.forEach((node, idx) => {
+        const step = SVG_H / (group.length + 1);
+        positions[node.id] = { x, y: Math.round(step * (idx + 1)) };
       });
-      mules.forEach((node, idx) => {
-        const step = 240 / (mules.length + 1);
-        const xOffset = mules.length > 1 ? (idx % 2 === 0 ? -35 : 35) : 0;
-        positions[node.id] = { x: Math.round(320 + xOffset), y: Math.round(25 + step * (idx + 1)) };
-      });
-      agents.forEach((node, idx) => {
-        const step = 240 / (agents.length + 1);
-        positions[node.id] = { x: 530, y: Math.round(25 + step * (idx + 1)) };
-      });
-    } else {
-      // Clean radial ellipse layout
-      nodes.forEach((node, idx) => {
-        const angle = (2 * Math.PI * idx) / N - Math.PI / 2;
-        positions[node.id] = {
-          x: Math.round(310 + 220 * Math.cos(angle)),
-          y: Math.round(150 + 105 * Math.sin(angle))
-        };
-      });
-    }
+    });
 
     return positions;
   };
@@ -1382,325 +1374,18 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
 
       {/* TAB 2: MONEY-MULE GRAPH INTELLIGENCE */}
       {activeTab === 'GRAPH' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
-          {/* Graph Visualizer Canvas / SVG */}
-          <div className="lg:col-span-2 rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
-            <div>
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
-                    <Share2 className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-400" />
-                    <span>Mule Syndicate Graph Topology</span>
-                  </h3>
-                  <p className="text-xs text-slate-400">
-                    NetworkX Directed MultiGraph detecting fan-in smurfing rings and rapid cash-out pipelines.
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2 w-full sm:w-auto">
-                  <Filter className="w-4 h-4 text-slate-400 shrink-0" />
-                  <select
-                    value={selectedCluster}
-                    onChange={(e) => {
-                      setSelectedCluster(e.target.value);
-                      fetchTopology(e.target.value);
-                    }}
-                    className="w-full sm:w-auto bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 font-mono"
-                  >
-                    <option value="all">All Syndicates (Full Topology)</option>
-                    {topology?.clusters?.map((c) => (
-                      <option key={c.cluster_id} value={c.cluster_id}>
-                        {c.cluster_id} ({c.size} nodes • ৳{(c.total_volume / 1000).toFixed(0)}k)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Interactive Dynamic Graph Canvas Area */}
-              <div className="h-72 sm:h-96 w-full rounded-2xl bg-slate-950 border border-slate-800/80 p-2 sm:p-4 relative overflow-hidden flex items-center justify-center">
-                {loadingGraph ? (
-                  <div className="text-center text-xs text-slate-400">
-                    <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-indigo-400" />
-                    Computing NetworkX graph layout...
-                  </div>
-                ) : !topology || topology.nodes.length === 0 ? (
-                  <div className="text-center text-xs text-slate-500">
-                    No nodes found in the selected syndicate cluster.
-                  </div>
-                ) : (
-                  <svg className="w-full h-full select-none" viewBox="0 0 640 320">
-                    <defs>
-                      <marker id="arrow" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
-                      </marker>
-                      <marker id="arrow-alert" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f43f5e" />
-                      </marker>
-                      <marker id="arrow-cashout" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
-                      </marker>
-                    </defs>
-
-                    {/* Dynamic Edges */}
-                    {topology.edges.map((edge) => {
-                      const p1 = graphPositions[edge.source];
-                      const p2 = graphPositions[edge.target];
-                      if (!p1 || !p2) return null;
-
-                      const isCashOut = edge.is_cash_out;
-                      const isHighVolume = edge.amount >= 50000;
-                      const strokeColor = isCashOut ? '#f59e0b' : isHighVolume ? '#f43f5e' : '#64748b';
-                      const marker = isCashOut ? 'url(#arrow-cashout)' : isHighVolume ? 'url(#arrow-alert)' : 'url(#arrow)';
-
-                      const midX = (p1.x + p2.x) / 2;
-                      const midY = (p1.y + p2.y) / 2 - 6;
-
-                      return (
-                        <g key={edge.id}>
-                          <line
-                            x1={p1.x}
-                            y1={p1.y}
-                            x2={p2.x}
-                            y2={p2.y}
-                            stroke={strokeColor}
-                            strokeWidth={isHighVolume || isCashOut ? 2.5 : 1.5}
-                            strokeDasharray={isHighVolume ? undefined : '4 3'}
-                            markerEnd={marker}
-                          />
-                          <text
-                            x={midX}
-                            y={midY}
-                            fill={strokeColor}
-                            fontSize="9"
-                            fontFamily="monospace"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            className="bg-slate-950"
-                          >
-                            ৳{(edge.amount / 1000).toFixed(0)}k{isCashOut ? ' (CashOut)' : ''}
-                          </text>
-                        </g>
-                      );
-                    })}
-
-                    {/* Dynamic Nodes */}
-                    {topology.nodes.map((node) => {
-                      const pos = graphPositions[node.id];
-                      if (!pos) return null;
-
-                      const isSelected = selectedNode?.id === node.id;
-                      const isMule = node.node_type === 'PRIMARY_MULE';
-                      const isRelay = node.node_type === 'SECONDARY_MULE';
-                      const isAgent = node.is_agent || node.node_type === 'AGENT';
-                      const isVictim = node.node_type === 'VICTIM';
-
-                      const fillColor = isMule ? '#be123c' : isRelay ? '#c2410c' : isAgent ? '#047857' : '#0284c7';
-                      const strokeColor = isMule ? '#f43f5e' : isRelay ? '#fb923c' : isAgent ? '#34d399' : '#38bdf8';
-                      const radius = isMule ? 24 : 20;
-
-                      return (
-                        <g
-                          key={node.id}
-                          className="cursor-pointer transition transform hover:scale-105"
-                          onClick={() => setSelectedNode(node)}
-                        >
-                          {/* Selection Highlight */}
-                          {isSelected && (
-                            <circle
-                              cx={pos.x}
-                              cy={pos.y}
-                              r={radius + 8}
-                              fill="none"
-                              stroke="#06b6d4"
-                              strokeWidth="2.5"
-                              strokeDasharray="4 2"
-                              className="animate-spin"
-                            />
-                          )}
-
-                          {/* Node Circle */}
-                          <circle
-                            cx={pos.x}
-                            cy={pos.y}
-                            r={radius}
-                            fill={fillColor}
-                            stroke={strokeColor}
-                            strokeWidth={node.is_frozen ? 3 : 2}
-                            strokeDasharray={node.is_frozen ? "3 2" : undefined}
-                            className={isMule && !node.is_frozen ? "animate-pulse" : ""}
-                          />
-
-                          {/* Node Label Initials */}
-                          <text
-                            x={pos.x}
-                            y={pos.y + 4}
-                            fill="white"
-                            fontSize="9"
-                            fontFamily="monospace"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                          >
-                            {isMule ? "MULE" : isRelay ? "RELAY" : isAgent ? "AGENT" : "VIC"}
-                          </text>
-
-                          {/* Subtext Name */}
-                          <text
-                            x={pos.x}
-                            y={pos.y + radius + 14}
-                            fill={node.is_frozen ? '#f87171' : '#cbd5e1'}
-                            fontSize="9"
-                            fontFamily="sans-serif"
-                            textAnchor="middle"
-                          >
-                            {node.label.length > 15 ? node.label.slice(0, 14) + '...' : node.label}
-                          </text>
-
-                          {/* Frozen Icon Indicator */}
-                          {node.is_frozen && (
-                            <text
-                              x={pos.x + radius - 4}
-                              y={pos.y - radius + 6}
-                              fill="#f87171"
-                              fontSize="11"
-                            >
-                              🔒
-                            </text>
-                          )}
-                        </g>
-                      );
-                    })}
-                  </svg>
-                )}
-              </div>
-            </div>
-
-            {/* Legend */}
-            <div className="mt-4 pt-4 border-t border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-600" /> Primary Mule</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-orange-600" /> Layer Relay</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-600" /> Cash-Out Agent</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-sky-600" /> Victim Account</span>
-                <span className="flex items-center gap-1.5 text-rose-400">🔒 Frozen Node</span>
-              </div>
-              <span className="font-mono text-slate-500 text-[11px]">Click node for deep profile & actions</span>
-            </div>
-          </div>
-
-          {/* Node Inspector & Defensive Freeze / Unfreeze Action */}
-          <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl flex flex-col justify-between">
-            {selectedNode ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-cyan-400" />
-                    <h4 className="text-sm font-bold text-white">Node Inspector</h4>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded-full text-[11px] font-mono font-bold ${
-                    selectedNode.is_frozen 
-                      ? 'bg-rose-950 text-rose-400 border border-rose-500/30' 
-                      : 'bg-emerald-950 text-emerald-400 border border-emerald-500/30'
-                  }`}>
-                    {selectedNode.is_frozen ? 'LOCKED / FROZEN' : 'ACTIVE'}
-                  </span>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-bold text-white">{selectedNode.label}</h3>
-                  <div className="font-mono text-xs text-slate-400 mt-0.5">{selectedNode.id}</div>
-                  {selectedNode.cluster_id && (
-                    <span className="inline-block mt-1 font-mono text-[10px] px-2 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-500/30 rounded">
-                      Cluster: {selectedNode.cluster_id}
-                    </span>
-                  )}
-                </div>
-
-                {/* Graph Metrics Table */}
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block text-[11px]">Risk Rating</span>
-                    <span className="font-mono font-bold text-rose-400">
-                      {(selectedNode.risk_score * 100).toFixed(0)}%
-                    </span>
-                  </div>
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block text-[11px]">PageRank Centrality</span>
-                    <span className="font-mono font-bold text-cyan-400">
-                      {selectedNode.pagerank?.toFixed(4) || '0.0000'}
-                    </span>
-                  </div>
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block text-[11px]">In-Degree / Fan-In</span>
-                    <span className="font-mono font-bold text-white">{selectedNode.in_degree} connections</span>
-                  </div>
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                    <span className="text-slate-500 block text-[11px]">Total Volume</span>
-                    <span className="font-mono font-bold text-white">৳ {(selectedNode.total_received / 1000).toFixed(0)}k</span>
-                  </div>
-                </div>
-
-                {/* Algorithmic Flags */}
-                <div>
-                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">
-                    NetworkX Anomaly Rationale
-                  </span>
-                  <div className="space-y-1.5">
-                    {selectedNode.reasons?.map((r, i) => (
-                      <div key={i} className="text-xs text-slate-300 p-2 rounded-xl bg-slate-950 border border-slate-800/80 flex items-start gap-2">
-                        <AlertTriangle className="w-3.5 h-3.5 text-rose-400 shrink-0 mt-0.5" />
-                        <span>{r}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Dual Action: Freeze or Unfreeze */}
-                {selectedNode.is_frozen ? (
-                  <button
-                    onClick={handleExecuteUnfreezeOnNode}
-                    disabled={isFreezingNode}
-                    className="w-full py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-600/25 disabled:opacity-50"
-                  >
-                    {isFreezingNode ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Lifting Lockdown...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Unlock className="w-4 h-4" />
-                        <span>Unfreeze Syndicate Node (Restore Operations)</span>
-                      </>
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleExecuteFreezeOnNode}
-                    disabled={isFreezingNode}
-                    className="w-full py-3 rounded-2xl text-xs font-bold flex items-center justify-center gap-2 transition bg-rose-600 hover:bg-rose-500 text-white shadow-lg shadow-rose-600/25 disabled:opacity-50"
-                  >
-                    {isFreezingNode ? (
-                      <>
-                        <RefreshCw className="w-4 h-4 animate-spin" />
-                        <span>Executing Freeze...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Lock className="w-4 h-4" />
-                        <span>Master Freeze Syndicate Node (&lt;300ms SLA)</span>
-                      </>
-                    )}
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="text-center py-8 sm:py-12 text-slate-500 text-xs">
-                Select a node in the graph to inspect topology details and execute defensive actions.
-              </div>
-            )}
-          </div>
-        </div>
+        <MuleGraphPanel
+          topology={topology}
+          loadingGraph={loadingGraph}
+          selectedNode={selectedNode}
+          selectedCluster={selectedCluster}
+          isFreezingNode={isFreezingNode}
+          onSelectNode={setSelectedNode}
+          onClusterChange={(c) => { setSelectedCluster(c); fetchTopology(c); }}
+          onRefresh={() => fetchTopology(selectedCluster)}
+          onFreeze={handleExecuteFreezeOnNode}
+          onUnfreeze={handleExecuteUnfreezeOnNode}
+        />
       )}
 
       {/* TAB 3: MULE NETWORK EVOLUTION — chronological graph snapshots */}
