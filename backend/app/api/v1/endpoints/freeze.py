@@ -8,7 +8,8 @@ from backend.app.schemas.freeze import (
     MasterFreezeResponse,
     UnfreezeRequest,
     FreezeExecuteRequest,
-    AdminUnfreezeRequest
+    AdminUnfreezeRequest,
+    AdminSecureUnfreezeRequest
 )
 from backend.app.api.deps import get_current_user, require_customer, require_risk_analyst
 from backend.app.services.freeze_service import MasterFreezeService
@@ -64,6 +65,28 @@ def execute_admin_unfreeze(
         db=db,
         identifier=req.account_id,
         reason=req.reason or "Admin cleared account"
+    )
+
+@router.post("/admin-secure-unfreeze", status_code=status.HTTP_200_OK)
+def admin_secure_unfreeze(
+    req: AdminSecureUnfreezeRequest,
+    current_admin: User = Depends(require_risk_analyst),
+    db: Session = Depends(get_db)
+):
+    """
+    Cryptographic, two-person rule administrative unfreeze requiring:
+    1. Authenticated admin role.
+    2. Case ticket ID.
+    3. Documented clearance justification.
+    4. Immutable audit logging.
+    """
+    return MasterFreezeService.execute_admin_secure_unfreeze(
+        db=db,
+        admin_actor=current_admin,
+        identifier=req.account_id,
+        case_ticket_id=req.case_ticket_id,
+        reason=req.reason,
+        supervisor_mfa_token=req.supervisor_mfa_token
     )
 
 @router.get("/status")

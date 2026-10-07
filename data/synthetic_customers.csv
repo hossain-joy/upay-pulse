@@ -1,151 +1,601 @@
 id,phone,email,full_name,profession,location,wallet_balance,grace_balance,reliability_score,avg_monthly_inflow,avg_monthly_outflow,spending_pattern,created_days_ago
-c5490defe4f13ff166f2a36e2e6de12b,+8801710000000,customer_1@pulse.demo,User 1,School Teacher,Savar Industrial Zone,158.8,0.0,0.74,22000.0,20000.0,Family Support & Bills,258
-8f68be18775381521a4929d239c224fd,+8801710000001,customer_2@pulse.demo,User 2,University Student,Savar Industrial Zone,895.87,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,119
-93d7b52a9dc5cfd30d6440c91397dcd5,+8801710000002,customer_3@pulse.demo,User 3,Ride-Share Driver,"Uttara, Dhaka",207.32,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,268
-2388d572c8264e49563f91b7fcce5c47,+8801710000003,customer_4@pulse.demo,User 4,Ride-Share Driver,Rajshahi University Area,181.35,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,695
-6f9eadee122c2d5d4c5935adb2664db9,+8801710000004,customer_5@pulse.demo,User 5,School Teacher,Sylhet Sadar,1874.91,0.0,0.8,22000.0,20000.0,Family Support & Bills,314
-173ed5f0ad0b4d2ec0d8b186bb0494eb,+8801710000005,customer_6@pulse.demo,User 6,Garment Factory Worker,Narayanganj Export Zone,1969.88,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,189
-9f1d12fa3c823e60bcc9ae56c4837c3c,+8801710000006,customer_7@pulse.demo,User 7,University Student,"Gulshan, Dhaka",177.76,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,397
-12263f25198e2e483bc261b8f24dfb26,+8801710000007,customer_8@pulse.demo,User 8,Small Business Retailer,Rajshahi University Area,1359.38,0.0,0.66,65000.0,52000.0,Merchant Pay & Supply,500
-8d77b23a750ba9590ff9a185337a81ac,+8801710000008,customer_9@pulse.demo,User 9,Ride-Share Driver,Savar Industrial Zone,4866.92,0.0,0.77,28000.0,24000.0,Cash-In & Peer Transfer,595
-5219820c1604a5888c7667d9faaa488a,+8801710000009,customer_10@pulse.demo,User 10,Small Business Retailer,Rajshahi University Area,4432.99,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,226
-062bf08f344edde52b69f2cccdf526e3,+8801710000010,customer_11@pulse.demo,User 11,School Teacher,Savar Industrial Zone,249.34,0.0,0.73,22000.0,20000.0,Family Support & Bills,326
-8d8b50bcd04473fcc7ef8a5fd01d80cf,+8801710000011,customer_12@pulse.demo,User 12,Garment Factory Worker,Chittagong Port Area,2432.83,0.0,0.78,14000.0,13200.0,Cash-Out & Remittance,494
-50ab42b61ba6330af8ec3042c7ef4f6d,+8801710000012,customer_13@pulse.demo,User 13,School Teacher,"Gulshan, Dhaka",757.55,0.0,0.77,22000.0,20000.0,Family Support & Bills,716
-5d83fadf24a47f988e53bdae59addc2b,+8801710000013,customer_14@pulse.demo,User 14,Small Business Retailer,Savar Industrial Zone,3065.2,0.0,0.71,65000.0,52000.0,Merchant Pay & Supply,280
-32c0bd4c4dc3391acfe599a60dea997e,+8801710000014,customer_15@pulse.demo,User 15,University Student,"Mirpur, Dhaka",524.32,0.0,0.98,6500.0,6200.0,Mobile Recharge & Food,685
-1d78777dd83b2db26207ed9fa7cd87d1,+8801710000015,customer_16@pulse.demo,User 16,School Teacher,Sylhet Sadar,1005.33,0.0,0.76,22000.0,20000.0,Family Support & Bills,87
-e5d1ba4e645af081ded6ca234daf3181,+8801710000016,customer_17@pulse.demo,User 17,University Student,Gazipur Garment Belt,1056.31,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,97
-2b29547c78929b65fcbd06c2e8a5d22b,+8801710000017,customer_18@pulse.demo,User 18,University Student,Rajshahi University Area,1145.46,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,701
-9ee2004c671bc001a1d82864192da88e,+8801710000018,customer_19@pulse.demo,User 19,Corporate Executive,"Uttara, Dhaka",4429.18,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,176
-fc0bf0536eaaec4f7a30816459889ea5,+8801710000019,customer_20@pulse.demo,User 20,Small Business Retailer,Narayanganj Export Zone,1270.81,0.0,0.84,65000.0,52000.0,Merchant Pay & Supply,299
-45c0ddd3b91bf76631b18d61db392c73,+8801710000020,customer_21@pulse.demo,User 21,School Teacher,Rajshahi University Area,1913.69,0.0,0.84,22000.0,20000.0,Family Support & Bills,400
-4280a291439cf7353d203b71e4550f2b,+8801710000021,customer_22@pulse.demo,User 22,University Student,Narayanganj Export Zone,686.91,0.0,0.68,6500.0,6200.0,Mobile Recharge & Food,78
-adf81d48e40bbfcd99c51edeb46355d0,+8801710000022,customer_23@pulse.demo,User 23,Garment Factory Worker,Narayanganj Export Zone,1775.48,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,462
-9c6b2dc8cdab0636bcb32709c27c6d51,+8801710000023,customer_24@pulse.demo,User 24,Ride-Share Driver,Savar Industrial Zone,1954.6,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,509
-64731472618e9b304beb28061866044f,+8801710000024,customer_25@pulse.demo,User 25,Ride-Share Driver,"Dhanmondi, Dhaka",4856.84,0.0,0.93,28000.0,24000.0,Cash-In & Peer Transfer,41
-0ec5448beb472e1bf853db1c2cd8b7d9,+8801710000025,customer_26@pulse.demo,User 26,School Teacher,Savar Industrial Zone,3015.44,0.0,0.83,22000.0,20000.0,Family Support & Bills,303
-a4f32d7b730ba0927a3c5ceb00edcdc0,+8801710000026,customer_27@pulse.demo,User 27,School Teacher,"Gulshan, Dhaka",535.25,0.0,0.79,22000.0,20000.0,Family Support & Bills,494
-8b67ac9d70e96aa11b4ed6e0ab462b95,+8801710000027,customer_28@pulse.demo,User 28,Garment Factory Worker,"Dhanmondi, Dhaka",2722.69,0.0,0.9,14000.0,13200.0,Cash-Out & Remittance,549
-d70730d233991fdd44ca5a3bdb0fb246,+8801710000028,customer_29@pulse.demo,User 29,Garment Factory Worker,"Dhanmondi, Dhaka",2364.59,0.0,0.82,14000.0,13200.0,Cash-Out & Remittance,233
-e48da6a6bacda60b373a9972bb21bf72,+8801710000029,customer_30@pulse.demo,User 30,University Student,"Gulshan, Dhaka",1003.14,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,573
-f92d7f2e1ddb82e576011bba7b8adcb4,+8801710000030,customer_31@pulse.demo,User 31,Garment Factory Worker,Rajshahi University Area,941.43,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,401
-c030227ee5f47e04a6684d9bcc4b0886,+8801710000031,customer_32@pulse.demo,User 32,Small Business Retailer,Chittagong Port Area,336.73,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,110
-0883c85ad20708a992cf1c0e882d155a,+8801710000032,customer_33@pulse.demo,User 33,Garment Factory Worker,"Mirpur, Dhaka",2294.06,0.0,0.97,14000.0,13200.0,Cash-Out & Remittance,575
-92349a842e558a68d14e30546121ac5b,+8801710000033,customer_34@pulse.demo,User 34,University Student,Narayanganj Export Zone,874.69,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,199
-7024e4b435cf990e287e8d4a95729588,+8801710000034,customer_35@pulse.demo,User 35,Small Business Retailer,Sylhet Sadar,4368.54,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,246
-79e89430ec8456254f59cb52b184fb4e,+8801710000035,customer_36@pulse.demo,User 36,Ride-Share Driver,Chittagong Port Area,3579.1,0.0,0.78,28000.0,24000.0,Cash-In & Peer Transfer,717
-3fbd6b7e3d9d05bee4e8b748ffe97262,+8801710000036,customer_37@pulse.demo,User 37,School Teacher,"Gulshan, Dhaka",1955.74,0.0,0.82,22000.0,20000.0,Family Support & Bills,153
-af2257700e93e88492efc19e036bf8ce,+8801710000037,customer_38@pulse.demo,User 38,University Student,Chittagong Port Area,130.03,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,597
-c4df7b23453617250639ad651aa1684b,+8801710000038,customer_39@pulse.demo,User 39,University Student,Rajshahi University Area,325.27,0.0,0.67,6500.0,6200.0,Mobile Recharge & Food,676
-f664e7bbad043632be9af751b44ca88e,+8801710000039,customer_40@pulse.demo,User 40,Garment Factory Worker,Chittagong Port Area,235.35,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,368
-09987ade38d8a0f6a417a60474af4570,+8801710000040,customer_41@pulse.demo,User 41,Garment Factory Worker,Sylhet Sadar,704.51,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,249
-f2df14f314a9faf46acf94bd783b75aa,+8801710000041,customer_42@pulse.demo,User 42,Ride-Share Driver,Narayanganj Export Zone,3630.6,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,620
-d4f74ab6bfa372feaa10f0407eaf450c,+8801710000042,customer_43@pulse.demo,User 43,Corporate Executive,Chittagong Port Area,3933.87,0.0,0.92,85000.0,68000.0,Utility Bills & Savings,224
-a8ee576ec8740be4c6910fa998513f5a,+8801710000043,customer_44@pulse.demo,User 44,Garment Factory Worker,Savar Industrial Zone,1862.2,0.0,0.77,14000.0,13200.0,Cash-Out & Remittance,450
-3d4a3132884d926b6104cbe83d0e1ed6,+8801710000044,customer_45@pulse.demo,User 45,Corporate Executive,Gazipur Garment Belt,3383.15,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,130
-bd44977ad4e72906823b010f5f4178b5,+8801710000045,customer_46@pulse.demo,User 46,Garment Factory Worker,"Uttara, Dhaka",2052.59,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,141
-52e8d422ede54aa133e5cb68c2f87c2d,+8801710000046,customer_47@pulse.demo,User 47,University Student,Chittagong Port Area,287.76,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,462
-05817ea1f880f109911a2cf54cac770e,+8801710000047,customer_48@pulse.demo,User 48,University Student,"Dhanmondi, Dhaka",628.29,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,107
-0667052b2a58a16f54ee96a9df5f989e,+8801710000048,customer_49@pulse.demo,User 49,Corporate Executive,Sylhet Sadar,534.65,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,583
-70f2b0e9acfea239edfa5c7a5cd1030b,+8801710000049,customer_50@pulse.demo,User 50,Garment Factory Worker,Savar Industrial Zone,2597.51,0.0,0.93,14000.0,13200.0,Cash-Out & Remittance,200
-b8bcea7141b0eeaab7981fa9c922c9e2,+8801710000050,customer_51@pulse.demo,User 51,Corporate Executive,"Mirpur, Dhaka",2432.72,0.0,0.94,85000.0,68000.0,Utility Bills & Savings,90
-359dd0f33af6b4a0cef7dc077c06c3b9,+8801710000051,customer_52@pulse.demo,User 52,University Student,"Uttara, Dhaka",52.69,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,495
-1a1ca50c9e44acda5de8ce8020b07d3f,+8801710000052,customer_53@pulse.demo,User 53,Small Business Retailer,"Uttara, Dhaka",3498.13,0.0,0.89,65000.0,52000.0,Merchant Pay & Supply,599
-0ef868e7b087ab3af815c8ab31171d46,+8801710000053,customer_54@pulse.demo,User 54,School Teacher,"Mirpur, Dhaka",723.37,0.0,0.75,22000.0,20000.0,Family Support & Bills,89
-346d3e95ecd8d13f34da84d5990c63d4,+8801710000054,customer_55@pulse.demo,User 55,Ride-Share Driver,Sylhet Sadar,351.74,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,81
-f1a4457098c755ba61b28c4c377b996d,+8801710000055,customer_56@pulse.demo,User 56,Ride-Share Driver,"Mirpur, Dhaka",2539.11,0.0,0.93,28000.0,24000.0,Cash-In & Peer Transfer,191
-b080d675e8c6e4ce32acd12a766fcbbc,+8801710000056,customer_57@pulse.demo,User 57,Garment Factory Worker,Sylhet Sadar,270.31,0.0,0.71,14000.0,13200.0,Cash-Out & Remittance,639
-2f52efaa135ee04cd471cd0664b828f5,+8801710000057,customer_58@pulse.demo,User 58,Garment Factory Worker,Chittagong Port Area,1160.38,0.0,0.96,14000.0,13200.0,Cash-Out & Remittance,613
-19a2431d07af70eb6b554b8904f1ab99,+8801710000058,customer_59@pulse.demo,User 59,University Student,Rajshahi University Area,793.15,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,459
-39cfd2511c83bc2e11e1a710571dd5c6,+8801710000059,customer_60@pulse.demo,User 60,School Teacher,Rajshahi University Area,2508.74,0.0,0.75,22000.0,20000.0,Family Support & Bills,297
-bb8fed2826bfd7c53052a29c8dfe5bbc,+8801710000060,customer_61@pulse.demo,User 61,University Student,"Gulshan, Dhaka",348.36,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,717
-f4adcc785c9f7e2f3e62010b85e3ed08,+8801710000061,customer_62@pulse.demo,User 62,School Teacher,"Dhanmondi, Dhaka",2038.93,0.0,0.96,22000.0,20000.0,Family Support & Bills,104
-27754b75360bf70535250bb5c5c138b3,+8801710000062,customer_63@pulse.demo,User 63,Garment Factory Worker,"Mirpur, Dhaka",1758.19,0.0,0.84,14000.0,13200.0,Cash-Out & Remittance,132
-5cb30079c6b2ce78f63c175d38ccfbc5,+8801710000063,customer_64@pulse.demo,User 64,Garment Factory Worker,Sylhet Sadar,636.17,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,387
-8c369f921723374b7a8f34788c04d0db,+8801710000064,customer_65@pulse.demo,User 65,Garment Factory Worker,Chittagong Port Area,1066.2,0.0,0.7,14000.0,13200.0,Cash-Out & Remittance,586
-c0ad495ef1d5535e591436d535e930d0,+8801710000065,customer_66@pulse.demo,User 66,School Teacher,"Dhanmondi, Dhaka",2710.8,0.0,0.98,22000.0,20000.0,Family Support & Bills,699
-0d541143144f75a9fc971f1f4f807605,+8801710000066,customer_67@pulse.demo,User 67,Ride-Share Driver,Gazipur Garment Belt,3355.92,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,709
-9f0288d832cbd8ba220460947db5ff05,+8801710000067,customer_68@pulse.demo,User 68,Garment Factory Worker,Narayanganj Export Zone,777.28,0.0,0.94,14000.0,13200.0,Cash-Out & Remittance,596
-28df12f174e13c159aec727f81e11e45,+8801710000068,customer_69@pulse.demo,User 69,University Student,"Dhanmondi, Dhaka",402.2,0.0,0.72,6500.0,6200.0,Mobile Recharge & Food,381
-de356de7a8941e73515da8afaddb2806,+8801710000069,customer_70@pulse.demo,User 70,University Student,"Dhanmondi, Dhaka",681.76,0.0,0.73,6500.0,6200.0,Mobile Recharge & Food,82
-b1ae32956721d62b221b2459435f65dc,+8801710000070,customer_71@pulse.demo,User 71,Garment Factory Worker,"Uttara, Dhaka",2330.71,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,371
-518aa033d6995e47d11d2a6bbc7a2429,+8801710000071,customer_72@pulse.demo,User 72,University Student,"Dhanmondi, Dhaka",251.98,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,467
-324263dcb50eaf4459d476a91627e1b9,+8801710000072,customer_73@pulse.demo,User 73,Ride-Share Driver,Gazipur Garment Belt,603.78,0.0,0.96,28000.0,24000.0,Cash-In & Peer Transfer,182
-b82f183af20a62ff8f3bd043d0c8cfe8,+8801710000073,customer_74@pulse.demo,User 74,Ride-Share Driver,Gazipur Garment Belt,4181.25,0.0,0.84,28000.0,24000.0,Cash-In & Peer Transfer,181
-450dc7f0b0c6e573b905405d3542fb43,+8801710000074,customer_75@pulse.demo,User 75,Corporate Executive,Narayanganj Export Zone,257.05,0.0,0.77,85000.0,68000.0,Utility Bills & Savings,70
-21123b4b098198af8339c88460f61cb8,+8801710000075,customer_76@pulse.demo,User 76,Small Business Retailer,Chittagong Port Area,3426.23,0.0,0.87,65000.0,52000.0,Merchant Pay & Supply,392
-fe7cbd3fa9871770249c8b16822067e8,+8801710000076,customer_77@pulse.demo,User 77,Ride-Share Driver,"Uttara, Dhaka",4870.49,0.0,0.9,28000.0,24000.0,Cash-In & Peer Transfer,272
-ee9373863e90f22aad8f329bef61846a,+8801710000077,customer_78@pulse.demo,User 78,University Student,Narayanganj Export Zone,1151.77,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,370
-99fff0866d19dc85d2590eddad19683d,+8801710000078,customer_79@pulse.demo,User 79,Corporate Executive,Chittagong Port Area,1370.69,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,140
-096904cb8062cbbd431ca7ae88583e38,+8801710000079,customer_80@pulse.demo,User 80,Corporate Executive,Gazipur Garment Belt,4300.04,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,501
-b46ddff4cd26fce1513a636e50569a50,+8801710000080,customer_81@pulse.demo,User 81,Small Business Retailer,"Dhanmondi, Dhaka",4111.66,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,258
-300a40aed16c091254a07070b0d05c44,+8801710000081,customer_82@pulse.demo,User 82,Garment Factory Worker,Chittagong Port Area,1145.78,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,101
-84d7901433f668a60a8ca947cbf93c94,+8801710000082,customer_83@pulse.demo,User 83,Small Business Retailer,"Gulshan, Dhaka",3225.33,0.0,0.78,65000.0,52000.0,Merchant Pay & Supply,579
-7d2156ade7ed4fe091efe59eba91aa5f,+8801710000083,customer_84@pulse.demo,User 84,Small Business Retailer,Gazipur Garment Belt,620.94,0.0,0.97,65000.0,52000.0,Merchant Pay & Supply,212
-e2eaf586a73bcd9a1bfe55efbcecc685,+8801710000084,customer_85@pulse.demo,User 85,Ride-Share Driver,"Dhanmondi, Dhaka",239.37,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,383
-b7c810395e97a55bf4add5b8e3948918,+8801710000085,customer_86@pulse.demo,User 86,School Teacher,"Gulshan, Dhaka",1948.31,0.0,0.97,22000.0,20000.0,Family Support & Bills,148
-e497f9db8de13726d49c83c164ba3c61,+8801710000086,customer_87@pulse.demo,User 87,Corporate Executive,Rajshahi University Area,990.89,0.0,0.66,85000.0,68000.0,Utility Bills & Savings,476
-3ecdbd5647ba4467ab7ab0eb17d3005c,+8801710000087,customer_88@pulse.demo,User 88,Garment Factory Worker,Sylhet Sadar,2595.33,0.0,0.83,14000.0,13200.0,Cash-Out & Remittance,716
-66a5849f5b6d69d35c55d2c93e79e80b,+8801710000088,customer_89@pulse.demo,User 89,University Student,"Gulshan, Dhaka",589.12,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,368
-01ef224cd7b2783751e9c776844bdf77,+8801710000089,customer_90@pulse.demo,User 90,Ride-Share Driver,"Gulshan, Dhaka",3333.77,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,337
-c7a254f90da3084c3d37f25342dabee5,+8801710000090,customer_91@pulse.demo,User 91,Ride-Share Driver,"Dhanmondi, Dhaka",3351.12,0.0,0.76,28000.0,24000.0,Cash-In & Peer Transfer,332
-81cf13ab4b74251e3b24676ac7dd2fef,+8801710000091,customer_92@pulse.demo,User 92,Ride-Share Driver,Narayanganj Export Zone,999.61,0.0,0.87,28000.0,24000.0,Cash-In & Peer Transfer,418
-131f315498bdfdfce4b6152fad518822,+8801710000092,customer_93@pulse.demo,User 93,School Teacher,Narayanganj Export Zone,2727.49,0.0,0.75,22000.0,20000.0,Family Support & Bills,591
-93ef8649880f3a7bec6f13a692906c4b,+8801710000093,customer_94@pulse.demo,User 94,Garment Factory Worker,"Dhanmondi, Dhaka",839.01,0.0,0.79,14000.0,13200.0,Cash-Out & Remittance,623
-558dd14200e54e83f19bf53a89de2f33,+8801710000094,customer_95@pulse.demo,User 95,Ride-Share Driver,"Gulshan, Dhaka",2351.69,0.0,0.8,28000.0,24000.0,Cash-In & Peer Transfer,248
-1f3ce717c4b4695b911dd1781241f16e,+8801710000095,customer_96@pulse.demo,User 96,Ride-Share Driver,"Mirpur, Dhaka",3978.99,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,203
-3f4f6d8d35bd95ac35d8c87af34ed646,+8801710000096,customer_97@pulse.demo,User 97,School Teacher,Savar Industrial Zone,1284.47,0.0,0.87,22000.0,20000.0,Family Support & Bills,664
-c9cb79e24d6aa68d478cdbdd989040ae,+8801710000097,customer_98@pulse.demo,User 98,Small Business Retailer,Savar Industrial Zone,4101.2,0.0,0.9,65000.0,52000.0,Merchant Pay & Supply,718
-a3b0be6c24e463f04672f6d03e4c0771,+8801710000098,customer_99@pulse.demo,User 99,Small Business Retailer,Chittagong Port Area,4042.49,0.0,0.7,65000.0,52000.0,Merchant Pay & Supply,77
-81df66592887ae9a1d43539e0ebda067,+8801710000099,customer_100@pulse.demo,User 100,University Student,"Mirpur, Dhaka",814.09,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,496
-cd4556d4ae74387e01a40eda06e3e11b,+8801710000100,customer_101@pulse.demo,User 101,Corporate Executive,Rajshahi University Area,1012.45,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,536
-3e11dfccb516661c29d4b61cc889ad40,+8801710000101,customer_102@pulse.demo,User 102,Corporate Executive,Chittagong Port Area,780.48,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,139
-af7c4cd409384abedfc535e310c9160b,+8801710000102,customer_103@pulse.demo,User 103,Corporate Executive,Chittagong Port Area,920.64,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,560
-c882cad738f02c71b2acaf975ee6eac3,+8801710000103,customer_104@pulse.demo,User 104,Corporate Executive,Gazipur Garment Belt,2809.16,0.0,0.95,85000.0,68000.0,Utility Bills & Savings,154
-cc7a8a84f617d7c0469153de0c336627,+8801710000104,customer_105@pulse.demo,User 105,Corporate Executive,Narayanganj Export Zone,4017.01,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,602
-0ec831a123201fdf187daae865b55bb9,+8801710000105,customer_106@pulse.demo,User 106,Ride-Share Driver,"Gulshan, Dhaka",4752.7,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,657
-74bb0064d315af610df3f051b744c36b,+8801710000106,customer_107@pulse.demo,User 107,School Teacher,Sylhet Sadar,1906.32,0.0,0.95,22000.0,20000.0,Family Support & Bills,486
-df79065b45358d3315221351d6a462db,+8801710000107,customer_108@pulse.demo,User 108,University Student,"Mirpur, Dhaka",612.59,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,682
-bc2aec2c06bc21f3fb3a299e7da1da2a,+8801710000108,customer_109@pulse.demo,User 109,Small Business Retailer,Sylhet Sadar,2448.76,0.0,0.73,65000.0,52000.0,Merchant Pay & Supply,480
-b13e46043bcc0fd3a9fe90d1b5ac9da2,+8801710000109,customer_110@pulse.demo,User 110,Garment Factory Worker,"Dhanmondi, Dhaka",694.86,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,583
-5d8413606e0a17aa7f35c1ca6bedbf83,+8801710000110,customer_111@pulse.demo,User 111,Garment Factory Worker,Narayanganj Export Zone,464.78,0.0,0.78,14000.0,13200.0,Cash-Out & Remittance,186
-c60c1d3a869765ea9327a4a58fc17fb4,+8801710000111,customer_112@pulse.demo,User 112,School Teacher,Chittagong Port Area,329.4,0.0,0.78,22000.0,20000.0,Family Support & Bills,585
-5cad48232c22b1d335dc18fd1a00d35b,+8801710000112,customer_113@pulse.demo,User 113,Corporate Executive,"Uttara, Dhaka",358.22,0.0,0.92,85000.0,68000.0,Utility Bills & Savings,428
-2ff54d008a73026df8737c69c90c6ea8,+8801710000113,customer_114@pulse.demo,User 114,Ride-Share Driver,Gazipur Garment Belt,4290.82,0.0,0.9,28000.0,24000.0,Cash-In & Peer Transfer,419
-227ca5f9bcedbb11a2c247e70841d9a8,+8801710000114,customer_115@pulse.demo,User 115,Corporate Executive,Gazipur Garment Belt,4716.57,0.0,0.75,85000.0,68000.0,Utility Bills & Savings,429
-7402217d783550d5924f27fcafe58c95,+8801710000115,customer_116@pulse.demo,User 116,Corporate Executive,Sylhet Sadar,3750.2,0.0,0.83,85000.0,68000.0,Utility Bills & Savings,647
-83a06b0e438b5322bda38f42fe701e99,+8801710000116,customer_117@pulse.demo,User 117,University Student,"Mirpur, Dhaka",324.28,0.0,0.79,6500.0,6200.0,Mobile Recharge & Food,59
-0e3a3e8e5f6b5367ada56a39a1923979,+8801710000117,customer_118@pulse.demo,User 118,Corporate Executive,"Gulshan, Dhaka",3360.92,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,199
-b49f08be0a773e2229fc61abd8da8b95,+8801710000118,customer_119@pulse.demo,User 119,Corporate Executive,Narayanganj Export Zone,4904.57,0.0,0.83,85000.0,68000.0,Utility Bills & Savings,433
-d990c9dda481face73791b0c8e955b92,+8801710000119,customer_120@pulse.demo,User 120,Ride-Share Driver,Rajshahi University Area,3331.85,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,468
-28a81e8c4c7f24ad85c10283573d0128,+8801710000120,customer_121@pulse.demo,User 121,University Student,"Mirpur, Dhaka",277.16,0.0,0.74,6500.0,6200.0,Mobile Recharge & Food,365
-1fffa7a0e2e33f033827142f02ca6273,+8801710000121,customer_122@pulse.demo,User 122,University Student,"Mirpur, Dhaka",458.56,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,418
-9504ebcc9326ca4fca8b2123121a2957,+8801710000122,customer_123@pulse.demo,User 123,Small Business Retailer,"Uttara, Dhaka",1298.74,0.0,0.68,65000.0,52000.0,Merchant Pay & Supply,49
-dddd7d472a8fe56d5448d6a78f9cc071,+8801710000123,customer_124@pulse.demo,User 124,School Teacher,Sylhet Sadar,276.57,0.0,0.96,22000.0,20000.0,Family Support & Bills,259
-78e561130356ee495105e127b50aeafd,+8801710000124,customer_125@pulse.demo,User 125,School Teacher,Savar Industrial Zone,3448.36,0.0,0.87,22000.0,20000.0,Family Support & Bills,61
-6ff23617b6ea7e2c9e93ea9de5a664ee,+8801710000125,customer_126@pulse.demo,User 126,University Student,Chittagong Port Area,1099.04,0.0,0.86,6500.0,6200.0,Mobile Recharge & Food,274
-2e17b3929a5129e43014848f21c24fa0,+8801710000126,customer_127@pulse.demo,User 127,University Student,"Mirpur, Dhaka",886.82,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,253
-00fd89fe179a622393f1bf761690476e,+8801710000127,customer_128@pulse.demo,User 128,Corporate Executive,"Dhanmondi, Dhaka",3846.15,0.0,0.71,85000.0,68000.0,Utility Bills & Savings,651
-afab04d5aeed7c1f926cc1d8f4e44d3c,+8801710000128,customer_129@pulse.demo,User 129,School Teacher,Savar Industrial Zone,3433.39,0.0,0.7,22000.0,20000.0,Family Support & Bills,348
-038175daeb731b30e1ad7bb1956fe1f0,+8801710000129,customer_130@pulse.demo,User 130,Garment Factory Worker,Rajshahi University Area,120.62,0.0,0.75,14000.0,13200.0,Cash-Out & Remittance,723
-54534d72cdf2bd44a2820a7df4ba1f81,+8801710000130,customer_131@pulse.demo,User 131,Corporate Executive,"Uttara, Dhaka",4710.28,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,636
-5bca30bdd3d50f957ce74fdda76cc9ea,+8801710000131,customer_132@pulse.demo,User 132,School Teacher,Chittagong Port Area,493.27,0.0,0.9,22000.0,20000.0,Family Support & Bills,730
-29453f71668ed32c83510339ffe52006,+8801710000132,customer_133@pulse.demo,User 133,Ride-Share Driver,Savar Industrial Zone,3991.32,0.0,0.84,28000.0,24000.0,Cash-In & Peer Transfer,72
-6e289de90bca1472044b84460136547d,+8801710000133,customer_134@pulse.demo,User 134,Small Business Retailer,Sylhet Sadar,2170.47,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,548
-da49281e4b6f4231207de3c366f29a17,+8801710000134,customer_135@pulse.demo,User 135,School Teacher,"Gulshan, Dhaka",105.04,0.0,0.79,22000.0,20000.0,Family Support & Bills,531
-a06668f4ce50a15c0ed37835f7850b31,+8801710000135,customer_136@pulse.demo,User 136,Garment Factory Worker,"Uttara, Dhaka",2692.17,0.0,0.86,14000.0,13200.0,Cash-Out & Remittance,500
-395c564c730276213c43042506b16f17,+8801710000136,customer_137@pulse.demo,User 137,School Teacher,Narayanganj Export Zone,1944.37,0.0,0.89,22000.0,20000.0,Family Support & Bills,696
-8706f02d0f0318875f2571a455108914,+8801710000137,customer_138@pulse.demo,User 138,Small Business Retailer,Rajshahi University Area,4050.59,0.0,0.83,65000.0,52000.0,Merchant Pay & Supply,525
-3d1f3f75ea942df59d01d9f6aabaca07,+8801710000138,customer_139@pulse.demo,User 139,Corporate Executive,"Uttara, Dhaka",4137.39,0.0,0.85,85000.0,68000.0,Utility Bills & Savings,360
-d49cad89e8cda6d6bd4c8ea6987e2f5f,+8801710000139,customer_140@pulse.demo,User 140,University Student,Savar Industrial Zone,398.66,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,505
-23efebe841c74c5f26d3f3f0583f9b39,+8801710000140,customer_141@pulse.demo,User 141,Ride-Share Driver,Rajshahi University Area,3357.53,0.0,0.76,28000.0,24000.0,Cash-In & Peer Transfer,536
-0ba130924d4cc837afb5e8df49503f21,+8801710000141,customer_142@pulse.demo,User 142,Small Business Retailer,Narayanganj Export Zone,2463.37,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,294
-cd808c49343c8f4775fea7342e26c26c,+8801710000142,customer_143@pulse.demo,User 143,Small Business Retailer,"Dhanmondi, Dhaka",4407.58,0.0,0.88,65000.0,52000.0,Merchant Pay & Supply,312
-903555b4433a5d79bce80899db3b3bcc,+8801710000143,customer_144@pulse.demo,User 144,Ride-Share Driver,Gazipur Garment Belt,2607.3,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,277
-9f11ff28c22de80457e14c5944c1cba1,+8801710000144,customer_145@pulse.demo,User 145,School Teacher,"Uttara, Dhaka",2175.31,0.0,0.9,22000.0,20000.0,Family Support & Bills,517
-e5ca56ff1607af7c3be7063a47c03d20,+8801710000145,customer_146@pulse.demo,User 146,School Teacher,"Mirpur, Dhaka",1999.56,0.0,0.66,22000.0,20000.0,Family Support & Bills,331
-7b6b0e31749632e87770715dbfe90430,+8801710000146,customer_147@pulse.demo,User 147,University Student,"Uttara, Dhaka",914.73,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,625
-e590ff4796f21a8bf86af0ccd6725e97,+8801710000147,customer_148@pulse.demo,User 148,Small Business Retailer,"Mirpur, Dhaka",2789.69,0.0,0.76,65000.0,52000.0,Merchant Pay & Supply,593
-a99229c788b9565a9e7c26726b7961be,+8801710000148,customer_149@pulse.demo,User 149,Small Business Retailer,"Gulshan, Dhaka",3529.13,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,287
-fd5bce9a35bd84ebffba5113c4c5b809,+8801710000149,customer_150@pulse.demo,User 150,University Student,Savar Industrial Zone,951.61,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,578
+d83e2f9562fdea564e6bcd8aa060888b,+8801710000000,customer_1@pulse.demo,User 1,School Teacher,Savar Industrial Zone,158.8,0.0,0.74,22000.0,20000.0,Family Support & Bills,258
+e9be0d61378dafc2165369e51f8e536f,+8801710000001,customer_2@pulse.demo,User 2,University Student,Savar Industrial Zone,895.87,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,119
+1d189e8463050d9201ad67a1319e45bd,+8801710000002,customer_3@pulse.demo,User 3,Ride-Share Driver,"Uttara, Dhaka",207.32,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,268
+fc275b102ff4a028150f76c31547dbe8,+8801710000003,customer_4@pulse.demo,User 4,Ride-Share Driver,Rajshahi University Area,181.35,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,695
+d9d1a8b16c3ff48360073409723be23f,+8801710000004,customer_5@pulse.demo,User 5,School Teacher,Sylhet Sadar,1874.91,0.0,0.8,22000.0,20000.0,Family Support & Bills,314
+559cb39d70244da6e8c404e33e9a24ef,+8801710000005,customer_6@pulse.demo,User 6,Garment Factory Worker,Narayanganj Export Zone,1969.88,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,189
+5a3bd9ce261ef08ceb254437fe890381,+8801710000006,customer_7@pulse.demo,User 7,University Student,"Gulshan, Dhaka",177.76,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,397
+b2fed208ce304a73eab0cacb2cb67d87,+8801710000007,customer_8@pulse.demo,User 8,Small Business Retailer,Rajshahi University Area,1359.38,0.0,0.66,65000.0,52000.0,Merchant Pay & Supply,500
+b39611906b28fe81d5cde2fd4cf4163d,+8801710000008,customer_9@pulse.demo,User 9,Ride-Share Driver,Savar Industrial Zone,4866.92,0.0,0.77,28000.0,24000.0,Cash-In & Peer Transfer,595
+6306303e9efbaec2987ccfa3b4469aee,+8801710000009,customer_10@pulse.demo,User 10,Small Business Retailer,Rajshahi University Area,4432.99,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,226
+28871db783e44c2c50f3f112e0c9bc14,+8801710000010,customer_11@pulse.demo,User 11,School Teacher,Savar Industrial Zone,249.34,0.0,0.73,22000.0,20000.0,Family Support & Bills,326
+d3276b0252f37d66de282a8c75537a86,+8801710000011,customer_12@pulse.demo,User 12,Garment Factory Worker,Chittagong Port Area,2432.83,0.0,0.78,14000.0,13200.0,Cash-Out & Remittance,494
+d7a4152b539e9c16bdd97ac584d313e1,+8801710000012,customer_13@pulse.demo,User 13,School Teacher,"Gulshan, Dhaka",757.55,0.0,0.77,22000.0,20000.0,Family Support & Bills,716
+76017becec2669005f9cca1aeec72450,+8801710000013,customer_14@pulse.demo,User 14,Small Business Retailer,Savar Industrial Zone,3065.2,0.0,0.71,65000.0,52000.0,Merchant Pay & Supply,280
+1a809d445d59f72e552b93b027248892,+8801710000014,customer_15@pulse.demo,User 15,University Student,"Mirpur, Dhaka",524.32,0.0,0.98,6500.0,6200.0,Mobile Recharge & Food,685
+4d640ff843c93e7fcdf9a63bec957a4b,+8801710000015,customer_16@pulse.demo,User 16,School Teacher,Sylhet Sadar,1005.33,0.0,0.76,22000.0,20000.0,Family Support & Bills,87
+6bfcfabdc79bef4cf4b24992789843ac,+8801710000016,customer_17@pulse.demo,User 17,University Student,Gazipur Garment Belt,1056.31,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,97
+33d207ce7b3c389e549f55cbfa97bb56,+8801710000017,customer_18@pulse.demo,User 18,University Student,Rajshahi University Area,1145.46,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,701
+52a488f230f2537a9f0c9d1dd2383bdd,+8801710000018,customer_19@pulse.demo,User 19,Corporate Executive,"Uttara, Dhaka",4429.18,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,176
+79a4e8f67039ad77f7fc67f4f0f24912,+8801710000019,customer_20@pulse.demo,User 20,Small Business Retailer,Narayanganj Export Zone,1270.81,0.0,0.84,65000.0,52000.0,Merchant Pay & Supply,299
+b178839dd02e5012f83bc664ea8db2bd,+8801710000020,customer_21@pulse.demo,User 21,School Teacher,Rajshahi University Area,1913.69,0.0,0.84,22000.0,20000.0,Family Support & Bills,400
+9929ed8428d9dca53f74f5bb75c224f0,+8801710000021,customer_22@pulse.demo,User 22,University Student,Narayanganj Export Zone,686.91,0.0,0.68,6500.0,6200.0,Mobile Recharge & Food,78
+485007da8ffae6fc6115451b2bddefd7,+8801710000022,customer_23@pulse.demo,User 23,Garment Factory Worker,Narayanganj Export Zone,1775.48,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,462
+3a272c8cb0b073cb41f66af5ff8935f0,+8801710000023,customer_24@pulse.demo,User 24,Ride-Share Driver,Savar Industrial Zone,1954.6,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,509
+7b1908c2d7fcaa0e3bcdc294d38497aa,+8801710000024,customer_25@pulse.demo,User 25,Ride-Share Driver,"Dhanmondi, Dhaka",4856.84,0.0,0.93,28000.0,24000.0,Cash-In & Peer Transfer,41
+6afc67112b4dbbcd8c1435b21a7a8975,+8801710000025,customer_26@pulse.demo,User 26,School Teacher,Savar Industrial Zone,3015.44,0.0,0.83,22000.0,20000.0,Family Support & Bills,303
+f26b6153cf28ac0493ffe69a3e44e70d,+8801710000026,customer_27@pulse.demo,User 27,School Teacher,"Gulshan, Dhaka",535.25,0.0,0.79,22000.0,20000.0,Family Support & Bills,494
+c3f742e498ca6dd1c413e740e739d3c6,+8801710000027,customer_28@pulse.demo,User 28,Garment Factory Worker,"Dhanmondi, Dhaka",2722.69,0.0,0.9,14000.0,13200.0,Cash-Out & Remittance,549
+e07d629844063aa2c4e47c1e2dc9f939,+8801710000028,customer_29@pulse.demo,User 29,Garment Factory Worker,"Dhanmondi, Dhaka",2364.59,0.0,0.82,14000.0,13200.0,Cash-Out & Remittance,233
+ca78f65852a7626829f90131630b47f5,+8801710000029,customer_30@pulse.demo,User 30,University Student,"Gulshan, Dhaka",1003.14,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,573
+414ef60a86ae0d2cf555aeabacb1147b,+8801710000030,customer_31@pulse.demo,User 31,Garment Factory Worker,Rajshahi University Area,941.43,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,401
+5e3aaa8d7bdefced38024e76ad0b4998,+8801710000031,customer_32@pulse.demo,User 32,Small Business Retailer,Chittagong Port Area,336.73,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,110
+01a1e0e610adcc705211cfa4c31ca605,+8801710000032,customer_33@pulse.demo,User 33,Garment Factory Worker,"Mirpur, Dhaka",2294.06,0.0,0.97,14000.0,13200.0,Cash-Out & Remittance,575
+678db274d039271185f1ebaeefb8f0af,+8801710000033,customer_34@pulse.demo,User 34,University Student,Narayanganj Export Zone,874.69,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,199
+513a36ecdf05c381ec0c9f2ce16bd808,+8801710000034,customer_35@pulse.demo,User 35,Small Business Retailer,Sylhet Sadar,4368.54,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,246
+c37d0390776457a195a751bc59c582d0,+8801710000035,customer_36@pulse.demo,User 36,Ride-Share Driver,Chittagong Port Area,3579.1,0.0,0.78,28000.0,24000.0,Cash-In & Peer Transfer,717
+13d064737699828624262ad71c0d8582,+8801710000036,customer_37@pulse.demo,User 37,School Teacher,"Gulshan, Dhaka",1955.74,0.0,0.82,22000.0,20000.0,Family Support & Bills,153
+be9113c705106ab6baf3810f663155aa,+8801710000037,customer_38@pulse.demo,User 38,University Student,Chittagong Port Area,130.03,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,597
+2aeba3f037fa788173e69172fca5c16c,+8801710000038,customer_39@pulse.demo,User 39,University Student,Rajshahi University Area,325.27,0.0,0.67,6500.0,6200.0,Mobile Recharge & Food,676
+6f51eb24caf2fafa1767bf98c0a7955f,+8801710000039,customer_40@pulse.demo,User 40,Garment Factory Worker,Chittagong Port Area,235.35,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,368
+51da716adcdd913ce5f6f7552fa2aac0,+8801710000040,customer_41@pulse.demo,User 41,Garment Factory Worker,Sylhet Sadar,704.51,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,249
+964ef6445ac231ec3247825ce8ac95b1,+8801710000041,customer_42@pulse.demo,User 42,Ride-Share Driver,Narayanganj Export Zone,3630.6,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,620
+62cb7af1a21cbc216c8f144a524fdcbf,+8801710000042,customer_43@pulse.demo,User 43,Corporate Executive,Chittagong Port Area,3933.87,0.0,0.92,85000.0,68000.0,Utility Bills & Savings,224
+f2039338e43009cd64c44f68845553a5,+8801710000043,customer_44@pulse.demo,User 44,Garment Factory Worker,Savar Industrial Zone,1862.2,0.0,0.77,14000.0,13200.0,Cash-Out & Remittance,450
+bd7a97d8a93398d41937b94f1b86f982,+8801710000044,customer_45@pulse.demo,User 45,Corporate Executive,Gazipur Garment Belt,3383.15,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,130
+f4f4d8e646f912716e7d5247dd1f8c7b,+8801710000045,customer_46@pulse.demo,User 46,Garment Factory Worker,"Uttara, Dhaka",2052.59,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,141
+b8353e0d04fbbe67d54011173422e1b0,+8801710000046,customer_47@pulse.demo,User 47,University Student,Chittagong Port Area,287.76,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,462
+587e765e448b565941a79cb62f271708,+8801710000047,customer_48@pulse.demo,User 48,University Student,"Dhanmondi, Dhaka",628.29,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,107
+0e77ebdd4041a6a5323117025cea8217,+8801710000048,customer_49@pulse.demo,User 49,Corporate Executive,Sylhet Sadar,534.65,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,583
+88ee77fa646f3ed17ff7137529d318c3,+8801710000049,customer_50@pulse.demo,User 50,Garment Factory Worker,Savar Industrial Zone,2597.51,0.0,0.93,14000.0,13200.0,Cash-Out & Remittance,200
+d4f1760ca594c0c2fe69d817d003207f,+8801710000050,customer_51@pulse.demo,User 51,Corporate Executive,"Mirpur, Dhaka",2432.72,0.0,0.94,85000.0,68000.0,Utility Bills & Savings,90
+3e296a5fef4a62d06919b50a0d107ec5,+8801710000051,customer_52@pulse.demo,User 52,University Student,"Uttara, Dhaka",52.69,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,495
+de1e3b45d94c18b965c8f7c8601ce665,+8801710000052,customer_53@pulse.demo,User 53,Small Business Retailer,"Uttara, Dhaka",3498.13,0.0,0.89,65000.0,52000.0,Merchant Pay & Supply,599
+ee8fb3c6660c316e51981ed5c90f2d78,+8801710000053,customer_54@pulse.demo,User 54,School Teacher,"Mirpur, Dhaka",723.37,0.0,0.75,22000.0,20000.0,Family Support & Bills,89
+c70953a707ef5592a6ff945fd8ece5d4,+8801710000054,customer_55@pulse.demo,User 55,Ride-Share Driver,Sylhet Sadar,351.74,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,81
+8b8d7bb5344448cfc6c1814d5e2062f2,+8801710000055,customer_56@pulse.demo,User 56,Ride-Share Driver,"Mirpur, Dhaka",2539.11,0.0,0.93,28000.0,24000.0,Cash-In & Peer Transfer,191
+70572b07be43be088f37d9d12abd8a40,+8801710000056,customer_57@pulse.demo,User 57,Garment Factory Worker,Sylhet Sadar,270.31,0.0,0.71,14000.0,13200.0,Cash-Out & Remittance,639
+db89d6cb6f4ce9eddd3f72ca24908e9c,+8801710000057,customer_58@pulse.demo,User 58,Garment Factory Worker,Chittagong Port Area,1160.38,0.0,0.96,14000.0,13200.0,Cash-Out & Remittance,613
+6bcd7ab25324fd1c70fa0e1a2fa8170f,+8801710000058,customer_59@pulse.demo,User 59,University Student,Rajshahi University Area,793.15,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,459
+8820c1b16dd01d829dada6effb4a44c7,+8801710000059,customer_60@pulse.demo,User 60,School Teacher,Rajshahi University Area,2508.74,0.0,0.75,22000.0,20000.0,Family Support & Bills,297
+bb0913931dc4c489a17586bb3dce4b4f,+8801710000060,customer_61@pulse.demo,User 61,University Student,"Gulshan, Dhaka",348.36,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,717
+48dd3a921ff4fb56b14c05c45fdbe58b,+8801710000061,customer_62@pulse.demo,User 62,School Teacher,"Dhanmondi, Dhaka",2038.93,0.0,0.96,22000.0,20000.0,Family Support & Bills,104
+89142f951af0fd240528aafe3846b21a,+8801710000062,customer_63@pulse.demo,User 63,Garment Factory Worker,"Mirpur, Dhaka",1758.19,0.0,0.84,14000.0,13200.0,Cash-Out & Remittance,132
+9da6f827357773c001e814f32aa2f1b9,+8801710000063,customer_64@pulse.demo,User 64,Garment Factory Worker,Sylhet Sadar,636.17,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,387
+8af2856cf43f32406eaf01af11ea3e30,+8801710000064,customer_65@pulse.demo,User 65,Garment Factory Worker,Chittagong Port Area,1066.2,0.0,0.7,14000.0,13200.0,Cash-Out & Remittance,586
+5c36931afdc27719d5c7b770083a2bfd,+8801710000065,customer_66@pulse.demo,User 66,School Teacher,"Dhanmondi, Dhaka",2710.8,0.0,0.98,22000.0,20000.0,Family Support & Bills,699
+1c40dcd1bada79a9e93c1b777cb14894,+8801710000066,customer_67@pulse.demo,User 67,Ride-Share Driver,Gazipur Garment Belt,3355.92,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,709
+2c64d93a4def44dfb8e83ead7bc391a4,+8801710000067,customer_68@pulse.demo,User 68,Garment Factory Worker,Narayanganj Export Zone,777.28,0.0,0.94,14000.0,13200.0,Cash-Out & Remittance,596
+d6c5737c4743b6e3403aeaa9901972ea,+8801710000068,customer_69@pulse.demo,User 69,University Student,"Dhanmondi, Dhaka",402.2,0.0,0.72,6500.0,6200.0,Mobile Recharge & Food,381
+4cf22dcd3631e13d273ed3190f554c50,+8801710000069,customer_70@pulse.demo,User 70,University Student,"Dhanmondi, Dhaka",681.76,0.0,0.73,6500.0,6200.0,Mobile Recharge & Food,82
+4224c0fba495a0acc28fc92260bfc540,+8801710000070,customer_71@pulse.demo,User 71,Garment Factory Worker,"Uttara, Dhaka",2330.71,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,371
+10bfafaf9de1967992d31152ead42ca6,+8801710000071,customer_72@pulse.demo,User 72,University Student,"Dhanmondi, Dhaka",251.98,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,467
+ccbd5de1a2e37ea26b40f47e60d826f1,+8801710000072,customer_73@pulse.demo,User 73,Ride-Share Driver,Gazipur Garment Belt,603.78,0.0,0.96,28000.0,24000.0,Cash-In & Peer Transfer,182
+c4546322fb247d02c30218c586c4978c,+8801710000073,customer_74@pulse.demo,User 74,Ride-Share Driver,Gazipur Garment Belt,4181.25,0.0,0.84,28000.0,24000.0,Cash-In & Peer Transfer,181
+a1b533be4a305b507fc035b6abbbdbec,+8801710000074,customer_75@pulse.demo,User 75,Corporate Executive,Narayanganj Export Zone,257.05,0.0,0.77,85000.0,68000.0,Utility Bills & Savings,70
+7637d021586276dd7d776e92bad51073,+8801710000075,customer_76@pulse.demo,User 76,Small Business Retailer,Chittagong Port Area,3426.23,0.0,0.87,65000.0,52000.0,Merchant Pay & Supply,392
+db7397d59b5c336340b02f9a335d7c16,+8801710000076,customer_77@pulse.demo,User 77,Ride-Share Driver,"Uttara, Dhaka",4870.49,0.0,0.9,28000.0,24000.0,Cash-In & Peer Transfer,272
+6b90ec459746574b35a305c146812958,+8801710000077,customer_78@pulse.demo,User 78,University Student,Narayanganj Export Zone,1151.77,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,370
+5cf9036bf006cfba5663aa2e891f7f61,+8801710000078,customer_79@pulse.demo,User 79,Corporate Executive,Chittagong Port Area,1370.69,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,140
+d692b1129b75e7fea37b78c9e66401b1,+8801710000079,customer_80@pulse.demo,User 80,Corporate Executive,Gazipur Garment Belt,4300.04,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,501
+ac47c7360ee84c2a9b86d4b0b93830fa,+8801710000080,customer_81@pulse.demo,User 81,Small Business Retailer,"Dhanmondi, Dhaka",4111.66,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,258
+3c5828cc80c07f7dacac6e83148de4b7,+8801710000081,customer_82@pulse.demo,User 82,Garment Factory Worker,Chittagong Port Area,1145.78,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,101
+87c68ff89e71e5944965be7273f88a0f,+8801710000082,customer_83@pulse.demo,User 83,Small Business Retailer,"Gulshan, Dhaka",3225.33,0.0,0.78,65000.0,52000.0,Merchant Pay & Supply,579
+96a30cbf619a8d4c71b418a874932ca5,+8801710000083,customer_84@pulse.demo,User 84,Small Business Retailer,Gazipur Garment Belt,620.94,0.0,0.97,65000.0,52000.0,Merchant Pay & Supply,212
+d55228a33f12cadc8b94bc8dcb639b58,+8801710000084,customer_85@pulse.demo,User 85,Ride-Share Driver,"Dhanmondi, Dhaka",239.37,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,383
+1fb1ce1db038e991579b9f5c4c708ba3,+8801710000085,customer_86@pulse.demo,User 86,School Teacher,"Gulshan, Dhaka",1948.31,0.0,0.97,22000.0,20000.0,Family Support & Bills,148
+c79ad7fdb3c100f35b7c8afda507e897,+8801710000086,customer_87@pulse.demo,User 87,Corporate Executive,Rajshahi University Area,990.89,0.0,0.66,85000.0,68000.0,Utility Bills & Savings,476
+9cca3036721680236a3186af98d9126c,+8801710000087,customer_88@pulse.demo,User 88,Garment Factory Worker,Sylhet Sadar,2595.33,0.0,0.83,14000.0,13200.0,Cash-Out & Remittance,716
+f96df6a40f7f9b50f6f89ff03c413b2c,+8801710000088,customer_89@pulse.demo,User 89,University Student,"Gulshan, Dhaka",589.12,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,368
+dcd9e2e393926f07f4748c9763f3d1b8,+8801710000089,customer_90@pulse.demo,User 90,Ride-Share Driver,"Gulshan, Dhaka",3333.77,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,337
+29026c0136421d0a42f212474173b1d1,+8801710000090,customer_91@pulse.demo,User 91,Ride-Share Driver,"Dhanmondi, Dhaka",3351.12,0.0,0.76,28000.0,24000.0,Cash-In & Peer Transfer,332
+257647a3fd5bdb353242af3f66e3dadf,+8801710000091,customer_92@pulse.demo,User 92,Ride-Share Driver,Narayanganj Export Zone,999.61,0.0,0.87,28000.0,24000.0,Cash-In & Peer Transfer,418
+ce8fcd477cd97d1cf871047a9667670c,+8801710000092,customer_93@pulse.demo,User 93,School Teacher,Narayanganj Export Zone,2727.49,0.0,0.75,22000.0,20000.0,Family Support & Bills,591
+edd3c5e358608487855e1ac0e0816718,+8801710000093,customer_94@pulse.demo,User 94,Garment Factory Worker,"Dhanmondi, Dhaka",839.01,0.0,0.79,14000.0,13200.0,Cash-Out & Remittance,623
+2c3a807c0e4d899bf2699b55067cb0dc,+8801710000094,customer_95@pulse.demo,User 95,Ride-Share Driver,"Gulshan, Dhaka",2351.69,0.0,0.8,28000.0,24000.0,Cash-In & Peer Transfer,248
+dee872bc42b681b8b216330fdba47cae,+8801710000095,customer_96@pulse.demo,User 96,Ride-Share Driver,"Mirpur, Dhaka",3978.99,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,203
+0d8ab73587271d291e648c3526110d7a,+8801710000096,customer_97@pulse.demo,User 97,School Teacher,Savar Industrial Zone,1284.47,0.0,0.87,22000.0,20000.0,Family Support & Bills,664
+da20e1cb54391535bdfd1afb6eafca6a,+8801710000097,customer_98@pulse.demo,User 98,Small Business Retailer,Savar Industrial Zone,4101.2,0.0,0.9,65000.0,52000.0,Merchant Pay & Supply,718
+37ef13cd856980bcb7544d2a9cb40470,+8801710000098,customer_99@pulse.demo,User 99,Small Business Retailer,Chittagong Port Area,4042.49,0.0,0.7,65000.0,52000.0,Merchant Pay & Supply,77
+cb3061333002779a230db73167301771,+8801710000099,customer_100@pulse.demo,User 100,University Student,"Mirpur, Dhaka",814.09,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,496
+9f961f10b0469feb057d6927aad323fb,+8801710000100,customer_101@pulse.demo,User 101,Corporate Executive,Rajshahi University Area,1012.45,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,536
+548901f2c39d7b49791601957d3076a3,+8801710000101,customer_102@pulse.demo,User 102,Corporate Executive,Chittagong Port Area,780.48,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,139
+d6344c01be7ff59d88c0fc85b778e2c2,+8801710000102,customer_103@pulse.demo,User 103,Corporate Executive,Chittagong Port Area,920.64,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,560
+276353418886d0de4e58a7166008e257,+8801710000103,customer_104@pulse.demo,User 104,Corporate Executive,Gazipur Garment Belt,2809.16,0.0,0.95,85000.0,68000.0,Utility Bills & Savings,154
+68b8e40cbbee66d7a0abe831fafbda92,+8801710000104,customer_105@pulse.demo,User 105,Corporate Executive,Narayanganj Export Zone,4017.01,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,602
+991cffd43f0cecb848a221c31aed885e,+8801710000105,customer_106@pulse.demo,User 106,Ride-Share Driver,"Gulshan, Dhaka",4752.7,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,657
+b3688d2d63fc8daedf33dbe33bde82d5,+8801710000106,customer_107@pulse.demo,User 107,School Teacher,Sylhet Sadar,1906.32,0.0,0.95,22000.0,20000.0,Family Support & Bills,486
+245f1ebc43aecab22c125c4697b1e0bb,+8801710000107,customer_108@pulse.demo,User 108,University Student,"Mirpur, Dhaka",612.59,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,682
+d00b7521f15ca0f2fdf0f095d1e8c5cd,+8801710000108,customer_109@pulse.demo,User 109,Small Business Retailer,Sylhet Sadar,2448.76,0.0,0.73,65000.0,52000.0,Merchant Pay & Supply,480
+ea6740c5da54723875797af6545efcd2,+8801710000109,customer_110@pulse.demo,User 110,Garment Factory Worker,"Dhanmondi, Dhaka",694.86,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,583
+1084ad0a7f2dc0d3ddcf13a390b5f4b7,+8801710000110,customer_111@pulse.demo,User 111,Garment Factory Worker,Narayanganj Export Zone,464.78,0.0,0.78,14000.0,13200.0,Cash-Out & Remittance,186
+b4500962827ab957b505e4e4243fd17c,+8801710000111,customer_112@pulse.demo,User 112,School Teacher,Chittagong Port Area,329.4,0.0,0.78,22000.0,20000.0,Family Support & Bills,585
+8ea077b87646474e95b30b044962fc5c,+8801710000112,customer_113@pulse.demo,User 113,Corporate Executive,"Uttara, Dhaka",358.22,0.0,0.92,85000.0,68000.0,Utility Bills & Savings,428
+53cdd2736194db69b3a605acdf0d4771,+8801710000113,customer_114@pulse.demo,User 114,Ride-Share Driver,Gazipur Garment Belt,4290.82,0.0,0.9,28000.0,24000.0,Cash-In & Peer Transfer,419
+5fb91bd68957438a8e0b8dd36b3ff177,+8801710000114,customer_115@pulse.demo,User 115,Corporate Executive,Gazipur Garment Belt,4716.57,0.0,0.75,85000.0,68000.0,Utility Bills & Savings,429
+4f90bfc475e1fd6c4bdf57a8d69eecd9,+8801710000115,customer_116@pulse.demo,User 116,Corporate Executive,Sylhet Sadar,3750.2,0.0,0.83,85000.0,68000.0,Utility Bills & Savings,647
+f258344aee8a6b7dec07ec297c6db38d,+8801710000116,customer_117@pulse.demo,User 117,University Student,"Mirpur, Dhaka",324.28,0.0,0.79,6500.0,6200.0,Mobile Recharge & Food,59
+d4c49d24e22f7b5c4b50222d4914a34c,+8801710000117,customer_118@pulse.demo,User 118,Corporate Executive,"Gulshan, Dhaka",3360.92,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,199
+76b1cc20226ed691602be9b5a2dea98f,+8801710000118,customer_119@pulse.demo,User 119,Corporate Executive,Narayanganj Export Zone,4904.57,0.0,0.83,85000.0,68000.0,Utility Bills & Savings,433
+1011691fb1ba53d070e26f99a1252a78,+8801710000119,customer_120@pulse.demo,User 120,Ride-Share Driver,Rajshahi University Area,3331.85,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,468
+b2477fd2d67bca0e3db8c806adc96e4c,+8801710000120,customer_121@pulse.demo,User 121,University Student,"Mirpur, Dhaka",277.16,0.0,0.74,6500.0,6200.0,Mobile Recharge & Food,365
+b709c04dbe85f0d534c71e03b201bdb2,+8801710000121,customer_122@pulse.demo,User 122,University Student,"Mirpur, Dhaka",458.56,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,418
+eac5090143c5f64adcbaa145dc6018fe,+8801710000122,customer_123@pulse.demo,User 123,Small Business Retailer,"Uttara, Dhaka",1298.74,0.0,0.68,65000.0,52000.0,Merchant Pay & Supply,49
+54ab4fdc5ef2469c62ccc890fbba2f2d,+8801710000123,customer_124@pulse.demo,User 124,School Teacher,Sylhet Sadar,276.57,0.0,0.96,22000.0,20000.0,Family Support & Bills,259
+a4346c795253532d1207e4ab7c9dd5d8,+8801710000124,customer_125@pulse.demo,User 125,School Teacher,Savar Industrial Zone,3448.36,0.0,0.87,22000.0,20000.0,Family Support & Bills,61
+23e2c619ed93f58b46c4bcb26174a22c,+8801710000125,customer_126@pulse.demo,User 126,University Student,Chittagong Port Area,1099.04,0.0,0.86,6500.0,6200.0,Mobile Recharge & Food,274
+8d9cb4bbf12174e1cdf1222fc1730954,+8801710000126,customer_127@pulse.demo,User 127,University Student,"Mirpur, Dhaka",886.82,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,253
+f21c29c30b5e503ddb10df0a836e188d,+8801710000127,customer_128@pulse.demo,User 128,Corporate Executive,"Dhanmondi, Dhaka",3846.15,0.0,0.71,85000.0,68000.0,Utility Bills & Savings,651
+cd10119bf3c34621ebbf07f6b9a1478a,+8801710000128,customer_129@pulse.demo,User 129,School Teacher,Savar Industrial Zone,3433.39,0.0,0.7,22000.0,20000.0,Family Support & Bills,348
+a652621245ca629760100e8d62264230,+8801710000129,customer_130@pulse.demo,User 130,Garment Factory Worker,Rajshahi University Area,120.62,0.0,0.75,14000.0,13200.0,Cash-Out & Remittance,723
+3776d272e45a225980037153458bb9af,+8801710000130,customer_131@pulse.demo,User 131,Corporate Executive,"Uttara, Dhaka",4710.28,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,636
+e14e20ecb05d81561e4a2353097daa87,+8801710000131,customer_132@pulse.demo,User 132,School Teacher,Chittagong Port Area,493.27,0.0,0.9,22000.0,20000.0,Family Support & Bills,730
+1cf6ee73cb5eeb6492709d01b824884f,+8801710000132,customer_133@pulse.demo,User 133,Ride-Share Driver,Savar Industrial Zone,3991.32,0.0,0.84,28000.0,24000.0,Cash-In & Peer Transfer,72
+518570dc415290ad3952810e4aab4b78,+8801710000133,customer_134@pulse.demo,User 134,Small Business Retailer,Sylhet Sadar,2170.47,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,548
+f207f3d8b208a8127abc0ef28453e7c1,+8801710000134,customer_135@pulse.demo,User 135,School Teacher,"Gulshan, Dhaka",105.04,0.0,0.79,22000.0,20000.0,Family Support & Bills,531
+b122773bf2b6c2b6cbe28489171ed8b3,+8801710000135,customer_136@pulse.demo,User 136,Garment Factory Worker,"Uttara, Dhaka",2692.17,0.0,0.86,14000.0,13200.0,Cash-Out & Remittance,500
+d89f15251ff22600528da0bd6cf6d6d2,+8801710000136,customer_137@pulse.demo,User 137,School Teacher,Narayanganj Export Zone,1944.37,0.0,0.89,22000.0,20000.0,Family Support & Bills,696
+cd5217ded6c593310c3d8dd5cf7ce40a,+8801710000137,customer_138@pulse.demo,User 138,Small Business Retailer,Rajshahi University Area,4050.59,0.0,0.83,65000.0,52000.0,Merchant Pay & Supply,525
+42bfe7ddfda7ce032fb69e93f232f149,+8801710000138,customer_139@pulse.demo,User 139,Corporate Executive,"Uttara, Dhaka",4137.39,0.0,0.85,85000.0,68000.0,Utility Bills & Savings,360
+99c1ac19d4de4772ce2bfa87b170e7b4,+8801710000139,customer_140@pulse.demo,User 140,University Student,Savar Industrial Zone,398.66,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,505
+ad5cf209b41f09b6cb3de69edc9419fd,+8801710000140,customer_141@pulse.demo,User 141,Ride-Share Driver,Rajshahi University Area,3357.53,0.0,0.76,28000.0,24000.0,Cash-In & Peer Transfer,536
+f80f683573086f85d03c590dcb838dea,+8801710000141,customer_142@pulse.demo,User 142,Small Business Retailer,Narayanganj Export Zone,2463.37,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,294
+4da82f1ec4d7d5ceda39ad9941929a0c,+8801710000142,customer_143@pulse.demo,User 143,Small Business Retailer,"Dhanmondi, Dhaka",4407.58,0.0,0.88,65000.0,52000.0,Merchant Pay & Supply,312
+d45ac8d3368d8f6ccd8e436b16a83076,+8801710000143,customer_144@pulse.demo,User 144,Ride-Share Driver,Gazipur Garment Belt,2607.3,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,277
+9f2dc6895d69a67a70f4cd15255e5bbe,+8801710000144,customer_145@pulse.demo,User 145,School Teacher,"Uttara, Dhaka",2175.31,0.0,0.9,22000.0,20000.0,Family Support & Bills,517
+f65e9087926e075aae9931ab052cf248,+8801710000145,customer_146@pulse.demo,User 146,School Teacher,"Mirpur, Dhaka",1999.56,0.0,0.66,22000.0,20000.0,Family Support & Bills,331
+7f2eef7a18009c00ea8cbaf3636e7b50,+8801710000146,customer_147@pulse.demo,User 147,University Student,"Uttara, Dhaka",914.73,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,625
+45c83cd0c174a973ae372942f6902d97,+8801710000147,customer_148@pulse.demo,User 148,Small Business Retailer,"Mirpur, Dhaka",2789.69,0.0,0.76,65000.0,52000.0,Merchant Pay & Supply,593
+7eba3cf7996d322451ff65115a272f79,+8801710000148,customer_149@pulse.demo,User 149,Small Business Retailer,"Gulshan, Dhaka",3529.13,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,287
+aadd2b30c2234b1491c4d0fe7739014f,+8801710000149,customer_150@pulse.demo,User 150,University Student,Savar Industrial Zone,951.61,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,578
+3ed80598bbea6fdf7598a75b97624476,+8801710000150,customer_151@pulse.demo,User 151,School Teacher,Narayanganj Export Zone,883.2,0.0,0.89,22000.0,20000.0,Family Support & Bills,313
+c5884302f1007c892cf4ae8a91e8fb81,+8801710000151,customer_152@pulse.demo,User 152,School Teacher,Rajshahi University Area,4298.24,0.0,0.82,22000.0,20000.0,Family Support & Bills,319
+edf306a51a1f41d72bcd86be8342b719,+8801710000152,customer_153@pulse.demo,User 153,Garment Factory Worker,Chittagong Port Area,864.68,0.0,0.77,14000.0,13200.0,Cash-Out & Remittance,339
+c7c6cd01d5d1a83859cda21003cdb60d,+8801710000153,customer_154@pulse.demo,User 154,Garment Factory Worker,Sylhet Sadar,398.1,0.0,0.67,14000.0,13200.0,Cash-Out & Remittance,85
+494251b96b29924b8e31a937e8203547,+8801710000154,customer_155@pulse.demo,User 155,Ride-Share Driver,"Dhanmondi, Dhaka",3502.22,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,532
+9749153071c7e64fe74e87fb26858759,+8801710000155,customer_156@pulse.demo,User 156,Garment Factory Worker,Gazipur Garment Belt,1628.68,0.0,0.8,14000.0,13200.0,Cash-Out & Remittance,481
+344bcd17a1b116593ca26245a673f289,+8801710000156,customer_157@pulse.demo,User 157,Small Business Retailer,Narayanganj Export Zone,4829.21,0.0,0.73,65000.0,52000.0,Merchant Pay & Supply,519
+76c65650b7f36144bea431ff814687e5,+8801710000157,customer_158@pulse.demo,User 158,Garment Factory Worker,Savar Industrial Zone,1151.95,0.0,0.67,14000.0,13200.0,Cash-Out & Remittance,674
+4bd1908b4ef1752aade49eaef2224e64,+8801710000158,customer_159@pulse.demo,User 159,School Teacher,Gazipur Garment Belt,710.01,0.0,0.92,22000.0,20000.0,Family Support & Bills,341
+645a7cdc6ded5d789159bc7444c9554b,+8801710000159,customer_160@pulse.demo,User 160,Garment Factory Worker,Chittagong Port Area,375.74,0.0,0.9,14000.0,13200.0,Cash-Out & Remittance,650
+04f0ff102cb269237b70476a3fe0429c,+8801710000160,customer_161@pulse.demo,User 161,Ride-Share Driver,Rajshahi University Area,1167.15,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,491
+5c0687d3c7b39def06271c5b1235f659,+8801710000161,customer_162@pulse.demo,User 162,Corporate Executive,"Dhanmondi, Dhaka",4307.82,0.0,0.98,85000.0,68000.0,Utility Bills & Savings,342
+c91d90f4d27f2a7f82e3991560ca9b29,+8801710000162,customer_163@pulse.demo,User 163,Ride-Share Driver,Rajshahi University Area,348.14,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,131
+cfb8cba265756aa744ccf46872721af6,+8801710000163,customer_164@pulse.demo,User 164,University Student,Chittagong Port Area,380.81,0.0,0.68,6500.0,6200.0,Mobile Recharge & Food,275
+49b6767a55df5d3f0f3dd3306e7b8f51,+8801710000164,customer_165@pulse.demo,User 165,University Student,Sylhet Sadar,143.83,0.0,0.65,6500.0,6200.0,Mobile Recharge & Food,491
+4bf955f78442d8270141a099ace061a6,+8801710000165,customer_166@pulse.demo,User 166,School Teacher,Rajshahi University Area,2094.12,0.0,0.66,22000.0,20000.0,Family Support & Bills,325
+50193230f0c297469e831caea5ee3a67,+8801710000166,customer_167@pulse.demo,User 167,School Teacher,"Dhanmondi, Dhaka",3108.0,0.0,0.8,22000.0,20000.0,Family Support & Bills,269
+b52f37124cbfe57b7b4fdc9347dbf2a4,+8801710000167,customer_168@pulse.demo,User 168,Small Business Retailer,Rajshahi University Area,3322.86,0.0,0.96,65000.0,52000.0,Merchant Pay & Supply,465
+11fb347b1e8a1428523f5c042c84f22f,+8801710000168,customer_169@pulse.demo,User 169,Garment Factory Worker,Sylhet Sadar,668.23,0.0,0.7,14000.0,13200.0,Cash-Out & Remittance,302
+bafdf4f75f97dd0f07141b26e00276cc,+8801710000169,customer_170@pulse.demo,User 170,University Student,Savar Industrial Zone,124.55,0.0,0.91,6500.0,6200.0,Mobile Recharge & Food,639
+782308cf5a5b08e8f6f0cae13644fafe,+8801710000170,customer_171@pulse.demo,User 171,School Teacher,Rajshahi University Area,4057.19,0.0,0.79,22000.0,20000.0,Family Support & Bills,509
+95154e230c49f3c864d721e70ca8d26b,+8801710000171,customer_172@pulse.demo,User 172,School Teacher,"Dhanmondi, Dhaka",3093.84,0.0,0.96,22000.0,20000.0,Family Support & Bills,542
+35d00bb2738c91f3953343c35af8981d,+8801710000172,customer_173@pulse.demo,User 173,Ride-Share Driver,"Mirpur, Dhaka",2216.91,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,472
+85a9896248dcf5eeb5344c6ac9af1ada,+8801710000173,customer_174@pulse.demo,User 174,School Teacher,"Gulshan, Dhaka",2676.15,0.0,0.66,22000.0,20000.0,Family Support & Bills,264
+d6cd9c939b5a7a6c62e80bc5200d7929,+8801710000174,customer_175@pulse.demo,User 175,School Teacher,Rajshahi University Area,2603.98,0.0,0.66,22000.0,20000.0,Family Support & Bills,718
+b842625d1fe455eb220e95986bee219f,+8801710000175,customer_176@pulse.demo,User 176,Small Business Retailer,Rajshahi University Area,249.15,0.0,0.9,65000.0,52000.0,Merchant Pay & Supply,511
+60b83dcc757feec81569cd137534e1f2,+8801710000176,customer_177@pulse.demo,User 177,Ride-Share Driver,"Mirpur, Dhaka",4584.56,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,629
+6ea6386e515ff12f070119399c3e822d,+8801710000177,customer_178@pulse.demo,User 178,Corporate Executive,"Mirpur, Dhaka",4846.82,0.0,0.81,85000.0,68000.0,Utility Bills & Savings,448
+09dbaf43c1d5856b9d68c63db91a3c1e,+8801710000178,customer_179@pulse.demo,User 179,Small Business Retailer,"Gulshan, Dhaka",3367.16,0.0,0.93,65000.0,52000.0,Merchant Pay & Supply,367
+8bfb0695992bfae7464f77329c7d4aa7,+8801710000179,customer_180@pulse.demo,User 180,Corporate Executive,"Mirpur, Dhaka",1476.68,0.0,0.96,85000.0,68000.0,Utility Bills & Savings,593
+b55a7c8a849d5249a5f47662da4b8db5,+8801710000180,customer_181@pulse.demo,User 181,Garment Factory Worker,"Mirpur, Dhaka",292.16,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,148
+0ea9ba2e4ac05d4ecef0b0d0d4cb56bb,+8801710000181,customer_182@pulse.demo,User 182,Corporate Executive,Sylhet Sadar,4133.39,0.0,0.65,85000.0,68000.0,Utility Bills & Savings,585
+1064eada7ab7bde8b92e46d5ecebfa90,+8801710000182,customer_183@pulse.demo,User 183,Corporate Executive,"Uttara, Dhaka",318.31,0.0,0.82,85000.0,68000.0,Utility Bills & Savings,667
+6b4a799fdad3aeb92945c0cba1cbf7fc,+8801710000183,customer_184@pulse.demo,User 184,Corporate Executive,"Mirpur, Dhaka",3811.95,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,592
+0f6bd3f31cd91b29997e7172b1a29d4a,+8801710000184,customer_185@pulse.demo,User 185,University Student,"Dhanmondi, Dhaka",597.65,0.0,0.88,6500.0,6200.0,Mobile Recharge & Food,154
+09838b91bfe4bf94236fda32e5546860,+8801710000185,customer_186@pulse.demo,User 186,Garment Factory Worker,Rajshahi University Area,2248.11,0.0,0.88,14000.0,13200.0,Cash-Out & Remittance,348
+45ce3fdd415cf063d0c3c01b7869fae0,+8801710000186,customer_187@pulse.demo,User 187,Ride-Share Driver,Gazipur Garment Belt,2783.64,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,146
+694e81d0cb342769f46ef19ae6ac79a4,+8801710000187,customer_188@pulse.demo,User 188,Corporate Executive,Savar Industrial Zone,3256.16,0.0,0.7,85000.0,68000.0,Utility Bills & Savings,328
+b1b70e6956d342a22c9a74f0c55804aa,+8801710000188,customer_189@pulse.demo,User 189,Ride-Share Driver,"Dhanmondi, Dhaka",2106.68,0.0,0.81,28000.0,24000.0,Cash-In & Peer Transfer,513
+b7d2d3dae8cfb5169a7ef7aa3055fbc8,+8801710000189,customer_190@pulse.demo,User 190,University Student,"Mirpur, Dhaka",739.08,0.0,0.78,6500.0,6200.0,Mobile Recharge & Food,643
+c24b5b19a44d9771d47ac387878dca7a,+8801710000190,customer_191@pulse.demo,User 191,Ride-Share Driver,Narayanganj Export Zone,4326.93,0.0,0.74,28000.0,24000.0,Cash-In & Peer Transfer,454
+19213fc87aa47718568ba7363a7c5678,+8801710000191,customer_192@pulse.demo,User 192,Small Business Retailer,Sylhet Sadar,1372.5,0.0,0.65,65000.0,52000.0,Merchant Pay & Supply,335
+9d65227ea7eed18a66e65fdce167b88e,+8801710000192,customer_193@pulse.demo,User 193,Ride-Share Driver,Rajshahi University Area,4994.57,0.0,0.81,28000.0,24000.0,Cash-In & Peer Transfer,182
+65a199a68780ce68e56d26f4a9dbc6d4,+8801710000193,customer_194@pulse.demo,User 194,Corporate Executive,Sylhet Sadar,2447.49,0.0,0.76,85000.0,68000.0,Utility Bills & Savings,586
+307d328ac1f43667bbf15f2b8a5d359e,+8801710000194,customer_195@pulse.demo,User 195,Corporate Executive,"Mirpur, Dhaka",4667.62,0.0,0.94,85000.0,68000.0,Utility Bills & Savings,274
+4c9d54e154f2c0bfcc5f3a7462b26b1f,+8801710000195,customer_196@pulse.demo,User 196,Ride-Share Driver,"Uttara, Dhaka",1206.13,0.0,0.91,28000.0,24000.0,Cash-In & Peer Transfer,74
+09334aea8d4e9a8d8f2e276bdeba33af,+8801710000196,customer_197@pulse.demo,User 197,Small Business Retailer,"Mirpur, Dhaka",3540.88,0.0,0.92,65000.0,52000.0,Merchant Pay & Supply,425
+6e55ad370f3f08270df079a23ed222c3,+8801710000197,customer_198@pulse.demo,User 198,School Teacher,Narayanganj Export Zone,2204.68,0.0,0.66,22000.0,20000.0,Family Support & Bills,544
+91afc95ec949d96a75b05dee50ef3f22,+8801710000198,customer_199@pulse.demo,User 199,Ride-Share Driver,"Gulshan, Dhaka",4355.02,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,480
+51bfa27b678f2680fe606e5826326cb8,+8801710000199,customer_200@pulse.demo,User 200,Garment Factory Worker,Sylhet Sadar,2553.71,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,177
+f9b6fd5edb6e082c499ec5c4a2c1b6c7,+8801710000200,customer_201@pulse.demo,User 201,Corporate Executive,Narayanganj Export Zone,420.4,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,301
+10aea8ab16273b16d45b0b65cecc5449,+8801710000201,customer_202@pulse.demo,User 202,Small Business Retailer,Rajshahi University Area,3478.89,0.0,0.86,65000.0,52000.0,Merchant Pay & Supply,366
+67575ee7d91f42ef0283b1325ac89a7a,+8801710000202,customer_203@pulse.demo,User 203,School Teacher,Sylhet Sadar,1703.04,0.0,0.75,22000.0,20000.0,Family Support & Bills,529
+f55108290fe9da00175febf671570978,+8801710000203,customer_204@pulse.demo,User 204,Ride-Share Driver,Gazipur Garment Belt,3106.42,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,730
+667af85a8fc943ec94e71eb729aa5822,+8801710000204,customer_205@pulse.demo,User 205,Small Business Retailer,Chittagong Port Area,3746.49,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,130
+a99230cfb3e7b0cfbb5aa598f21c1245,+8801710000205,customer_206@pulse.demo,User 206,School Teacher,Savar Industrial Zone,1980.0,0.0,0.88,22000.0,20000.0,Family Support & Bills,59
+638613f3d7c2f5033a12e6c9bb7cdc14,+8801710000206,customer_207@pulse.demo,User 207,Garment Factory Worker,"Gulshan, Dhaka",2239.39,0.0,0.75,14000.0,13200.0,Cash-Out & Remittance,413
+eee821261649b61175ea135899ef3f32,+8801710000207,customer_208@pulse.demo,User 208,Corporate Executive,Narayanganj Export Zone,1258.78,0.0,0.79,85000.0,68000.0,Utility Bills & Savings,728
+563bb09f885f81623cf95e837b9f7309,+8801710000208,customer_209@pulse.demo,User 209,University Student,Narayanganj Export Zone,268.84,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,421
+51cae13a5f3e9556a0f6b0a9bcad1b6e,+8801710000209,customer_210@pulse.demo,User 210,Ride-Share Driver,Chittagong Port Area,2513.45,0.0,0.84,28000.0,24000.0,Cash-In & Peer Transfer,267
+7f9cf31c62153667697828550a9e6c83,+8801710000210,customer_211@pulse.demo,User 211,Corporate Executive,"Dhanmondi, Dhaka",2324.87,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,506
+60bc8de402395bf51880acb00beb97c2,+8801710000211,customer_212@pulse.demo,User 212,Small Business Retailer,Sylhet Sadar,831.98,0.0,0.8,65000.0,52000.0,Merchant Pay & Supply,383
+c041fbc73f3c5cfbc78675aed86139e3,+8801710000212,customer_213@pulse.demo,User 213,Ride-Share Driver,"Dhanmondi, Dhaka",3212.75,0.0,0.79,28000.0,24000.0,Cash-In & Peer Transfer,286
+edaed87113dc0e9816822d915a5d7847,+8801710000213,customer_214@pulse.demo,User 214,Corporate Executive,"Dhanmondi, Dhaka",1036.12,0.0,0.78,85000.0,68000.0,Utility Bills & Savings,524
+2bba8a9b475803745b9f63cd90bc3b70,+8801710000214,customer_215@pulse.demo,User 215,Garment Factory Worker,Chittagong Port Area,1098.75,0.0,0.77,14000.0,13200.0,Cash-Out & Remittance,332
+b434ba850dcffd9456e590e96717eafb,+8801710000215,customer_216@pulse.demo,User 216,School Teacher,"Dhanmondi, Dhaka",145.44,0.0,0.92,22000.0,20000.0,Family Support & Bills,435
+1bb4201a2833b66f575f25834096b364,+8801710000216,customer_217@pulse.demo,User 217,Small Business Retailer,Gazipur Garment Belt,2851.35,0.0,0.88,65000.0,52000.0,Merchant Pay & Supply,80
+53af6216b4649469f39a6d7e6f2ecd28,+8801710000217,customer_218@pulse.demo,User 218,Ride-Share Driver,"Mirpur, Dhaka",4172.55,0.0,0.95,28000.0,24000.0,Cash-In & Peer Transfer,265
+334029fd9cf6b190944f115016009e24,+8801710000218,customer_219@pulse.demo,User 219,Ride-Share Driver,"Gulshan, Dhaka",1134.07,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,286
+2f41b24452c1b36f618772488fce5279,+8801710000219,customer_220@pulse.demo,User 220,School Teacher,Narayanganj Export Zone,2782.88,0.0,0.95,22000.0,20000.0,Family Support & Bills,691
+82495b9724bf23b4883d88506f85503b,+8801710000220,customer_221@pulse.demo,User 221,Garment Factory Worker,"Dhanmondi, Dhaka",2218.68,0.0,0.66,14000.0,13200.0,Cash-Out & Remittance,403
+21638d56a5c8859e9b23d7ba79506066,+8801710000221,customer_222@pulse.demo,User 222,School Teacher,Narayanganj Export Zone,442.08,0.0,0.75,22000.0,20000.0,Family Support & Bills,455
+0091b30465dd9854c1720524595ecd24,+8801710000222,customer_223@pulse.demo,User 223,University Student,Chittagong Port Area,215.2,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,404
+baa4e7fda4e96b54cbc07496b89e0bf0,+8801710000223,customer_224@pulse.demo,User 224,Ride-Share Driver,Sylhet Sadar,4571.76,0.0,0.92,28000.0,24000.0,Cash-In & Peer Transfer,293
+120b0ba82752b191dffe18b3c826e51c,+8801710000224,customer_225@pulse.demo,User 225,Corporate Executive,"Dhanmondi, Dhaka",3745.47,0.0,0.76,85000.0,68000.0,Utility Bills & Savings,147
+af7c48c086432ef8897bc164df4bb386,+8801710000225,customer_226@pulse.demo,User 226,Corporate Executive,Savar Industrial Zone,746.75,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,722
+233612140e22849a6c96237e274e86d0,+8801710000226,customer_227@pulse.demo,User 227,School Teacher,"Uttara, Dhaka",4257.62,0.0,0.92,22000.0,20000.0,Family Support & Bills,404
+6ccd0df9fb48c8dfb066fbec7d1d4bba,+8801710000227,customer_228@pulse.demo,User 228,Garment Factory Worker,"Uttara, Dhaka",88.28,0.0,0.83,14000.0,13200.0,Cash-Out & Remittance,495
+6b4ef1c838b661813cc235ff6cb8dab1,+8801710000228,customer_229@pulse.demo,User 229,Small Business Retailer,"Dhanmondi, Dhaka",2943.57,0.0,0.92,65000.0,52000.0,Merchant Pay & Supply,410
+f2af3653e9e1f2246ea6eb2461184546,+8801710000229,customer_230@pulse.demo,User 230,Garment Factory Worker,Chittagong Port Area,1346.56,0.0,0.85,14000.0,13200.0,Cash-Out & Remittance,604
+80498211899181a549718e281d79340b,+8801710000230,customer_231@pulse.demo,User 231,Small Business Retailer,Rajshahi University Area,1145.77,0.0,0.67,65000.0,52000.0,Merchant Pay & Supply,505
+e5cb867127090f8e5ae548435459b1ce,+8801710000231,customer_232@pulse.demo,User 232,School Teacher,"Dhanmondi, Dhaka",2874.19,0.0,0.69,22000.0,20000.0,Family Support & Bills,76
+dff215dfaf22c3d7dbe0bf9fbf4bbbe7,+8801710000232,customer_233@pulse.demo,User 233,Garment Factory Worker,"Dhanmondi, Dhaka",2788.8,0.0,0.69,14000.0,13200.0,Cash-Out & Remittance,270
+061c0477423d46c55741eb2eaff3ae95,+8801710000233,customer_234@pulse.demo,User 234,Ride-Share Driver,Narayanganj Export Zone,1973.8,0.0,0.77,28000.0,24000.0,Cash-In & Peer Transfer,583
+d82a19ad04c3fbfbd2a0b93f4cf70a75,+8801710000234,customer_235@pulse.demo,User 235,Corporate Executive,Rajshahi University Area,3724.23,0.0,0.7,85000.0,68000.0,Utility Bills & Savings,454
+bc2c2ce9210f6c578001600f0b583aad,+8801710000235,customer_236@pulse.demo,User 236,School Teacher,Savar Industrial Zone,3676.56,0.0,0.85,22000.0,20000.0,Family Support & Bills,316
+f302466f16cc69bebbb9c1cdabd38291,+8801710000236,customer_237@pulse.demo,User 237,Garment Factory Worker,"Gulshan, Dhaka",647.49,0.0,0.8,14000.0,13200.0,Cash-Out & Remittance,271
+082e4459dd49aa0d6671b6a144248aef,+8801710000237,customer_238@pulse.demo,User 238,Small Business Retailer,Savar Industrial Zone,4905.59,0.0,0.77,65000.0,52000.0,Merchant Pay & Supply,690
+389156529870ae25895d4de7da2908ec,+8801710000238,customer_239@pulse.demo,User 239,Small Business Retailer,Gazipur Garment Belt,2020.79,0.0,0.71,65000.0,52000.0,Merchant Pay & Supply,155
+397a95b2cebc4b101d050c5b5e822de4,+8801710000239,customer_240@pulse.demo,User 240,Corporate Executive,Savar Industrial Zone,3330.71,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,641
+7c85567a6f9a93c5b94c8112935f4890,+8801710000240,customer_241@pulse.demo,User 241,Garment Factory Worker,Gazipur Garment Belt,2213.69,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,158
+3148426e5866efd03f96e3ffe1123040,+8801710000241,customer_242@pulse.demo,User 242,Ride-Share Driver,Chittagong Port Area,389.62,0.0,0.9,28000.0,24000.0,Cash-In & Peer Transfer,242
+5b34d32d3df2e589e1b36c7f3feae0f3,+8801710000242,customer_243@pulse.demo,User 243,Ride-Share Driver,Chittagong Port Area,4074.61,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,181
+d768a011e786a8a21e94d1a6e3e9a460,+8801710000243,customer_244@pulse.demo,User 244,Ride-Share Driver,Gazipur Garment Belt,1422.51,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,163
+9a658b186ee2e67e4dc86bdabab10386,+8801710000244,customer_245@pulse.demo,User 245,Ride-Share Driver,"Dhanmondi, Dhaka",4002.64,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,56
+ca7903f576e024577f6a33e0a9525060,+8801710000245,customer_246@pulse.demo,User 246,University Student,Gazipur Garment Belt,497.8,0.0,0.91,6500.0,6200.0,Mobile Recharge & Food,632
+3846ae5918746996bfa9e8b9f9afdb9c,+8801710000246,customer_247@pulse.demo,User 247,Small Business Retailer,Gazipur Garment Belt,912.52,0.0,0.67,65000.0,52000.0,Merchant Pay & Supply,461
+555139e0385953af57cdd8dca9829daf,+8801710000247,customer_248@pulse.demo,User 248,Ride-Share Driver,Savar Industrial Zone,3741.04,0.0,0.81,28000.0,24000.0,Cash-In & Peer Transfer,400
+e072f744c8d430c1c3890e00fc16afdf,+8801710000248,customer_249@pulse.demo,User 249,Ride-Share Driver,Rajshahi University Area,589.82,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,659
+7f369ee0242631862a4b71061b093a96,+8801710000249,customer_250@pulse.demo,User 250,Garment Factory Worker,Sylhet Sadar,879.48,0.0,0.86,14000.0,13200.0,Cash-Out & Remittance,61
+b0b7a89be5740741d7b1550d7af2bcd4,+8801710000250,customer_251@pulse.demo,User 251,Garment Factory Worker,"Mirpur, Dhaka",2380.07,0.0,0.79,14000.0,13200.0,Cash-Out & Remittance,140
+fddad5f1890b313a60317db29d5d7b4b,+8801710000251,customer_252@pulse.demo,User 252,Corporate Executive,"Mirpur, Dhaka",413.78,0.0,0.68,85000.0,68000.0,Utility Bills & Savings,652
+1b5b4d58704daf287d38e6b49141d211,+8801710000252,customer_253@pulse.demo,User 253,University Student,Savar Industrial Zone,207.74,0.0,0.86,6500.0,6200.0,Mobile Recharge & Food,629
+0787cdbc451790ed74b7d790adf3daf4,+8801710000253,customer_254@pulse.demo,User 254,Ride-Share Driver,"Gulshan, Dhaka",1935.48,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,331
+759c810edc625e2e221d6fa0bb28b8f2,+8801710000254,customer_255@pulse.demo,User 255,Corporate Executive,Sylhet Sadar,3046.86,0.0,0.68,85000.0,68000.0,Utility Bills & Savings,147
+58c49f8388e3d50478a9e82e0b6d0bdf,+8801710000255,customer_256@pulse.demo,User 256,School Teacher,Sylhet Sadar,3185.65,0.0,0.72,22000.0,20000.0,Family Support & Bills,492
+126668da19ba12dd698eb7576d4c3c2d,+8801710000256,customer_257@pulse.demo,User 257,University Student,"Uttara, Dhaka",473.66,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,455
+f2f0c0434e9050b00ec78635cc446a29,+8801710000257,customer_258@pulse.demo,User 258,School Teacher,Savar Industrial Zone,1409.59,0.0,0.75,22000.0,20000.0,Family Support & Bills,291
+79d9ca45f4f7eda60ab21559f498bff3,+8801710000258,customer_259@pulse.demo,User 259,Small Business Retailer,Narayanganj Export Zone,3449.76,0.0,0.81,65000.0,52000.0,Merchant Pay & Supply,123
+0698a54b9c9503b5a90d1133a8e6b681,+8801710000259,customer_260@pulse.demo,User 260,Garment Factory Worker,Savar Industrial Zone,1237.66,0.0,0.9,14000.0,13200.0,Cash-Out & Remittance,411
+65d3f2201aa43945e86ebdfeb51ade78,+8801710000260,customer_261@pulse.demo,User 261,University Student,Sylhet Sadar,124.98,0.0,0.97,6500.0,6200.0,Mobile Recharge & Food,605
+c2cf1a86a6266dc84d71ddea4142a322,+8801710000261,customer_262@pulse.demo,User 262,Small Business Retailer,Savar Industrial Zone,2083.5,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,463
+c3224d9ec24bfd7ac945b2e16b57552a,+8801710000262,customer_263@pulse.demo,User 263,School Teacher,Gazipur Garment Belt,4262.53,0.0,0.85,22000.0,20000.0,Family Support & Bills,390
+dda69cfc2d89142eacb18f87b9470786,+8801710000263,customer_264@pulse.demo,User 264,Garment Factory Worker,Rajshahi University Area,1445.38,0.0,0.7,14000.0,13200.0,Cash-Out & Remittance,523
+846af69f915a624eb4d3753fddd79f5c,+8801710000264,customer_265@pulse.demo,User 265,University Student,Savar Industrial Zone,487.64,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,147
+f5cabc7436142ced6e99f6a7467d654d,+8801710000265,customer_266@pulse.demo,User 266,Small Business Retailer,Rajshahi University Area,1169.49,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,604
+0b58254c2987501dba91a31da68a4f0a,+8801710000266,customer_267@pulse.demo,User 267,Ride-Share Driver,Rajshahi University Area,3391.13,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,653
+2cf8aa924e46c2196be1451aed338eac,+8801710000267,customer_268@pulse.demo,User 268,School Teacher,"Dhanmondi, Dhaka",175.95,0.0,0.74,22000.0,20000.0,Family Support & Bills,346
+b687efc8732221b3893a8ff17655daf6,+8801710000268,customer_269@pulse.demo,User 269,Small Business Retailer,"Gulshan, Dhaka",80.22,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,609
+af810cf1d798e25010f3d11d3b025f7c,+8801710000269,customer_270@pulse.demo,User 270,School Teacher,"Uttara, Dhaka",352.7,0.0,0.89,22000.0,20000.0,Family Support & Bills,61
+9904fec491bd590c61c67bc87dde4e87,+8801710000270,customer_271@pulse.demo,User 271,Garment Factory Worker,Sylhet Sadar,641.62,0.0,0.79,14000.0,13200.0,Cash-Out & Remittance,379
+40bcb3c0379a883af870fc4d5d5f17e8,+8801710000271,customer_272@pulse.demo,User 272,University Student,"Gulshan, Dhaka",439.55,0.0,0.76,6500.0,6200.0,Mobile Recharge & Food,611
+e0fa8ddb3f5cb122f5a9dfc7accb3b11,+8801710000272,customer_273@pulse.demo,User 273,Ride-Share Driver,Savar Industrial Zone,4422.54,0.0,0.7,28000.0,24000.0,Cash-In & Peer Transfer,662
+aeb99c8bc15c37d54668c52a1737a613,+8801710000273,customer_274@pulse.demo,User 274,Garment Factory Worker,Savar Industrial Zone,798.28,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,527
+3d4fbc09f96ff842f3e565256bfaddcd,+8801710000274,customer_275@pulse.demo,User 275,Ride-Share Driver,"Mirpur, Dhaka",2100.21,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,554
+2dc41aa26fef7a20aa22fe379d94739c,+8801710000275,customer_276@pulse.demo,User 276,Garment Factory Worker,"Gulshan, Dhaka",1232.26,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,724
+a0a7eab450a3100f0f22336057e70d1d,+8801710000276,customer_277@pulse.demo,User 277,Ride-Share Driver,"Mirpur, Dhaka",2658.32,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,255
+6d71be5888f77afb8bd036c6b4bb6913,+8801710000277,customer_278@pulse.demo,User 278,Corporate Executive,Rajshahi University Area,321.17,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,246
+ffe1220ab3769ce8eeb44ea94d49fce0,+8801710000278,customer_279@pulse.demo,User 279,University Student,"Dhanmondi, Dhaka",411.81,0.0,0.69,6500.0,6200.0,Mobile Recharge & Food,539
+08a0f8dfc2514a851ed64f9e3c742c25,+8801710000279,customer_280@pulse.demo,User 280,School Teacher,"Uttara, Dhaka",814.27,0.0,0.78,22000.0,20000.0,Family Support & Bills,265
+b2a32536166e6f03a1afd0350271530c,+8801710000280,customer_281@pulse.demo,User 281,Ride-Share Driver,Sylhet Sadar,4175.1,0.0,0.92,28000.0,24000.0,Cash-In & Peer Transfer,103
+165a7d75f4289a23d83e82f6e7d9b250,+8801710000281,customer_282@pulse.demo,User 282,Corporate Executive,Gazipur Garment Belt,2209.29,0.0,0.8,85000.0,68000.0,Utility Bills & Savings,109
+988cfcd712c35a23883cf83b2394e5a0,+8801710000282,customer_283@pulse.demo,User 283,Small Business Retailer,Rajshahi University Area,2174.96,0.0,0.78,65000.0,52000.0,Merchant Pay & Supply,685
+c31b79eeb878763ade16e30a06c56570,+8801710000283,customer_284@pulse.demo,User 284,Corporate Executive,"Dhanmondi, Dhaka",620.11,0.0,0.66,85000.0,68000.0,Utility Bills & Savings,362
+dd7eba6ea47f2bb61b1e698c94b20709,+8801710000284,customer_285@pulse.demo,User 285,University Student,Rajshahi University Area,625.12,0.0,0.88,6500.0,6200.0,Mobile Recharge & Food,400
+9cd6f883c02f31ee0e58cbae069ffc80,+8801710000285,customer_286@pulse.demo,User 286,Garment Factory Worker,"Uttara, Dhaka",2372.33,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,633
+9cd4bf17f9945c026615d7c57140e3f0,+8801710000286,customer_287@pulse.demo,User 287,Corporate Executive,Sylhet Sadar,439.3,0.0,0.94,85000.0,68000.0,Utility Bills & Savings,377
+507071fabf421440cd7dbd7944a00ac4,+8801710000287,customer_288@pulse.demo,User 288,University Student,"Gulshan, Dhaka",1023.9,0.0,0.68,6500.0,6200.0,Mobile Recharge & Food,678
+0a09968c0ada0017392b2b7810020702,+8801710000288,customer_289@pulse.demo,User 289,Garment Factory Worker,Sylhet Sadar,1452.37,0.0,0.95,14000.0,13200.0,Cash-Out & Remittance,387
+4c3d236646b9ae785856daea1ad109ac,+8801710000289,customer_290@pulse.demo,User 290,Small Business Retailer,Narayanganj Export Zone,1219.53,0.0,0.7,65000.0,52000.0,Merchant Pay & Supply,232
+cde3217fcf2e4d3f1033c3a79b85ff69,+8801710000290,customer_291@pulse.demo,User 291,University Student,Rajshahi University Area,241.09,0.0,0.9,6500.0,6200.0,Mobile Recharge & Food,107
+de7191a0f85405ea76962d72af6821c8,+8801710000291,customer_292@pulse.demo,User 292,University Student,"Mirpur, Dhaka",629.94,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,623
+0e42bcb6998f1c3679dcdf9a497ba278,+8801710000292,customer_293@pulse.demo,User 293,Corporate Executive,Rajshahi University Area,3232.81,0.0,0.98,85000.0,68000.0,Utility Bills & Savings,360
+b8f251ac2e3a8ef77027d731aa1d59e9,+8801710000293,customer_294@pulse.demo,User 294,School Teacher,"Gulshan, Dhaka",706.66,0.0,0.67,22000.0,20000.0,Family Support & Bills,482
+8eecaa4ded96a177d16d5505f3a31d46,+8801710000294,customer_295@pulse.demo,User 295,School Teacher,"Dhanmondi, Dhaka",3514.03,0.0,0.85,22000.0,20000.0,Family Support & Bills,390
+ca22ed735bf58d52408e6c0fe49889e9,+8801710000295,customer_296@pulse.demo,User 296,Ride-Share Driver,Savar Industrial Zone,1586.52,0.0,0.8,28000.0,24000.0,Cash-In & Peer Transfer,88
+3b9edf544d9abdd2d502a5acfdb5ce13,+8801710000296,customer_297@pulse.demo,User 297,Small Business Retailer,"Dhanmondi, Dhaka",429.82,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,122
+2c8229caaf4b45d39e1ba433e3b2513e,+8801710000297,customer_298@pulse.demo,User 298,Ride-Share Driver,Rajshahi University Area,2559.99,0.0,0.8,28000.0,24000.0,Cash-In & Peer Transfer,597
+24f4143f96fe4ac6e6f3eb95f24fca04,+8801710000298,customer_299@pulse.demo,User 299,School Teacher,Gazipur Garment Belt,2006.34,0.0,0.92,22000.0,20000.0,Family Support & Bills,697
+d3d52f029ade1b8917fe0ccf9906679f,+8801710000299,customer_300@pulse.demo,User 300,University Student,"Gulshan, Dhaka",806.26,0.0,0.82,6500.0,6200.0,Mobile Recharge & Food,93
+67bfb8e8850dab18850fe4b173bacc6b,+8801710000300,customer_301@pulse.demo,User 301,Corporate Executive,Savar Industrial Zone,4064.29,0.0,0.93,85000.0,68000.0,Utility Bills & Savings,116
+c78b9f9e537b8544399fb76189b334e2,+8801710000301,customer_302@pulse.demo,User 302,Ride-Share Driver,Narayanganj Export Zone,243.75,0.0,0.88,28000.0,24000.0,Cash-In & Peer Transfer,479
+8fce25492201a34955b263e9155143ae,+8801710000302,customer_303@pulse.demo,User 303,Ride-Share Driver,Sylhet Sadar,3068.54,0.0,0.77,28000.0,24000.0,Cash-In & Peer Transfer,319
+2134beb51f815b02040225c12d1bef9c,+8801710000303,customer_304@pulse.demo,User 304,Corporate Executive,"Uttara, Dhaka",3883.6,0.0,0.87,85000.0,68000.0,Utility Bills & Savings,83
+e34994e92746679eabfb3e1e1bcc3eca,+8801710000304,customer_305@pulse.demo,User 305,School Teacher,"Gulshan, Dhaka",336.72,0.0,0.68,22000.0,20000.0,Family Support & Bills,724
+04c804e3f3a6db17097eee288709f16c,+8801710000305,customer_306@pulse.demo,User 306,Corporate Executive,"Dhanmondi, Dhaka",1297.38,0.0,0.93,85000.0,68000.0,Utility Bills & Savings,647
+25bff055c6752d811384d0aea035d4f2,+8801710000306,customer_307@pulse.demo,User 307,University Student,"Gulshan, Dhaka",151.88,0.0,0.87,6500.0,6200.0,Mobile Recharge & Food,388
+743ac9e1c2c0a0bda811aca139706799,+8801710000307,customer_308@pulse.demo,User 308,Small Business Retailer,"Uttara, Dhaka",688.31,0.0,0.88,65000.0,52000.0,Merchant Pay & Supply,116
+f7b3ba73a8c8701a9ae670590441b9c2,+8801710000308,customer_309@pulse.demo,User 309,Small Business Retailer,Sylhet Sadar,1914.56,0.0,0.91,65000.0,52000.0,Merchant Pay & Supply,160
+3851e9ce907dd926929394aa2eae3a63,+8801710000309,customer_310@pulse.demo,User 310,School Teacher,Sylhet Sadar,456.52,0.0,0.87,22000.0,20000.0,Family Support & Bills,550
+9c9aa158c87ec7e0a613407d9a316446,+8801710000310,customer_311@pulse.demo,User 311,Small Business Retailer,Gazipur Garment Belt,1844.86,0.0,0.71,65000.0,52000.0,Merchant Pay & Supply,249
+f3b7ce13e2b7ee782276a5cf176a3f21,+8801710000311,customer_312@pulse.demo,User 312,Small Business Retailer,"Mirpur, Dhaka",1000.43,0.0,0.98,65000.0,52000.0,Merchant Pay & Supply,188
+e575627a7d58839808a076be96eff7f3,+8801710000312,customer_313@pulse.demo,User 313,Garment Factory Worker,"Dhanmondi, Dhaka",2372.18,0.0,0.68,14000.0,13200.0,Cash-Out & Remittance,582
+eea73eeee557850725d5690425b8702c,+8801710000313,customer_314@pulse.demo,User 314,School Teacher,Sylhet Sadar,214.2,0.0,0.76,22000.0,20000.0,Family Support & Bills,662
+580aca4b02c8d921a60d90daba280637,+8801710000314,customer_315@pulse.demo,User 315,University Student,Rajshahi University Area,520.9,0.0,0.7,6500.0,6200.0,Mobile Recharge & Food,669
+35ef950071b6618944173831b8bfdaa4,+8801710000315,customer_316@pulse.demo,User 316,University Student,"Mirpur, Dhaka",104.62,0.0,0.77,6500.0,6200.0,Mobile Recharge & Food,273
+4cf5a0a9257df5be54f8095c047b6a12,+8801710000316,customer_317@pulse.demo,User 317,Corporate Executive,Rajshahi University Area,1460.39,0.0,0.9,85000.0,68000.0,Utility Bills & Savings,489
+0602fa3cc48408abe57e0a665514500c,+8801710000317,customer_318@pulse.demo,User 318,University Student,Sylhet Sadar,348.96,0.0,0.97,6500.0,6200.0,Mobile Recharge & Food,510
+d9dc993d76cabd8f5f30203ed19e310c,+8801710000318,customer_319@pulse.demo,User 319,University Student,"Gulshan, Dhaka",897.88,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,481
+7d4fb1c09f5ea8f1a4bdd769120b7a55,+8801710000319,customer_320@pulse.demo,User 320,Corporate Executive,"Dhanmondi, Dhaka",3901.71,0.0,0.82,85000.0,68000.0,Utility Bills & Savings,458
+45c371dcde0ecab382a592589deea9fd,+8801710000320,customer_321@pulse.demo,User 321,University Student,Chittagong Port Area,1051.57,0.0,0.7,6500.0,6200.0,Mobile Recharge & Food,286
+d7c0a3933b211ad0e0f46e994487bce5,+8801710000321,customer_322@pulse.demo,User 322,Garment Factory Worker,"Mirpur, Dhaka",2453.82,0.0,0.83,14000.0,13200.0,Cash-Out & Remittance,135
+c3b70adf312738002a5480e0573b432c,+8801710000322,customer_323@pulse.demo,User 323,School Teacher,Sylhet Sadar,3752.57,0.0,0.74,22000.0,20000.0,Family Support & Bills,194
+669911707277f962c56e28523079b446,+8801710000323,customer_324@pulse.demo,User 324,Small Business Retailer,"Mirpur, Dhaka",4531.27,0.0,0.7,65000.0,52000.0,Merchant Pay & Supply,477
+b68e1c6570629aa4799e30187bc11d31,+8801710000324,customer_325@pulse.demo,User 325,Garment Factory Worker,Chittagong Port Area,2295.93,0.0,0.94,14000.0,13200.0,Cash-Out & Remittance,57
+12c57081f5ceaa67bced9b4b2f88eebc,+8801710000325,customer_326@pulse.demo,User 326,Corporate Executive,Gazipur Garment Belt,2012.45,0.0,0.77,85000.0,68000.0,Utility Bills & Savings,425
+2a5827c1735274025dda3deb495b4c3e,+8801710000326,customer_327@pulse.demo,User 327,Garment Factory Worker,"Gulshan, Dhaka",667.48,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,131
+e9729b219aee7624ee4482f2583de29d,+8801710000327,customer_328@pulse.demo,User 328,School Teacher,"Gulshan, Dhaka",3492.51,0.0,0.7,22000.0,20000.0,Family Support & Bills,323
+612ae0abb9846ef7257bfda60cd1428e,+8801710000328,customer_329@pulse.demo,User 329,Corporate Executive,Narayanganj Export Zone,3806.26,0.0,0.8,85000.0,68000.0,Utility Bills & Savings,660
+99a079a96537ade8de3fd40ebb70fd50,+8801710000329,customer_330@pulse.demo,User 330,Garment Factory Worker,Savar Industrial Zone,102.26,0.0,0.72,14000.0,13200.0,Cash-Out & Remittance,183
+c1a6e14299d78fc1d0791367f72da710,+8801710000330,customer_331@pulse.demo,User 331,Ride-Share Driver,Rajshahi University Area,2662.47,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,325
+07970e47430695ef0744729f67167751,+8801710000331,customer_332@pulse.demo,User 332,University Student,"Dhanmondi, Dhaka",202.31,0.0,0.73,6500.0,6200.0,Mobile Recharge & Food,684
+1a6a097088618dfbb44f7d25aa4f5db1,+8801710000332,customer_333@pulse.demo,User 333,Ride-Share Driver,"Mirpur, Dhaka",360.9,0.0,0.93,28000.0,24000.0,Cash-In & Peer Transfer,541
+1932fb6b7309089462562c1db66e2214,+8801710000333,customer_334@pulse.demo,User 334,Ride-Share Driver,Sylhet Sadar,131.35,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,277
+c558b79d53223eb10778896d53610f96,+8801710000334,customer_335@pulse.demo,User 335,School Teacher,Narayanganj Export Zone,1317.03,0.0,0.65,22000.0,20000.0,Family Support & Bills,391
+6c9cd81c3973e55cd0e6284e2a176121,+8801710000335,customer_336@pulse.demo,User 336,University Student,Rajshahi University Area,570.71,0.0,0.87,6500.0,6200.0,Mobile Recharge & Food,117
+7915d534259a97b471820db29e0cef8f,+8801710000336,customer_337@pulse.demo,User 337,Ride-Share Driver,"Gulshan, Dhaka",385.01,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,549
+d66ac9659647d50c83728d04ee8b69a6,+8801710000337,customer_338@pulse.demo,User 338,Ride-Share Driver,Sylhet Sadar,150.65,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,74
+b54170cb49a15a98437555c71395ad76,+8801710000338,customer_339@pulse.demo,User 339,School Teacher,"Uttara, Dhaka",4317.52,0.0,0.73,22000.0,20000.0,Family Support & Bills,46
+092c24fb7af6986b3a441bada07b06a8,+8801710000339,customer_340@pulse.demo,User 340,Small Business Retailer,Savar Industrial Zone,1756.77,0.0,0.89,65000.0,52000.0,Merchant Pay & Supply,673
+7230ae68276b1a2a9f76524c503fc869,+8801710000340,customer_341@pulse.demo,User 341,Garment Factory Worker,Rajshahi University Area,2071.76,0.0,0.76,14000.0,13200.0,Cash-Out & Remittance,75
+19b45d077736b1792c6d81f317ee0531,+8801710000341,customer_342@pulse.demo,User 342,Small Business Retailer,Sylhet Sadar,1725.81,0.0,0.86,65000.0,52000.0,Merchant Pay & Supply,505
+a1c49b1725723b5a06f147af720ff27a,+8801710000342,customer_343@pulse.demo,User 343,School Teacher,"Mirpur, Dhaka",2798.05,0.0,0.92,22000.0,20000.0,Family Support & Bills,94
+bd3561eec2abb9cd25d60157d0805275,+8801710000343,customer_344@pulse.demo,User 344,School Teacher,"Mirpur, Dhaka",210.88,0.0,0.72,22000.0,20000.0,Family Support & Bills,234
+c39643ce71e1d46c8db2684c93d8a697,+8801710000344,customer_345@pulse.demo,User 345,Garment Factory Worker,"Gulshan, Dhaka",2616.77,0.0,0.82,14000.0,13200.0,Cash-Out & Remittance,586
+67d2da81e563915e5012a9ce0ed1fdb4,+8801710000345,customer_346@pulse.demo,User 346,Corporate Executive,"Dhanmondi, Dhaka",231.27,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,322
+ae952c4e3271ddf2354701572a8585db,+8801710000346,customer_347@pulse.demo,User 347,Small Business Retailer,Gazipur Garment Belt,4335.7,0.0,0.76,65000.0,52000.0,Merchant Pay & Supply,157
+1044c3d9364f5d6fc70c29f60062a5f6,+8801710000347,customer_348@pulse.demo,User 348,Small Business Retailer,"Uttara, Dhaka",4452.96,0.0,0.9,65000.0,52000.0,Merchant Pay & Supply,425
+3e40afd52996db2487d9f5bf626b41f8,+8801710000348,customer_349@pulse.demo,User 349,Small Business Retailer,Narayanganj Export Zone,2506.21,0.0,0.81,65000.0,52000.0,Merchant Pay & Supply,561
+b4e22c617092b3042f6ef575eb1ed0fd,+8801710000349,customer_350@pulse.demo,User 350,Small Business Retailer,Savar Industrial Zone,3649.05,0.0,0.68,65000.0,52000.0,Merchant Pay & Supply,646
+9448aa868b3fbf1f2f56d77351949b0c,+8801710000350,customer_351@pulse.demo,User 351,University Student,Sylhet Sadar,417.21,0.0,0.68,6500.0,6200.0,Mobile Recharge & Food,365
+f839135fb943740db9e279d3224cc4a8,+8801710000351,customer_352@pulse.demo,User 352,School Teacher,"Dhanmondi, Dhaka",1383.26,0.0,0.85,22000.0,20000.0,Family Support & Bills,466
+1a962f3afeca672eb04e6bad9a37a49e,+8801710000352,customer_353@pulse.demo,User 353,University Student,"Mirpur, Dhaka",489.43,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,391
+9bfd2fd186a204b5683ddcc421dcbd02,+8801710000353,customer_354@pulse.demo,User 354,Ride-Share Driver,"Uttara, Dhaka",1409.05,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,88
+7a32b9082cdc418a6267acd774a815df,+8801710000354,customer_355@pulse.demo,User 355,Garment Factory Worker,"Uttara, Dhaka",1049.11,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,725
+4144df70de0dd54058abb61c66111cd3,+8801710000355,customer_356@pulse.demo,User 356,University Student,Gazipur Garment Belt,228.47,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,478
+3d8d204ff05a8c66cacbfe132011e07e,+8801710000356,customer_357@pulse.demo,User 357,Garment Factory Worker,Narayanganj Export Zone,234.89,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,405
+cd4c366ff144960068a4371f3fa45cf3,+8801710000357,customer_358@pulse.demo,User 358,Small Business Retailer,"Uttara, Dhaka",4749.86,0.0,0.66,65000.0,52000.0,Merchant Pay & Supply,187
+ca4ab6e168608f1d433922995dbd44dc,+8801710000358,customer_359@pulse.demo,User 359,School Teacher,"Mirpur, Dhaka",4177.38,0.0,0.77,22000.0,20000.0,Family Support & Bills,108
+7b83571056fe655eac4b8a903358c512,+8801710000359,customer_360@pulse.demo,User 360,Ride-Share Driver,Narayanganj Export Zone,2670.83,0.0,0.78,28000.0,24000.0,Cash-In & Peer Transfer,695
+477d5f34b5d53acf6e6da89d6c31773b,+8801710000360,customer_361@pulse.demo,User 361,Small Business Retailer,Chittagong Port Area,4804.57,0.0,0.66,65000.0,52000.0,Merchant Pay & Supply,220
+3994266432f427900e5df123c97a46df,+8801710000361,customer_362@pulse.demo,User 362,Corporate Executive,Sylhet Sadar,1965.59,0.0,0.84,85000.0,68000.0,Utility Bills & Savings,298
+c06033712af7323b939a92033da22859,+8801710000362,customer_363@pulse.demo,User 363,Small Business Retailer,"Mirpur, Dhaka",1112.12,0.0,0.85,65000.0,52000.0,Merchant Pay & Supply,532
+77544758e19c3a235d11466af7dc8893,+8801710000363,customer_364@pulse.demo,User 364,University Student,Savar Industrial Zone,219.66,0.0,0.67,6500.0,6200.0,Mobile Recharge & Food,206
+a717832139dd84869be055d5192228cd,+8801710000364,customer_365@pulse.demo,User 365,School Teacher,"Mirpur, Dhaka",4388.09,0.0,0.92,22000.0,20000.0,Family Support & Bills,357
+09d1b48653e098bbb5f68c55c874249e,+8801710000365,customer_366@pulse.demo,User 366,School Teacher,"Gulshan, Dhaka",3136.5,0.0,0.83,22000.0,20000.0,Family Support & Bills,327
+d21fe5a5ff144808be755baf88c344c6,+8801710000366,customer_367@pulse.demo,User 367,Small Business Retailer,Narayanganj Export Zone,3573.46,0.0,0.96,65000.0,52000.0,Merchant Pay & Supply,683
+26f21a2a22734f7a0713c58aca501702,+8801710000367,customer_368@pulse.demo,User 368,University Student,"Gulshan, Dhaka",685.94,0.0,0.69,6500.0,6200.0,Mobile Recharge & Food,235
+4aad19b0549dd47c7fbfccf2aefb569c,+8801710000368,customer_369@pulse.demo,User 369,University Student,Chittagong Port Area,1037.97,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,597
+72a7f411f71a160a5fe73453809550a1,+8801710000369,customer_370@pulse.demo,User 370,Ride-Share Driver,"Gulshan, Dhaka",2363.66,0.0,0.97,28000.0,24000.0,Cash-In & Peer Transfer,162
+42f90ea9aa9f88217a62df5b19eba8ee,+8801710000370,customer_371@pulse.demo,User 371,Ride-Share Driver,Savar Industrial Zone,375.45,0.0,0.78,28000.0,24000.0,Cash-In & Peer Transfer,520
+e1033406ee01f2883c22827b8fd62075,+8801710000371,customer_372@pulse.demo,User 372,Ride-Share Driver,"Uttara, Dhaka",3857.36,0.0,0.92,28000.0,24000.0,Cash-In & Peer Transfer,105
+5b24d2af22bf7e9776ceb8f7718b6534,+8801710000372,customer_373@pulse.demo,User 373,University Student,"Gulshan, Dhaka",852.92,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,726
+418f6d17904246a28f2dff389daf6bff,+8801710000373,customer_374@pulse.demo,User 374,Ride-Share Driver,"Gulshan, Dhaka",685.26,0.0,0.92,28000.0,24000.0,Cash-In & Peer Transfer,594
+636ac1f8efb712187f703a1539ea0a11,+8801710000374,customer_375@pulse.demo,User 375,School Teacher,Rajshahi University Area,841.54,0.0,0.97,22000.0,20000.0,Family Support & Bills,473
+61a9c8e08c197dc13b8a71b05cc6db60,+8801710000375,customer_376@pulse.demo,User 376,Ride-Share Driver,Gazipur Garment Belt,4165.38,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,341
+d942bee85b34126c2395547b8a23b5c4,+8801710000376,customer_377@pulse.demo,User 377,University Student,Narayanganj Export Zone,453.33,0.0,0.88,6500.0,6200.0,Mobile Recharge & Food,384
+115f2f1badb85bde4c8b8bf1f25503ac,+8801710000377,customer_378@pulse.demo,User 378,Ride-Share Driver,"Dhanmondi, Dhaka",4237.37,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,680
+275ed1b2ea34f240b8c7cf1f00e0ae6b,+8801710000378,customer_379@pulse.demo,User 379,Ride-Share Driver,"Dhanmondi, Dhaka",669.59,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,576
+1e9a3d2f849356b0dac414263428577b,+8801710000379,customer_380@pulse.demo,User 380,Garment Factory Worker,Sylhet Sadar,1812.72,0.0,0.85,14000.0,13200.0,Cash-Out & Remittance,624
+1590bf8590abe7029405082972238f15,+8801710000380,customer_381@pulse.demo,User 381,University Student,Narayanganj Export Zone,873.42,0.0,0.89,6500.0,6200.0,Mobile Recharge & Food,649
+f6ca63d05c0b15f6fd82a13560727787,+8801710000381,customer_382@pulse.demo,User 382,Small Business Retailer,Rajshahi University Area,253.91,0.0,0.94,65000.0,52000.0,Merchant Pay & Supply,113
+13a872f2e26e258ee3f5facd77c1ed1d,+8801710000382,customer_383@pulse.demo,User 383,Garment Factory Worker,Rajshahi University Area,777.8,0.0,0.72,14000.0,13200.0,Cash-Out & Remittance,615
+1e2469fa660d89bf2bb9b52ce89aebea,+8801710000383,customer_384@pulse.demo,User 384,Corporate Executive,Rajshahi University Area,3213.01,0.0,0.81,85000.0,68000.0,Utility Bills & Savings,672
+e347e56e04622d17829fce6dc1061b4b,+8801710000384,customer_385@pulse.demo,User 385,Ride-Share Driver,"Dhanmondi, Dhaka",3227.44,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,280
+a5e8eb7194831d12d015bf4b3111fed9,+8801710000385,customer_386@pulse.demo,User 386,School Teacher,"Uttara, Dhaka",1343.84,0.0,0.67,22000.0,20000.0,Family Support & Bills,91
+7b37e5f807caa2496a2ffb900e603b83,+8801710000386,customer_387@pulse.demo,User 387,University Student,"Mirpur, Dhaka",569.53,0.0,0.8,6500.0,6200.0,Mobile Recharge & Food,378
+ec325923f89af948f642f8f9d01a1e03,+8801710000387,customer_388@pulse.demo,User 388,Ride-Share Driver,Narayanganj Export Zone,1597.28,0.0,0.89,28000.0,24000.0,Cash-In & Peer Transfer,383
+39f45e7596f346ea70874e3abb8273a5,+8801710000388,customer_389@pulse.demo,User 389,Corporate Executive,Narayanganj Export Zone,3815.29,0.0,0.82,85000.0,68000.0,Utility Bills & Savings,138
+cfe2827d40a372fff526f757adc95d31,+8801710000389,customer_390@pulse.demo,User 390,Small Business Retailer,Chittagong Port Area,2359.04,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,283
+72dc1ed964de71204727edc784e62d55,+8801710000390,customer_391@pulse.demo,User 391,University Student,Savar Industrial Zone,113.26,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,660
+4120fb87bc39e4c379350c415326cd18,+8801710000391,customer_392@pulse.demo,User 392,Corporate Executive,Chittagong Port Area,4815.29,0.0,0.95,85000.0,68000.0,Utility Bills & Savings,365
+a72efabda6baf4823d4a8e71d22c7e67,+8801710000392,customer_393@pulse.demo,User 393,Ride-Share Driver,"Gulshan, Dhaka",989.68,0.0,0.7,28000.0,24000.0,Cash-In & Peer Transfer,557
+6f973a43df2a4cfd5b089071c09fedb6,+8801710000393,customer_394@pulse.demo,User 394,Corporate Executive,"Mirpur, Dhaka",4401.42,0.0,0.81,85000.0,68000.0,Utility Bills & Savings,122
+79c15f1e33e085ebcd34bc620ac05adb,+8801710000394,customer_395@pulse.demo,User 395,Corporate Executive,Sylhet Sadar,2313.29,0.0,0.73,85000.0,68000.0,Utility Bills & Savings,627
+766ee017fdca7af00cf674638edd9b99,+8801710000395,customer_396@pulse.demo,User 396,Small Business Retailer,Gazipur Garment Belt,300.18,0.0,0.81,65000.0,52000.0,Merchant Pay & Supply,699
+c0ddf48c570e81d19df95bc0eb0f1a28,+8801710000396,customer_397@pulse.demo,User 397,School Teacher,"Mirpur, Dhaka",1293.01,0.0,0.65,22000.0,20000.0,Family Support & Bills,140
+bf2e210ab61b5cffdc539e9c5f8af679,+8801710000397,customer_398@pulse.demo,User 398,Corporate Executive,Narayanganj Export Zone,4418.16,0.0,0.89,85000.0,68000.0,Utility Bills & Savings,442
+2ee60ea9aa353396638b4dcd70885b86,+8801710000398,customer_399@pulse.demo,User 399,Small Business Retailer,Gazipur Garment Belt,2032.88,0.0,0.84,65000.0,52000.0,Merchant Pay & Supply,229
+7553d45259191fd04b028d502a7501eb,+8801710000399,customer_400@pulse.demo,User 400,Small Business Retailer,Sylhet Sadar,1478.58,0.0,0.78,65000.0,52000.0,Merchant Pay & Supply,491
+65738b9073b581a3ace8efbf9154964f,+8801710000400,customer_401@pulse.demo,User 401,Ride-Share Driver,"Dhanmondi, Dhaka",4135.29,0.0,0.86,28000.0,24000.0,Cash-In & Peer Transfer,655
+c174b68e86512f35e04ce149a4fe671e,+8801710000401,customer_402@pulse.demo,User 402,Garment Factory Worker,Narayanganj Export Zone,2731.48,0.0,0.78,14000.0,13200.0,Cash-Out & Remittance,377
+3043175457f62412265dafcdc55ab54c,+8801710000402,customer_403@pulse.demo,User 403,Ride-Share Driver,"Gulshan, Dhaka",3787.08,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,551
+be1c29247318d1efa4b4e32ba996f740,+8801710000403,customer_404@pulse.demo,User 404,Corporate Executive,Sylhet Sadar,249.26,0.0,0.66,85000.0,68000.0,Utility Bills & Savings,371
+4350d4ee25011048428ff6c6a80af490,+8801710000404,customer_405@pulse.demo,User 405,Corporate Executive,Sylhet Sadar,2312.09,0.0,0.85,85000.0,68000.0,Utility Bills & Savings,557
+c555c07bf6e68cfa26f18d2f96fe6f9f,+8801710000405,customer_406@pulse.demo,User 406,University Student,"Gulshan, Dhaka",1214.21,0.0,0.76,6500.0,6200.0,Mobile Recharge & Food,432
+9acd899b9f07ccef6377eeff089cb691,+8801710000406,customer_407@pulse.demo,User 407,Ride-Share Driver,"Dhanmondi, Dhaka",2988.94,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,551
+5791719e8626d3dd5a125ad861e4eb10,+8801710000407,customer_408@pulse.demo,User 408,Ride-Share Driver,"Mirpur, Dhaka",3558.26,0.0,0.75,28000.0,24000.0,Cash-In & Peer Transfer,47
+f6786483a74983c8be8c7a1a2ba3f9b0,+8801710000408,customer_409@pulse.demo,User 409,Small Business Retailer,"Gulshan, Dhaka",3385.34,0.0,0.97,65000.0,52000.0,Merchant Pay & Supply,627
+d41a567b0b85dd3c1fab4a6d4e3752d8,+8801710000409,customer_410@pulse.demo,User 410,Small Business Retailer,Gazipur Garment Belt,3004.7,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,701
+33f5e8b79cb2347513c492a999b8f1dd,+8801710000410,customer_411@pulse.demo,User 411,Ride-Share Driver,Rajshahi University Area,1176.34,0.0,0.67,28000.0,24000.0,Cash-In & Peer Transfer,521
+362431cb8fb47ca46f185e20c369ab1b,+8801710000411,customer_412@pulse.demo,User 412,University Student,Sylhet Sadar,836.28,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,419
+b49563bd028da631b2ca15d6402a2e5d,+8801710000412,customer_413@pulse.demo,User 413,University Student,Chittagong Port Area,89.46,0.0,0.96,6500.0,6200.0,Mobile Recharge & Food,142
+9d2e6636e049d58cee8277231f47e3de,+8801710000413,customer_414@pulse.demo,User 414,University Student,Gazipur Garment Belt,601.3,0.0,0.79,6500.0,6200.0,Mobile Recharge & Food,452
+62afb11b287df6bce71145d3739d49a6,+8801710000414,customer_415@pulse.demo,User 415,School Teacher,Chittagong Port Area,1835.14,0.0,0.91,22000.0,20000.0,Family Support & Bills,512
+28ce33b3bfb2f6f64968e600eaf906c3,+8801710000415,customer_416@pulse.demo,User 416,School Teacher,Gazipur Garment Belt,3120.12,0.0,0.82,22000.0,20000.0,Family Support & Bills,604
+340752288cd162801fd5acfa1468ab36,+8801710000416,customer_417@pulse.demo,User 417,Small Business Retailer,"Mirpur, Dhaka",2651.11,0.0,0.75,65000.0,52000.0,Merchant Pay & Supply,207
+74a738ec652992527640670161fe6754,+8801710000417,customer_418@pulse.demo,User 418,Corporate Executive,Sylhet Sadar,1744.52,0.0,0.77,85000.0,68000.0,Utility Bills & Savings,727
+011f335f15b168e83604d4a84311a3c0,+8801710000418,customer_419@pulse.demo,User 419,School Teacher,"Dhanmondi, Dhaka",2703.83,0.0,0.71,22000.0,20000.0,Family Support & Bills,282
+622550525bad221d8184c1d71da54af3,+8801710000419,customer_420@pulse.demo,User 420,Small Business Retailer,Sylhet Sadar,1527.57,0.0,0.96,65000.0,52000.0,Merchant Pay & Supply,334
+69bc8c0ab8ef2ebf16eeb5659664eaca,+8801710000420,customer_421@pulse.demo,User 421,Small Business Retailer,Chittagong Port Area,3466.69,0.0,0.81,65000.0,52000.0,Merchant Pay & Supply,521
+1e25b741af76fe2bf54d23ad64cbfe15,+8801710000421,customer_422@pulse.demo,User 422,Small Business Retailer,Sylhet Sadar,4671.82,0.0,0.91,65000.0,52000.0,Merchant Pay & Supply,310
+317e37ae348c766a2c840e26dd6fc954,+8801710000422,customer_423@pulse.demo,User 423,Small Business Retailer,Savar Industrial Zone,2888.71,0.0,0.83,65000.0,52000.0,Merchant Pay & Supply,434
+137cf794d4f5d8f818caad6e4ac354c3,+8801710000423,customer_424@pulse.demo,User 424,Small Business Retailer,Narayanganj Export Zone,1487.74,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,110
+83f89418ae972d63d165d2e86dac76cd,+8801710000424,customer_425@pulse.demo,User 425,Small Business Retailer,"Mirpur, Dhaka",3297.06,0.0,0.9,65000.0,52000.0,Merchant Pay & Supply,249
+a8eb908477b98216803b855951c31697,+8801710000425,customer_426@pulse.demo,User 426,University Student,Sylhet Sadar,388.92,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,308
+673ddce1a685317975c0353ab6042bff,+8801710000426,customer_427@pulse.demo,User 427,University Student,Savar Industrial Zone,819.6,0.0,0.84,6500.0,6200.0,Mobile Recharge & Food,278
+bb9caa05b0532061c916e73d1595197a,+8801710000427,customer_428@pulse.demo,User 428,Garment Factory Worker,Sylhet Sadar,670.6,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,132
+31dee2f6374c7ffacf476765cd2eaaa7,+8801710000428,customer_429@pulse.demo,User 429,Corporate Executive,"Gulshan, Dhaka",3600.92,0.0,0.68,85000.0,68000.0,Utility Bills & Savings,170
+e9a045e3ab944663b831d9b8868a0fc4,+8801710000429,customer_430@pulse.demo,User 430,Garment Factory Worker,Sylhet Sadar,2739.25,0.0,0.7,14000.0,13200.0,Cash-Out & Remittance,698
+e358e96d6a47608f263c5127f3f5d6bc,+8801710000430,customer_431@pulse.demo,User 431,Corporate Executive,"Mirpur, Dhaka",3270.17,0.0,0.9,85000.0,68000.0,Utility Bills & Savings,324
+75469e67ce8e759e3cf2accfbe07cfa2,+8801710000431,customer_432@pulse.demo,User 432,Small Business Retailer,"Dhanmondi, Dhaka",3247.19,0.0,0.95,65000.0,52000.0,Merchant Pay & Supply,121
+f2b332aa2e3f35276b62524f343c99da,+8801710000432,customer_433@pulse.demo,User 433,School Teacher,Rajshahi University Area,1060.16,0.0,0.89,22000.0,20000.0,Family Support & Bills,68
+e53bf02645c2ca563b0e16755daaf1f9,+8801710000433,customer_434@pulse.demo,User 434,University Student,"Uttara, Dhaka",1152.81,0.0,0.71,6500.0,6200.0,Mobile Recharge & Food,67
+4fd1ca632d480b57b5db4acd1714caf2,+8801710000434,customer_435@pulse.demo,User 435,Corporate Executive,"Mirpur, Dhaka",972.24,0.0,0.9,85000.0,68000.0,Utility Bills & Savings,326
+21d33a380924fc02f8842ce942cfa978,+8801710000435,customer_436@pulse.demo,User 436,Garment Factory Worker,Gazipur Garment Belt,870.58,0.0,0.85,14000.0,13200.0,Cash-Out & Remittance,373
+117393599d6ba73ec0ab81504b958cd2,+8801710000436,customer_437@pulse.demo,User 437,Small Business Retailer,"Mirpur, Dhaka",4946.04,0.0,0.83,65000.0,52000.0,Merchant Pay & Supply,535
+314deae7a0dd1e81dd6f856dffdd74a8,+8801710000437,customer_438@pulse.demo,User 438,University Student,Sylhet Sadar,635.03,0.0,0.71,6500.0,6200.0,Mobile Recharge & Food,145
+c798f9d69c30da1ebadd2d97212e3e4b,+8801710000438,customer_439@pulse.demo,User 439,Small Business Retailer,Narayanganj Export Zone,3669.04,0.0,0.86,65000.0,52000.0,Merchant Pay & Supply,220
+3a4ab6554958b61ee1b4ec00338a81ba,+8801710000439,customer_440@pulse.demo,User 440,Garment Factory Worker,"Gulshan, Dhaka",2224.61,0.0,0.84,14000.0,13200.0,Cash-Out & Remittance,227
+fc9d2a690a7fdbd0e1a9a79ece3143e2,+8801710000440,customer_441@pulse.demo,User 441,University Student,Rajshahi University Area,1120.18,0.0,0.95,6500.0,6200.0,Mobile Recharge & Food,467
+d7c7ba0383fd9ebb6605df1dbebe14ee,+8801710000441,customer_442@pulse.demo,User 442,Ride-Share Driver,"Gulshan, Dhaka",479.35,0.0,0.87,28000.0,24000.0,Cash-In & Peer Transfer,219
+a71bc5d81275211ec7125bf381fbb9d0,+8801710000442,customer_443@pulse.demo,User 443,University Student,"Mirpur, Dhaka",454.5,0.0,0.73,6500.0,6200.0,Mobile Recharge & Food,297
+31583a779b24f3782eddad56005ff89e,+8801710000443,customer_444@pulse.demo,User 444,Corporate Executive,Chittagong Port Area,2261.34,0.0,0.74,85000.0,68000.0,Utility Bills & Savings,367
+1e79f6fc0175b70aff80f7cc04dfee8c,+8801710000444,customer_445@pulse.demo,User 445,Small Business Retailer,Rajshahi University Area,3628.27,0.0,0.65,65000.0,52000.0,Merchant Pay & Supply,699
+e00b05c84abd2661ed348a944a7f0cd3,+8801710000445,customer_446@pulse.demo,User 446,Small Business Retailer,Chittagong Port Area,357.52,0.0,0.69,65000.0,52000.0,Merchant Pay & Supply,344
+0a573c8c99ce197835b7651912945266,+8801710000446,customer_447@pulse.demo,User 447,University Student,"Uttara, Dhaka",907.59,0.0,0.95,6500.0,6200.0,Mobile Recharge & Food,348
+ceae6c8c2cd651d89a660668829aaca3,+8801710000447,customer_448@pulse.demo,User 448,School Teacher,Savar Industrial Zone,2828.39,0.0,0.96,22000.0,20000.0,Family Support & Bills,406
+879f6a1b9afdded9733bf801890ecea8,+8801710000448,customer_449@pulse.demo,User 449,Ride-Share Driver,Chittagong Port Area,1134.69,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,186
+53548bb54ef0f07e78b7932435c447e6,+8801710000449,customer_450@pulse.demo,User 450,Corporate Executive,Rajshahi University Area,1899.44,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,512
+23eb57b6dbb1c52f42763493808894fa,+8801710000450,customer_451@pulse.demo,User 451,Ride-Share Driver,Chittagong Port Area,3821.21,0.0,0.87,28000.0,24000.0,Cash-In & Peer Transfer,640
+bb7c0f630ea5b868a04852fbaacd762d,+8801710000451,customer_452@pulse.demo,User 452,Garment Factory Worker,Sylhet Sadar,1278.56,0.0,0.88,14000.0,13200.0,Cash-Out & Remittance,109
+78bc9530c34bb7f72f8e5ed721ffc0b6,+8801710000452,customer_453@pulse.demo,User 453,Ride-Share Driver,Savar Industrial Zone,355.7,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,547
+708fe9b15f7c057c97deb6916beeb565,+8801710000453,customer_454@pulse.demo,User 454,University Student,Rajshahi University Area,720.83,0.0,0.7,6500.0,6200.0,Mobile Recharge & Food,562
+3913b1c9af6a156d541dbad900fdb957,+8801710000454,customer_455@pulse.demo,User 455,Corporate Executive,Savar Industrial Zone,3417.46,0.0,0.89,85000.0,68000.0,Utility Bills & Savings,530
+6891888f52e816c83a9ee9c79c026ac6,+8801710000455,customer_456@pulse.demo,User 456,Garment Factory Worker,Sylhet Sadar,1275.08,0.0,0.67,14000.0,13200.0,Cash-Out & Remittance,165
+cb623e9e5d943eb0b46866e8328e213a,+8801710000456,customer_457@pulse.demo,User 457,Ride-Share Driver,"Uttara, Dhaka",2311.15,0.0,0.67,28000.0,24000.0,Cash-In & Peer Transfer,503
+7a82810568a1428e804366ec6df81393,+8801710000457,customer_458@pulse.demo,User 458,School Teacher,"Dhanmondi, Dhaka",3196.27,0.0,0.78,22000.0,20000.0,Family Support & Bills,33
+e5ff74de6403768d0229b6326bc9ee66,+8801710000458,customer_459@pulse.demo,User 459,School Teacher,Chittagong Port Area,2565.65,0.0,0.66,22000.0,20000.0,Family Support & Bills,382
+3d43941b24d6657afee38d8075bd232e,+8801710000459,customer_460@pulse.demo,User 460,School Teacher,Savar Industrial Zone,2404.06,0.0,0.67,22000.0,20000.0,Family Support & Bills,100
+ca3a6419e5d1b5f262f118b7d7c2dd10,+8801710000460,customer_461@pulse.demo,User 461,Corporate Executive,Gazipur Garment Belt,1471.1,0.0,0.71,85000.0,68000.0,Utility Bills & Savings,168
+136a3a3f2fee4db2bb24f3cff8c8a94e,+8801710000461,customer_462@pulse.demo,User 462,School Teacher,"Uttara, Dhaka",1678.91,0.0,0.94,22000.0,20000.0,Family Support & Bills,489
+f38ed0d16f41fde2cf15d58043c3bb1b,+8801710000462,customer_463@pulse.demo,User 463,Corporate Executive,"Uttara, Dhaka",447.24,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,582
+eab56f116d68be44579a866597a515d4,+8801710000463,customer_464@pulse.demo,User 464,University Student,"Gulshan, Dhaka",198.29,0.0,0.98,6500.0,6200.0,Mobile Recharge & Food,432
+be683c9d483a8e78e9ec2a67c60e8729,+8801710000464,customer_465@pulse.demo,User 465,Ride-Share Driver,Narayanganj Export Zone,3652.9,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,33
+a1561cfe4c41137896ad1ffe257c550d,+8801710000465,customer_466@pulse.demo,User 466,Garment Factory Worker,"Dhanmondi, Dhaka",1323.26,0.0,0.89,14000.0,13200.0,Cash-Out & Remittance,464
+d69958e3daadfb41f29971514181b344,+8801710000466,customer_467@pulse.demo,User 467,Ride-Share Driver,"Uttara, Dhaka",4125.63,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,384
+055370d45ccfc6d87dd8379ce8a29ba3,+8801710000467,customer_468@pulse.demo,User 468,University Student,"Dhanmondi, Dhaka",285.6,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,145
+0d1f08336027522315c587f1eb2f3787,+8801710000468,customer_469@pulse.demo,User 469,Garment Factory Worker,"Uttara, Dhaka",1741.04,0.0,0.96,14000.0,13200.0,Cash-Out & Remittance,46
+a4ecd13bd5e04c81bc22c0919a74b1fc,+8801710000469,customer_470@pulse.demo,User 470,University Student,Chittagong Port Area,134.11,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,487
+56ee042278834af89a0568ec5af571ff,+8801710000470,customer_471@pulse.demo,User 471,Ride-Share Driver,Gazipur Garment Belt,1261.43,0.0,0.66,28000.0,24000.0,Cash-In & Peer Transfer,479
+67184743dea49cddb521280a61a0aa30,+8801710000471,customer_472@pulse.demo,User 472,University Student,Sylhet Sadar,321.59,0.0,0.94,6500.0,6200.0,Mobile Recharge & Food,87
+b4d5baa9584d6f02975abba2ce354a9b,+8801710000472,customer_473@pulse.demo,User 473,University Student,Sylhet Sadar,1291.85,0.0,0.73,6500.0,6200.0,Mobile Recharge & Food,619
+c02acf07f3ad295dc671033a5453ae2c,+8801710000473,customer_474@pulse.demo,User 474,Small Business Retailer,Rajshahi University Area,3009.69,0.0,0.87,65000.0,52000.0,Merchant Pay & Supply,358
+92381d315024b05eeef4a937e18bdbf8,+8801710000474,customer_475@pulse.demo,User 475,University Student,"Dhanmondi, Dhaka",1145.32,0.0,0.98,6500.0,6200.0,Mobile Recharge & Food,563
+a219b705e289e9aaf25444125e6da2cf,+8801710000475,customer_476@pulse.demo,User 476,University Student,"Uttara, Dhaka",425.63,0.0,0.67,6500.0,6200.0,Mobile Recharge & Food,635
+86307f4bf924c285b8a44cc9cabfc668,+8801710000476,customer_477@pulse.demo,User 477,School Teacher,Narayanganj Export Zone,2773.07,0.0,0.79,22000.0,20000.0,Family Support & Bills,537
+e43e8136a740a84315c9aaf0128fe136,+8801710000477,customer_478@pulse.demo,User 478,Garment Factory Worker,"Gulshan, Dhaka",2639.36,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,567
+142beeb3d9c69ace408c4f0fe28bd61b,+8801710000478,customer_479@pulse.demo,User 479,Small Business Retailer,"Uttara, Dhaka",2070.88,0.0,0.75,65000.0,52000.0,Merchant Pay & Supply,218
+4a0173789f9662369fe3f25e36584449,+8801710000479,customer_480@pulse.demo,User 480,Ride-Share Driver,"Mirpur, Dhaka",1242.79,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,177
+4d058f0806a8a97eb67c586f3ddb7265,+8801710000480,customer_481@pulse.demo,User 481,Corporate Executive,Gazipur Garment Belt,2833.81,0.0,0.97,85000.0,68000.0,Utility Bills & Savings,600
+51602d01edc99e2f1fe0c8ee87a51fdd,+8801710000481,customer_482@pulse.demo,User 482,Ride-Share Driver,Narayanganj Export Zone,1972.67,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,368
+59a8c72236f3010b4b0d90e8aefeb83b,+8801710000482,customer_483@pulse.demo,User 483,School Teacher,Savar Industrial Zone,4061.68,0.0,0.93,22000.0,20000.0,Family Support & Bills,124
+254b43ca076742fffa4c371c07c5bf9f,+8801710000483,customer_484@pulse.demo,User 484,Ride-Share Driver,Chittagong Port Area,305.11,0.0,0.77,28000.0,24000.0,Cash-In & Peer Transfer,649
+b713d2c168bb4a5d7b01bf2630055f07,+8801710000484,customer_485@pulse.demo,User 485,Ride-Share Driver,Gazipur Garment Belt,4374.42,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,631
+e6503007d590c3fb7ca9e91daf070b5c,+8801710000485,customer_486@pulse.demo,User 486,School Teacher,Sylhet Sadar,994.02,0.0,0.72,22000.0,20000.0,Family Support & Bills,370
+103f8fe1d107b4304900946a9cfac5a0,+8801710000486,customer_487@pulse.demo,User 487,Small Business Retailer,Gazipur Garment Belt,1098.45,0.0,0.71,65000.0,52000.0,Merchant Pay & Supply,150
+970bb25f202bf5f9ed34cf464cebdc09,+8801710000487,customer_488@pulse.demo,User 488,School Teacher,"Mirpur, Dhaka",4027.82,0.0,0.88,22000.0,20000.0,Family Support & Bills,239
+486f24a8a89ec807a9f54f10d5b61a35,+8801710000488,customer_489@pulse.demo,User 489,Corporate Executive,Chittagong Port Area,2782.79,0.0,0.91,85000.0,68000.0,Utility Bills & Savings,419
+faa450245767631ae3b7bdf56043b134,+8801710000489,customer_490@pulse.demo,User 490,Corporate Executive,Sylhet Sadar,3261.17,0.0,0.75,85000.0,68000.0,Utility Bills & Savings,398
+ed64f99a8f8357a2cf17569af4d97d8f,+8801710000490,customer_491@pulse.demo,User 491,Ride-Share Driver,"Mirpur, Dhaka",2356.72,0.0,0.91,28000.0,24000.0,Cash-In & Peer Transfer,510
+889d63b26b50c74b9fbee289eb3f4cfc,+8801710000491,customer_492@pulse.demo,User 492,Small Business Retailer,Chittagong Port Area,1884.99,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,606
+3140ac900bbba0c363e29c4c0b9be687,+8801710000492,customer_493@pulse.demo,User 493,University Student,Narayanganj Export Zone,70.27,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,628
+3e0b61816614d3c995d1b91047b293db,+8801710000493,customer_494@pulse.demo,User 494,Ride-Share Driver,"Uttara, Dhaka",1511.2,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,265
+704daa309b833c073d57914f06b7d147,+8801710000494,customer_495@pulse.demo,User 495,Corporate Executive,Rajshahi University Area,4175.15,0.0,0.81,85000.0,68000.0,Utility Bills & Savings,700
+8a14f5d6db71f3d692180b3d5f0fbbe5,+8801710000495,customer_496@pulse.demo,User 496,School Teacher,"Gulshan, Dhaka",1169.37,0.0,0.92,22000.0,20000.0,Family Support & Bills,687
+1d8f45dc9c5f9e9e7d430d18685a6ce5,+8801710000496,customer_497@pulse.demo,User 497,School Teacher,"Mirpur, Dhaka",2054.61,0.0,0.89,22000.0,20000.0,Family Support & Bills,390
+21701f6edbc7d20cf888f843ace32610,+8801710000497,customer_498@pulse.demo,User 498,University Student,Narayanganj Export Zone,950.39,0.0,0.81,6500.0,6200.0,Mobile Recharge & Food,585
+1152b79e0c9007de8f40614d5a9b954c,+8801710000498,customer_499@pulse.demo,User 499,School Teacher,Gazipur Garment Belt,2329.16,0.0,0.93,22000.0,20000.0,Family Support & Bills,106
+4ec88093441fca53cb37cf2a084b4eb7,+8801710000499,customer_500@pulse.demo,User 500,School Teacher,Gazipur Garment Belt,3374.87,0.0,0.79,22000.0,20000.0,Family Support & Bills,675
+97c0cc3a0c02d450948f33fe57a23c4f,+8801710000500,customer_501@pulse.demo,User 501,University Student,Savar Industrial Zone,933.96,0.0,0.65,6500.0,6200.0,Mobile Recharge & Food,547
+bd4b2cdfb4cc471212fced262ca54209,+8801710000501,customer_502@pulse.demo,User 502,Corporate Executive,"Gulshan, Dhaka",349.23,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,661
+e3c56c89feeb3c5511ac724bd82ee810,+8801710000502,customer_503@pulse.demo,User 503,Corporate Executive,"Mirpur, Dhaka",127.87,0.0,0.83,85000.0,68000.0,Utility Bills & Savings,451
+b4035c7e3356d54b0e2b4cc3ea7b4c5b,+8801710000503,customer_504@pulse.demo,User 504,Garment Factory Worker,Gazipur Garment Belt,1505.9,0.0,0.74,14000.0,13200.0,Cash-Out & Remittance,323
+fc927bdf534c78ecd6243e0980ae51c0,+8801710000504,customer_505@pulse.demo,User 505,Garment Factory Worker,Sylhet Sadar,2286.18,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,213
+cb8ebdaa0bf98b92c42b37f7abcda4a5,+8801710000505,customer_506@pulse.demo,User 506,Garment Factory Worker,Savar Industrial Zone,1492.06,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,664
+15ded9798697b9632ca7b80e8fcdd8a6,+8801710000506,customer_507@pulse.demo,User 507,Ride-Share Driver,"Dhanmondi, Dhaka",4085.31,0.0,0.74,28000.0,24000.0,Cash-In & Peer Transfer,436
+fa156592c9d879077761834e2de8506e,+8801710000507,customer_508@pulse.demo,User 508,Garment Factory Worker,"Gulshan, Dhaka",2688.07,0.0,0.8,14000.0,13200.0,Cash-Out & Remittance,279
+73e4cad770b150e0458d30e55c2e201f,+8801710000508,customer_509@pulse.demo,User 509,School Teacher,Chittagong Port Area,1354.89,0.0,0.92,22000.0,20000.0,Family Support & Bills,112
+b53802b53f9ab686a599902a400e0375,+8801710000509,customer_510@pulse.demo,User 510,School Teacher,Gazipur Garment Belt,456.73,0.0,0.78,22000.0,20000.0,Family Support & Bills,595
+b807e3ad6cc70a562b4ff4eab6d8f5bc,+8801710000510,customer_511@pulse.demo,User 511,Corporate Executive,Gazipur Garment Belt,3201.9,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,114
+046892f69736e8bb004436df57965f9f,+8801710000511,customer_512@pulse.demo,User 512,Corporate Executive,"Uttara, Dhaka",3242.29,0.0,0.76,85000.0,68000.0,Utility Bills & Savings,127
+1ffa9942a5d85a3fbee30c826504e690,+8801710000512,customer_513@pulse.demo,User 513,Ride-Share Driver,Gazipur Garment Belt,1187.34,0.0,0.95,28000.0,24000.0,Cash-In & Peer Transfer,610
+f119b2ae12d8b42d0fbfa382530e77a5,+8801710000513,customer_514@pulse.demo,User 514,Corporate Executive,"Dhanmondi, Dhaka",280.48,0.0,0.67,85000.0,68000.0,Utility Bills & Savings,317
+d808f1c156a7d1f37510543ca961d4c9,+8801710000514,customer_515@pulse.demo,User 515,Ride-Share Driver,Rajshahi University Area,3307.64,0.0,0.71,28000.0,24000.0,Cash-In & Peer Transfer,352
+351e8ff85862102966736205c2965253,+8801710000515,customer_516@pulse.demo,User 516,Garment Factory Worker,Chittagong Port Area,1664.35,0.0,0.9,14000.0,13200.0,Cash-Out & Remittance,437
+2fbb5163c3b75bf07f1732ae703acea4,+8801710000516,customer_517@pulse.demo,User 517,Garment Factory Worker,"Dhanmondi, Dhaka",496.74,0.0,0.73,14000.0,13200.0,Cash-Out & Remittance,428
+0a8154439fb3168e012f572a54361909,+8801710000517,customer_518@pulse.demo,User 518,School Teacher,Sylhet Sadar,1493.02,0.0,0.9,22000.0,20000.0,Family Support & Bills,173
+f3a4dc472a568b8cc205ad459ecef75c,+8801710000518,customer_519@pulse.demo,User 519,School Teacher,Savar Industrial Zone,2228.45,0.0,0.97,22000.0,20000.0,Family Support & Bills,84
+57cc2d39c01b8a0eddfbb94ebe0fe451,+8801710000519,customer_520@pulse.demo,User 520,Garment Factory Worker,"Uttara, Dhaka",688.4,0.0,0.68,14000.0,13200.0,Cash-Out & Remittance,649
+d261246a2cabed6fa45820bc350ce924,+8801710000520,customer_521@pulse.demo,User 521,Ride-Share Driver,Rajshahi University Area,2013.68,0.0,0.91,28000.0,24000.0,Cash-In & Peer Transfer,60
+9989fc78c55d38982d05d69f0686ec8a,+8801710000521,customer_522@pulse.demo,User 522,School Teacher,"Dhanmondi, Dhaka",3458.43,0.0,0.8,22000.0,20000.0,Family Support & Bills,263
+b4c17cbfd4d12dadea53577b2e95b574,+8801710000522,customer_523@pulse.demo,User 523,Small Business Retailer,Sylhet Sadar,4708.66,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,726
+e18c21b03a378f896fecab587d31a5ef,+8801710000523,customer_524@pulse.demo,User 524,Ride-Share Driver,"Uttara, Dhaka",474.19,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,282
+192b05f4ec9cb20b49339314ba9f7b6b,+8801710000524,customer_525@pulse.demo,User 525,School Teacher,Savar Industrial Zone,406.87,0.0,0.7,22000.0,20000.0,Family Support & Bills,679
+ca1b8a4bee5264c96d2da369ff93c149,+8801710000525,customer_526@pulse.demo,User 526,University Student,"Uttara, Dhaka",445.85,0.0,0.69,6500.0,6200.0,Mobile Recharge & Food,35
+ab2e9b7252a534217ae6167bc717158b,+8801710000526,customer_527@pulse.demo,User 527,Small Business Retailer,"Mirpur, Dhaka",1831.59,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,165
+52b5d144909743307399b24ddc6ccf38,+8801710000527,customer_528@pulse.demo,User 528,Garment Factory Worker,Narayanganj Export Zone,1235.19,0.0,0.83,14000.0,13200.0,Cash-Out & Remittance,554
+9fa63dbd1307598c6a986a69ba2c3979,+8801710000528,customer_529@pulse.demo,User 529,Corporate Executive,Savar Industrial Zone,180.0,0.0,0.77,85000.0,68000.0,Utility Bills & Savings,125
+f8ea5e64dae26d2b8e9754e67fa68cb3,+8801710000529,customer_530@pulse.demo,User 530,Ride-Share Driver,Rajshahi University Area,3932.97,0.0,0.94,28000.0,24000.0,Cash-In & Peer Transfer,42
+bd151a67018b4f31b8958fa27d2baf91,+8801710000530,customer_531@pulse.demo,User 531,Small Business Retailer,"Uttara, Dhaka",1969.61,0.0,0.68,65000.0,52000.0,Merchant Pay & Supply,602
+fd01947f4e9c476bf7a3f5fafe31ed1b,+8801710000531,customer_532@pulse.demo,User 532,University Student,Rajshahi University Area,701.38,0.0,0.88,6500.0,6200.0,Mobile Recharge & Food,203
+f91a5bec6c50b920c7ce89ca238c9eb5,+8801710000532,customer_533@pulse.demo,User 533,University Student,"Dhanmondi, Dhaka",426.41,0.0,0.81,6500.0,6200.0,Mobile Recharge & Food,94
+8161ae155804a39be24075172a23ac45,+8801710000533,customer_534@pulse.demo,User 534,University Student,"Uttara, Dhaka",394.95,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,108
+1bad868828dab0ebcccdfc9feddf9b83,+8801710000534,customer_535@pulse.demo,User 535,Small Business Retailer,"Dhanmondi, Dhaka",4723.9,0.0,0.89,65000.0,52000.0,Merchant Pay & Supply,537
+405f37d67368d258101c14fc05df48a2,+8801710000535,customer_536@pulse.demo,User 536,Ride-Share Driver,Rajshahi University Area,1017.96,0.0,0.69,28000.0,24000.0,Cash-In & Peer Transfer,341
+f5cf0ba9ee7f8655932977b7380b4490,+8801710000536,customer_537@pulse.demo,User 537,Garment Factory Worker,"Uttara, Dhaka",963.6,0.0,0.85,14000.0,13200.0,Cash-Out & Remittance,367
+bb59ff7fd07d2297c069e6f36013cfe6,+8801710000537,customer_538@pulse.demo,User 538,Corporate Executive,"Gulshan, Dhaka",2181.55,0.0,0.92,85000.0,68000.0,Utility Bills & Savings,696
+fe62f1cd4114ba5683cafaa454e77315,+8801710000538,customer_539@pulse.demo,User 539,Ride-Share Driver,Narayanganj Export Zone,1537.15,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,235
+ade5be9217bf431e3484a1fbe929c134,+8801710000539,customer_540@pulse.demo,User 540,Corporate Executive,"Gulshan, Dhaka",929.3,0.0,0.78,85000.0,68000.0,Utility Bills & Savings,356
+e018b76a752135bc203e12b1b1fadc97,+8801710000540,customer_541@pulse.demo,User 541,Small Business Retailer,"Mirpur, Dhaka",4840.43,0.0,0.91,65000.0,52000.0,Merchant Pay & Supply,363
+07785481a34d62afe016e0aae9496ca1,+8801710000541,customer_542@pulse.demo,User 542,Corporate Executive,"Dhanmondi, Dhaka",4091.65,0.0,0.78,85000.0,68000.0,Utility Bills & Savings,146
+fc165129f35a78988306deff374dc206,+8801710000542,customer_543@pulse.demo,User 543,Ride-Share Driver,Chittagong Port Area,2981.52,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,728
+ad40c4df2653843700553e709b00b2e5,+8801710000543,customer_544@pulse.demo,User 544,Ride-Share Driver,Gazipur Garment Belt,4767.37,0.0,0.8,28000.0,24000.0,Cash-In & Peer Transfer,244
+15370496a9c0cd2cf7d94f3a1e6e4d01,+8801710000544,customer_545@pulse.demo,User 545,Corporate Executive,"Dhanmondi, Dhaka",4164.84,0.0,0.67,85000.0,68000.0,Utility Bills & Savings,448
+bb8bb5b820bb316a4733f3ec728af742,+8801710000545,customer_546@pulse.demo,User 546,School Teacher,"Mirpur, Dhaka",655.43,0.0,0.75,22000.0,20000.0,Family Support & Bills,288
+00cbeb2d471fe332df1b53ba4e5076ec,+8801710000546,customer_547@pulse.demo,User 547,School Teacher,Narayanganj Export Zone,3161.28,0.0,0.91,22000.0,20000.0,Family Support & Bills,105
+9edc1e505f8a5fe1eadcd48d40a18398,+8801710000547,customer_548@pulse.demo,User 548,Corporate Executive,Rajshahi University Area,2422.21,0.0,0.78,85000.0,68000.0,Utility Bills & Savings,548
+f1f77b2421130d76f8d846413046f65b,+8801710000548,customer_549@pulse.demo,User 549,School Teacher,"Uttara, Dhaka",2414.86,0.0,0.91,22000.0,20000.0,Family Support & Bills,398
+f3445ad69112a32dc39d4ca29d865a93,+8801710000549,customer_550@pulse.demo,User 550,School Teacher,Sylhet Sadar,2633.12,0.0,0.95,22000.0,20000.0,Family Support & Bills,141
+35cb148e7b94de1d713d8cd00d6615ce,+8801710000550,customer_551@pulse.demo,User 551,University Student,"Gulshan, Dhaka",257.92,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,606
+3ecc0e55a6e20ed77ac53ec547ae498c,+8801710000551,customer_552@pulse.demo,User 552,School Teacher,"Uttara, Dhaka",4255.63,0.0,0.76,22000.0,20000.0,Family Support & Bills,470
+7bc9a8aa494b188dbc38311506567caf,+8801710000552,customer_553@pulse.demo,User 553,Garment Factory Worker,Gazipur Garment Belt,321.17,0.0,0.72,14000.0,13200.0,Cash-Out & Remittance,561
+912cc2d08e1cfc71bd0e1412d7b39c48,+8801710000553,customer_554@pulse.demo,User 554,Ride-Share Driver,Rajshahi University Area,3453.94,0.0,0.72,28000.0,24000.0,Cash-In & Peer Transfer,413
+33eb83c7de17b678d1003b82dde15c56,+8801710000554,customer_555@pulse.demo,User 555,Corporate Executive,"Mirpur, Dhaka",3873.09,0.0,0.84,85000.0,68000.0,Utility Bills & Savings,542
+28fc3d51d1abf3ed092f4c4127ff84db,+8801710000555,customer_556@pulse.demo,User 556,University Student,"Gulshan, Dhaka",1297.13,0.0,0.81,6500.0,6200.0,Mobile Recharge & Food,332
+bed70880fcfeddcddc83bf6e9407b32a,+8801710000556,customer_557@pulse.demo,User 557,Corporate Executive,Savar Industrial Zone,624.54,0.0,0.96,85000.0,68000.0,Utility Bills & Savings,175
+1d081df21a2765f460a6affc8b6712dd,+8801710000557,customer_558@pulse.demo,User 558,Small Business Retailer,"Dhanmondi, Dhaka",1748.18,0.0,0.91,65000.0,52000.0,Merchant Pay & Supply,563
+966fae4bbf5ee5ef5dc19711fa368f93,+8801710000558,customer_559@pulse.demo,User 559,Corporate Executive,"Gulshan, Dhaka",2407.0,0.0,0.79,85000.0,68000.0,Utility Bills & Savings,493
+c1f87277204b5e1245a94f530fbe6962,+8801710000559,customer_560@pulse.demo,User 560,Small Business Retailer,Savar Industrial Zone,1536.31,0.0,0.92,65000.0,52000.0,Merchant Pay & Supply,147
+e2a2aa3341678d401bdd13db49c778b1,+8801710000560,customer_561@pulse.demo,User 561,Garment Factory Worker,"Gulshan, Dhaka",1831.92,0.0,0.87,14000.0,13200.0,Cash-Out & Remittance,198
+71db10f899be02c5451d4d2a5ac1eef4,+8801710000561,customer_562@pulse.demo,User 562,School Teacher,Chittagong Port Area,2294.57,0.0,0.83,22000.0,20000.0,Family Support & Bills,368
+03941890b01022242fa3297c584d90a3,+8801710000562,customer_563@pulse.demo,User 563,Ride-Share Driver,"Uttara, Dhaka",4794.39,0.0,0.73,28000.0,24000.0,Cash-In & Peer Transfer,444
+4088a0dc911972c91455183ef68174b8,+8801710000563,customer_564@pulse.demo,User 564,School Teacher,Narayanganj Export Zone,860.78,0.0,0.87,22000.0,20000.0,Family Support & Bills,435
+65c499b54efa84bdb4c81a7498ddfb71,+8801710000564,customer_565@pulse.demo,User 565,Garment Factory Worker,Rajshahi University Area,2478.52,0.0,0.8,14000.0,13200.0,Cash-Out & Remittance,469
+3f9398342ad6ff8e06ffb5766a55a1c5,+8801710000565,customer_566@pulse.demo,User 566,Corporate Executive,Gazipur Garment Belt,3538.44,0.0,0.72,85000.0,68000.0,Utility Bills & Savings,94
+fdaaec3dcae2c792fd6c1aaf6d90c082,+8801710000566,customer_567@pulse.demo,User 567,Ride-Share Driver,Savar Industrial Zone,4007.54,0.0,0.83,28000.0,24000.0,Cash-In & Peer Transfer,404
+5124d11c7b624c13c779f1501bb3caeb,+8801710000567,customer_568@pulse.demo,User 568,Small Business Retailer,Chittagong Port Area,2314.87,0.0,0.74,65000.0,52000.0,Merchant Pay & Supply,531
+dabd9e9be98f753e5a13d4b5f1f63d69,+8801710000568,customer_569@pulse.demo,User 569,Ride-Share Driver,"Gulshan, Dhaka",3005.01,0.0,0.85,28000.0,24000.0,Cash-In & Peer Transfer,631
+823fdca23f35833e93da63b295bfa10b,+8801710000569,customer_570@pulse.demo,User 570,Garment Factory Worker,"Gulshan, Dhaka",1017.96,0.0,0.8,14000.0,13200.0,Cash-Out & Remittance,206
+69c93fe55069a8cb5fb6e6ded0355310,+8801710000570,customer_571@pulse.demo,User 571,School Teacher,"Dhanmondi, Dhaka",4046.27,0.0,0.84,22000.0,20000.0,Family Support & Bills,718
+e882915273bbb93a885b2aff757458ed,+8801710000571,customer_572@pulse.demo,User 572,University Student,"Gulshan, Dhaka",197.33,0.0,0.75,6500.0,6200.0,Mobile Recharge & Food,217
+06dd5bb3a04ce9f206b6f58d70357ad1,+8801710000572,customer_573@pulse.demo,User 573,Small Business Retailer,Narayanganj Export Zone,2578.58,0.0,0.79,65000.0,52000.0,Merchant Pay & Supply,171
+3311ac8bf6a0e934f5716c20386fd656,+8801710000573,customer_574@pulse.demo,User 574,Ride-Share Driver,"Uttara, Dhaka",2144.04,0.0,0.81,28000.0,24000.0,Cash-In & Peer Transfer,580
+abdd384252f45915c68c74c917f81625,+8801710000574,customer_575@pulse.demo,User 575,School Teacher,Narayanganj Export Zone,2463.87,0.0,0.81,22000.0,20000.0,Family Support & Bills,173
+a7bfe47628f6b6d2f344ccd51bca2ae6,+8801710000575,customer_576@pulse.demo,User 576,University Student,"Gulshan, Dhaka",1102.48,0.0,0.85,6500.0,6200.0,Mobile Recharge & Food,397
+ee0ae184492bc9be4c15b0aefce49262,+8801710000576,customer_577@pulse.demo,User 577,Garment Factory Worker,"Mirpur, Dhaka",425.47,0.0,0.92,14000.0,13200.0,Cash-Out & Remittance,605
+6da9353e5bb07ac5285f3e4b2533a028,+8801710000577,customer_578@pulse.demo,User 578,Ride-Share Driver,"Mirpur, Dhaka",2075.22,0.0,0.81,28000.0,24000.0,Cash-In & Peer Transfer,484
+1cd4ccbaa301c53d24cfbb554bc4fb9e,+8801710000578,customer_579@pulse.demo,User 579,Corporate Executive,Narayanganj Export Zone,459.22,0.0,0.66,85000.0,68000.0,Utility Bills & Savings,255
+48c57de628e20d4eaf6fac89e576e6b9,+8801710000579,customer_580@pulse.demo,User 580,Small Business Retailer,Gazipur Garment Belt,1410.52,0.0,0.83,65000.0,52000.0,Merchant Pay & Supply,202
+3f7a4c46ced8e8d8aaa18aa890b4c810,+8801710000580,customer_581@pulse.demo,User 581,Corporate Executive,Rajshahi University Area,3725.47,0.0,0.9,85000.0,68000.0,Utility Bills & Savings,592
+07ef0b315c35e8124cbf33284bc538a2,+8801710000581,customer_582@pulse.demo,User 582,Ride-Share Driver,Savar Industrial Zone,2884.93,0.0,0.74,28000.0,24000.0,Cash-In & Peer Transfer,586
+7e03666e5a6d821f3acc28126dc4ecdf,+8801710000582,customer_583@pulse.demo,User 583,Small Business Retailer,Sylhet Sadar,4121.92,0.0,0.66,65000.0,52000.0,Merchant Pay & Supply,481
+702f97c77a5383ebcdf5bfd47cc283a5,+8801710000583,customer_584@pulse.demo,User 584,Ride-Share Driver,Chittagong Port Area,4949.39,0.0,0.68,28000.0,24000.0,Cash-In & Peer Transfer,699
+74316f459f84159a246764ed62604241,+8801710000584,customer_585@pulse.demo,User 585,University Student,"Dhanmondi, Dhaka",1143.51,0.0,0.66,6500.0,6200.0,Mobile Recharge & Food,299
+aeee6353431466d145a1b34173f855e3,+8801710000585,customer_586@pulse.demo,User 586,Small Business Retailer,Savar Industrial Zone,2223.4,0.0,0.98,65000.0,52000.0,Merchant Pay & Supply,272
+56369bec857e2bc129cc6703120fa8be,+8801710000586,customer_587@pulse.demo,User 587,University Student,Rajshahi University Area,911.42,0.0,0.93,6500.0,6200.0,Mobile Recharge & Food,654
+f895322dbe5fd4f52a1f46704e40c5a8,+8801710000587,customer_588@pulse.demo,User 588,School Teacher,"Uttara, Dhaka",772.02,0.0,0.7,22000.0,20000.0,Family Support & Bills,241
+2fbb607c816c08f08f6e1ba35b9806af,+8801710000588,customer_589@pulse.demo,User 589,University Student,Gazipur Garment Belt,762.59,0.0,0.83,6500.0,6200.0,Mobile Recharge & Food,641
+dfa597da464c06e13be64a4fa06c258f,+8801710000589,customer_590@pulse.demo,User 590,Ride-Share Driver,Narayanganj Export Zone,1652.09,0.0,0.88,28000.0,24000.0,Cash-In & Peer Transfer,326
+f56556d053e50e2b85aa9e115d73d7b3,+8801710000590,customer_591@pulse.demo,User 591,Ride-Share Driver,"Dhanmondi, Dhaka",4764.37,0.0,0.82,28000.0,24000.0,Cash-In & Peer Transfer,725
+3e5fb1a699d6e199005ebd925ae29a6c,+8801710000591,customer_592@pulse.demo,User 592,Garment Factory Worker,Narayanganj Export Zone,2697.62,0.0,0.91,14000.0,13200.0,Cash-Out & Remittance,90
+fe0443e31b831b611d25aa715d829dd4,+8801710000592,customer_593@pulse.demo,User 593,Small Business Retailer,Narayanganj Export Zone,3522.06,0.0,0.69,65000.0,52000.0,Merchant Pay & Supply,179
+7b53f822c177a628c6bd477e104bb189,+8801710000593,customer_594@pulse.demo,User 594,School Teacher,"Gulshan, Dhaka",3653.9,0.0,0.9,22000.0,20000.0,Family Support & Bills,722
+a865219f93f7736d943ae2476619e32d,+8801710000594,customer_595@pulse.demo,User 595,Corporate Executive,"Mirpur, Dhaka",753.75,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,672
+67ea824ac526f8f68b6bebdebe568ae1,+8801710000595,customer_596@pulse.demo,User 596,Corporate Executive,"Uttara, Dhaka",2287.36,0.0,0.86,85000.0,68000.0,Utility Bills & Savings,125
+cfe2500aaafad8bd9e2fc4b96be6e156,+8801710000596,customer_597@pulse.demo,User 597,Corporate Executive,Sylhet Sadar,3761.52,0.0,0.88,85000.0,68000.0,Utility Bills & Savings,407
+fd1e56f90fddd02dab1dc5ad21d452bf,+8801710000597,customer_598@pulse.demo,User 598,Corporate Executive,"Mirpur, Dhaka",1670.08,0.0,0.65,85000.0,68000.0,Utility Bills & Savings,125
+e60a011bd3f4061414d9be259f9bd79f,+8801710000598,customer_599@pulse.demo,User 599,School Teacher,"Mirpur, Dhaka",2811.56,0.0,0.88,22000.0,20000.0,Family Support & Bills,94
+77b901ec55702c73dfc3b64badbac3ee,+8801710000599,customer_600@pulse.demo,User 600,Ride-Share Driver,"Uttara, Dhaka",1128.26,0.0,0.79,28000.0,24000.0,Cash-In & Peer Transfer,246

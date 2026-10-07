@@ -194,3 +194,21 @@ export interface ScamReportItem {
   investigation_notes?: string;
   created_at: string;
 }
+
+export interface AppealItem {
+  id: string;
+  user_id: string;
+  user_phone?: string;
+  user_email?: string;
+  category: string;
+  status: "PENDING" | "UNDER_REVIEW" | "APPROVED" | "REJECTED";
+  explanation: string;
+  transaction_reference?: string;
+  supporting_document_ref?: string;
+  reviewed_by_id?: string;
+  reviewer_email?: string;
+  review_action?: string;
+  review_notes?: string;
+  created_at?: string;
+  resolved_at?: string;
+}

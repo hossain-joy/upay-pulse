@@ -1,0 +1,59 @@
+{
+  "unseen_fraud_benchmark": {
+    "unseen_cases_evaluated": 50,
+    "tabular_only_recall": 0.0,
+    "graph_only_recall": 0.42,
+    "fused_hybrid_recall": 0.4,
+    "net_gain_percentage": 40.0
+  },
+  "standard_test_benchmark": {
+    "tabular_pr_auc": 0.9923,
+    "fused_pr_auc": 0.9929,
+    "tabular_recall_1pct_fpr": 1.0,
+    "fused_recall_1pct_fpr": 1.0
+  },
+  "threshold_frontier": [
+    {
+      "threshold": 0.4,
+      "recall": 1.0,
+      "precision": 0.3468,
+      "fpr": 0.0367,
+      "f1": 0.515
+    },
+    {
+      "threshold": 0.5,
+      "recall": 1.0,
+      "precision": 0.3613,
+      "fpr": 0.0344,
+      "f1": 0.5309
+    },
+    {
+      "threshold": 0.6,
+      "recall": 1.0,
+      "precision": 0.5733,
+      "fpr": 0.0145,
+      "f1": 0.7288
+    },
+    {
+      "threshold": 0.7,
+      "recall": 1.0,
+      "precision": 0.7818,
+      "fpr": 0.0054,
+      "f1": 0.8776
+    },
+    {
+      "threshold": 0.8,
+      "recall": 1.0,
+      "precision": 0.86,
+      "fpr": 0.0032,
+      "f1": 0.9247
+    },
+    {
+      "threshold": 0.9,
+      "recall": 1.0,
+      "precision": 0.8776,
+      "fpr": 0.0027,
+      "f1": 0.9348
+    }
+  ]
+}

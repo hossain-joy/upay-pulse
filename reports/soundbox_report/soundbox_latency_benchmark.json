@@ -1,0 +1,40 @@
+{
+  "benchmark_metadata": {
+    "component": "Soundbox & Bengali Vocal Confirmation Service",
+    "iterations": 250,
+    "sample_rate_hz": 22050,
+    "pcm_audio_payload_bytes": 52964,
+    "tri_tone_chime_frequencies_hz": [
+      523.25,
+      659.25,
+      783.99
+    ],
+    "bengali_vocal_sample": "উপায় সফল! ১,৫০০ টাকা জমা হয়েছে।"
+  },
+  "metadata_and_script_synthesis": {
+    "mean_ms": 0.005,
+    "median_p50_ms": 0.003,
+    "p95_ms": 0.018,
+    "p99_ms": 0.037,
+    "stdev_ms": 0.006,
+    "min_ms": 0.003,
+    "max_ms": 0.04
+  },
+  "pcm_audio_waveform_synthesis": {
+    "mean_ms": 29.044,
+    "median_p50_ms": 27.969,
+    "p95_ms": 33.093,
+    "p99_ms": 44.04,
+    "stdev_ms": 4.676,
+    "min_ms": 25.959,
+    "max_ms": 87.189
+  },
+  "human_cognitive_confirmation_advantage": {
+    "auditory_processing_delay_ms": 140.0,
+    "visual_inspection_delay_ms": 380.0,
+    "soundbox_total_confirmation_latency_p50_ms": 167.97,
+    "smartphone_visual_notification_latency_ms": 560.0,
+    "speed_advantage_multiplier": "3.33x faster merchant confirmation",
+    "anti_counterfeit_benefit": "Eliminates merchant reliance on static smartphone screen inspections that are vulnerable to fake payment app screenshots."
+  }
+}

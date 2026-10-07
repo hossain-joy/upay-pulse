@@ -50,6 +50,11 @@ yarn-error.log*
 Thumbs.db
 [Dd]esktop.ini
 .DS_Store
+.puku-cli/
+
+# Logs
+backend_log.txt
+*.log
 
 # Sensitive Data / Credentials
 *.pem

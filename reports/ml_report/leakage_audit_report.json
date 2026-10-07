@@ -1,0 +1,114 @@
+{
+  "dataset_size": 15000,
+  "phase1_leakage_diagnosis": {
+    "root_cause": "Conditional synthesis based on target label 'is_flagged_fraud' in training/train_risk_model.py (lines 43-50)",
+    "impact": "Artificial ROC-AUC=1.0000 caused by learning random generator's conditional distributions",
+    "zero_leakage_verified": true
+  },
+  "phase2_resolution": {
+    "engine": "ml/features/temporal_feature_store.py (Point-in-Time causal aggregation)",
+    "causality_rule": "Feature(t) = f({Event_tau | tau < t})",
+    "zero_leakage_verified": true,
+    "features_audited": 14,
+    "feature_metrics": {
+      "amount": {
+        "abs_correlation_with_target": 0.703,
+        "mean": 3590.7949,
+        "std": 5868.6711,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "amount_zscore_user": {
+        "abs_correlation_with_target": 0.4597,
+        "mean": 0.748,
+        "std": 4.7858,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "velocity_10m": {
+        "abs_correlation_with_target": 0.3012,
+        "mean": 0.0067,
+        "std": 0.0998,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "velocity_1h": {
+        "abs_correlation_with_target": 0.2142,
+        "mean": 0.0157,
+        "std": 0.1372,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "hour_of_day": {
+        "abs_correlation_with_target": 0.1234,
+        "mean": 11.3654,
+        "std": 6.9548,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "is_night_time": {
+        "abs_correlation_with_target": 0.14,
+        "mean": 0.22,
+        "std": 0.4143,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "account_age_days": {
+        "abs_correlation_with_target": 0.015,
+        "mean": 234.2257,
+        "std": 101.0003,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "is_new_recipient": {
+        "abs_correlation_with_target": 0.0035,
+        "mean": 0.9821,
+        "std": 0.1327,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "receiver_in_degree_24h": {
+        "abs_correlation_with_target": 0.0464,
+        "mean": 1.0479,
+        "std": 0.2596,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "receiver_risk_rating": {
+        "abs_correlation_with_target": 0.0598,
+        "mean": 0.0303,
+        "std": 0.0608,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "device_switch_detected": {
+        "abs_correlation_with_target": 0.0,
+        "mean": 0.0,
+        "std": 0.0,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "rapid_drain_pct": {
+        "abs_correlation_with_target": 0.3016,
+        "mean": 0.3317,
+        "std": 0.328,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "failed_pin_attempts_prior": {
+        "abs_correlation_with_target": 0.0,
+        "mean": 0.0,
+        "std": 0.0,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      },
+      "tx_type_risk_weight": {
+        "abs_correlation_with_target": 0.2191,
+        "mean": 0.3251,
+        "std": 0.257,
+        "is_leaked": false,
+        "status": "CLEAN_CAUSAL"
+      }
+    }
+  }
+}

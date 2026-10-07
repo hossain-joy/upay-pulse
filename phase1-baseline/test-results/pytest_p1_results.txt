@@ -1,0 +1,48 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.14.5, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\ihjoy\AppData\Local\Programs\Python\Python314\python.exe
+cachedir: .pytest_cache
+rootdir: D:\diu_hackathon\backend
+plugins: anyio-4.13.0, asyncio-1.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 38 items
+
+tests/test_agent_ai.py::test_agent_liquidity_forecast PASSED             [  2%]
+tests/test_agent_ai.py::test_agent_liquidity_rebalancing PASSED          [  5%]
+tests/test_agent_ai.py::test_agent_ai_rbac_isolation PASSED              [  7%]
+tests/test_auth.py::test_customer_registration_and_login PASSED          [ 10%]
+tests/test_auth.py::test_rbac_customer_agent_admin_isolation PASSED      [ 13%]
+tests/test_auth.py::test_session_logout_and_revocation PASSED            [ 15%]
+tests/test_customer_ai.py::test_cash_flow_trajectory PASSED              [ 18%]
+tests/test_customer_ai.py::test_grace_credit_eligibility_and_advance PASSED [ 21%]
+tests/test_customer_ai.py::test_micro_fdr_flow PASSED                    [ 23%]
+tests/test_database.py::test_database_connection PASSED                  [ 26%]
+tests/test_database.py::test_baseline_users_seeded PASSED                [ 28%]
+tests/test_database.py::test_transaction_and_risk_score_relationship PASSED [ 31%]
+tests/test_database.py::test_cash_flow_forecasts_exist PASSED            [ 34%]
+tests/test_events_ws.py::test_websocket_connection_and_handshake PASSED  [ 36%]
+tests/test_events_ws.py::test_broadcast_http_endpoint PASSED             [ 39%]
+tests/test_foundation.py::test_health_endpoint PASSED                    [ 42%]
+tests/test_foundation.py::test_ready_endpoint PASSED                     [ 44%]
+tests/test_foundation.py::test_api_v1_info_endpoint PASSED               [ 47%]
+tests/test_foundation.py::test_event_bus_in_memory_dispatch PASSED       [ 50%]
+tests/test_graph_mules.py::test_graph_topology_endpoint PASSED           [ 52%]
+tests/test_graph_mules.py::test_mule_rings_and_ego_graph PASSED          [ 55%]
+tests/test_graph_mules.py::test_scam_reporting_and_freeze_cascade PASSED [ 57%]
+tests/test_graph_mules.py::test_graph_sync_to_database PASSED            [ 60%]
+tests/test_risk_and_freeze.py::test_realtime_risk_evaluation_endpoint PASSED [ 63%]
+tests/test_risk_and_freeze.py::test_model_metrics_and_overview PASSED    [ 65%]
+tests/test_risk_and_freeze.py::test_master_freeze_state_machine_and_latency PASSED [ 68%]
+tests/test_soundbox_badge.py::test_soundbox_chime_generation PASSED      [ 71%]
+tests/test_soundbox_badge.py::test_dynamic_anti_screenshot_badge_flow PASSED [ 73%]
+tests/test_transactions.py::test_send_money_and_idempotency PASSED       [ 76%]
+tests/test_transactions.py::test_grace_overdraft_shortfall_and_approval PASSED [ 78%]
+tests/test_transactions.py::test_agent_cash_in_auto_recovers_grace PASSED [ 81%]
+tests/test_transactions.py::test_frozen_sender_is_blocked PASSED         [ 84%]
+tests/test_transactions.py::test_transaction_history_role_isolation PASSED [ 86%]
+tests/test_voice_coach.py::test_voice_coach_balance_inquiry PASSED       [ 89%]
+tests/test_voice_coach.py::test_voice_coach_grace_loan_inquiry PASSED    [ 92%]
+tests/test_voice_coach.py::test_voice_coach_micro_fdr_inquiry PASSED     [ 94%]
+tests/test_voice_coach.py::test_voice_coach_history_and_persistence PASSED [ 97%]
+tests/test_voice_coach.py::test_voice_coach_rbac_isolation PASSED        [100%]
+
+============================= 38 passed in 14.73s =============================

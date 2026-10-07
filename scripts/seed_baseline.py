@@ -250,6 +250,9 @@ def seed_baseline_data(force: bool = False):
         # 12 transactions across categories, mix of completed and pending
         # =====================================================================
         arif_txns = [
+            ("TXN-INIT-001", profile_customer, profile_peer, profile_agent, 500.00, 5.00,
+             TransactionType.SEND_MONEY, TransactionStatus.COMPLETED, "Transfer",
+             "Initial verified transfer for soundbox and badge demo", False),
             ("TXN-ARIF-001", None, profile_peer, profile_agent, 1500.00, 5.00,
              TransactionType.CASH_OUT, TransactionStatus.COMPLETED, "Cash-Out",
              "Family withdrawal — weekend groceries", False),
@@ -453,10 +456,11 @@ def seed_baseline_data(force: bool = False):
         # Risk scores for fraud transactions
         for i, t in enumerate(high_risk_txns):
             reasons = '["Amount deviates +350% from 30d mean", "High velocity transfer 02:45 AM", "Unusual cash-out agent"]'
+            score_val = 0.89 if t.transaction_reference == "TXN-ANOMALY-002" else round(random.uniform(0.82, 0.94), 3)
             _score_for(
                 db,
                 t,
-                risk_score=round(random.uniform(0.82, 0.94), 3),
+                risk_score=score_val,
                 level=RiskLevel.HIGH,
                 decision=RiskDecision.BLOCK_AND_FLAG,
                 reasons=reasons,

@@ -208,6 +208,13 @@ class MuleGraphDetector:
             return {
                 "nodes": [],
                 "edges": [],
+                "clusters": [],
+                "summary": {
+                    "total_nodes": 0,
+                    "total_edges": 0,
+                    "mule_nodes_detected": 0,
+                    "clusters_detected": 0
+                },
                 "center_node": center_node,
                 "error": f"Node {center_node} not found in transaction network."
             }

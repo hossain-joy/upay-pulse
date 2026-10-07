@@ -85,8 +85,8 @@ def get_risk_overview(
                 "Recipient associated with suspicious syndicate cluster."
             ]
 
-        sender_id = tx.sender.phone if tx.sender and tx.sender.phone else (tx.sender_phone or "Unknown Sender")
-        receiver_id = tx.receiver.phone if tx.receiver and tx.receiver.phone else (tx.receiver_phone or "Unknown Recipient")
+        sender_id = tx.sender.phone if tx.sender and tx.sender.phone else getattr(tx, "sender_phone", "Unknown Sender")
+        receiver_id = tx.receiver.phone if tx.receiver and tx.receiver.phone else getattr(tx, "receiver_phone", "Unknown Recipient")
 
         anomalies_list.append({
             "id": tx.id,
@@ -96,9 +96,12 @@ def get_risk_overview(
             "status": tx.status.value,
             "sender_phone": sender_id,
             "receiver_phone": receiver_id,
-            "risk_score": float(tx.risk_score.risk_score) if tx.risk_score else 0.85,
-            "decision": tx.risk_score.decision.value if tx.risk_score else "BLOCK_AND_FLAG",
-            "latency_ms": float(tx.risk_score.inference_latency_ms) if tx.risk_score and tx.risk_score.inference_latency_ms else 1.37,
+            # Surface real measured values only. If the row is missing
+            # (e.g. agent cash-in/cash-out which bypasses LightGBM), emit
+            # None so the UI renders "—" instead of a fabricated number.
+            "risk_score": float(tx.risk_score.risk_score) if tx.risk_score and tx.risk_score.risk_score is not None else None,
+            "decision": tx.risk_score.decision.value if tx.risk_score and tx.risk_score.decision else None,
+            "latency_ms": float(tx.risk_score.inference_latency_ms) if tx.risk_score and tx.risk_score.inference_latency_ms is not None else None,
             "reasons": reasons_list,
             "created_at": tx.created_at.isoformat() if tx.created_at else ""
         })

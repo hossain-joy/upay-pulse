@@ -12,6 +12,10 @@ from backend.app.models.agent_ai import AgentLiquidityForecast
 from backend.app.models.voice import VoiceCoachSession
 from backend.app.models.notification import Notification, NotificationType
 from backend.app.models.audit import AuditLog
+from backend.app.models.appeal import Appeal, AppealCategory, AppealStatus, AppealReviewAction
+from backend.app.models.model_governance import ModelGovernanceRegistry
+from backend.app.models.consumed_nonce import ConsumedNonce
+from backend.app.models.security_audit import ImmutableSecurityAudit, compute_record_hash
 
 __all__ = [
     "Base",
@@ -43,5 +47,13 @@ __all__ = [
     "VoiceCoachSession",
     "Notification",
     "NotificationType",
-    "AuditLog"
+    "AuditLog",
+    "Appeal",
+    "AppealCategory",
+    "AppealStatus",
+    "AppealReviewAction",
+    "ModelGovernanceRegistry",
+    "ConsumedNonce",
+    "ImmutableSecurityAudit",
+    "compute_record_hash",
 ]

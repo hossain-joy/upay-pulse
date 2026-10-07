@@ -1,0 +1,28 @@
+{
+  "benchmark_scale": 10000,
+  "disclaimer": "Synthetic benchmark parameterized to published Bangladesh MFS distributions; not real banking rail claims.",
+  "primary_kpi_fraud_loss_prevented_bdt": 6164414.62,
+  "primary_kpi_formula": "Fraud Loss Prevented / 10,000 Transactions subject to FPR <= 1.0%",
+  "operating_fpr": 0.0044,
+  "net_financial_benefit_bdt": 6147147.96,
+  "breakdown": {
+    "without_pulse": {
+      "fraud_loss_bdt": 6164414.62,
+      "net_benefit_bdt": 0.0
+    },
+    "lightgbm_only": {
+      "loss_prevented_bdt": 6164414.62,
+      "friction_cost_bdt": 4666.67,
+      "analyst_cost_bdt": 10000.0,
+      "net_benefit_bdt": 6149747.96,
+      "fpr": 0.0031
+    },
+    "upay_pulse_fused": {
+      "loss_prevented_bdt": 6164414.62,
+      "friction_cost_bdt": 6666.67,
+      "analyst_cost_bdt": 10600.0,
+      "net_benefit_bdt": 6147147.96,
+      "fpr": 0.0044
+    }
+  }
+}

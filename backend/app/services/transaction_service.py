@@ -107,13 +107,32 @@ class TransactionService:
                 status_code=400
             )
 
-        sender_profile = sender.customer_profile
-        receiver_profile = receiver.customer_profile
+        # Pessimistic row-level locking on Customer Profiles in deterministic order
+        # to ensure strict ACID isolation against double-spends and concurrency races
+        user_ids = sorted([sender.id, receiver.id])
+        locked_profiles = {}
+        for uid in user_ids:
+            p = db.query(CustomerProfile).filter(CustomerProfile.user_id == uid).with_for_update().first()
+            if p:
+                locked_profiles[uid] = p
+
+        sender_profile = locked_profiles.get(sender.id)
+        receiver_profile = locked_profiles.get(receiver.id)
+
         if not sender_profile or not receiver_profile:
             raise AppException(
                 message="Both sender and receiver must have active customer wallet profiles.",
                 code="PROFILE_MISSING",
                 status_code=400
+            )
+
+        # Refresh and verify sender freeze status on the locked row
+        sender_locked = db.query(User).filter(User.id == sender.id).with_for_update().first()
+        if not sender_locked or sender_locked.is_frozen or sender_locked.status == UserStatus.FROZEN:
+            raise AppException(
+                message="Your account is locked by Master Freeze. Outgoing transfers are disabled.",
+                code="ACCOUNT_FROZEN",
+                status_code=403
             )
 
         # 3. Amount Conversion & Real-Time Risk Score via SecurityAI LightGBM
@@ -316,7 +335,19 @@ class TransactionService:
                 status_code=404
             )
 
-        customer_profile = customer.customer_profile
+        # Pessimistic row locking on customer profile and agent profile
+        customer_profile = db.query(CustomerProfile).filter(CustomerProfile.user_id == customer.id).with_for_update().first()
+        agent_profile = db.query(AgentProfile).filter(AgentProfile.id == agent_profile.id).with_for_update().first()
+
+        # Re-verify customer freeze state on locked row
+        customer_locked = db.query(User).filter(User.id == customer.id).with_for_update().first()
+        if not customer_locked or customer_locked.is_frozen or customer_locked.status == UserStatus.FROZEN:
+            raise AppException(
+                message="Your account is locked by Master Freeze. Outgoing transfers are disabled.",
+                code="ACCOUNT_FROZEN",
+                status_code=403
+            )
+
         amount_dec = Decimal(str(req.amount))
         fee = Decimal("15.00")  # Standard simulated cash-out fee
         total_deduction = amount_dec + fee

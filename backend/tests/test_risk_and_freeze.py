@@ -99,9 +99,9 @@ def test_master_freeze_state_machine_and_latency(client):
     assert tx_res.status_code == 403
     assert tx_res.json()["error"]["code"] == "ACCOUNT_FROZEN"
 
-    # 6. Unfreeze with verified code
+    # 6. Unfreeze with verified Master Freeze PIN
     unfreeze_res = client.post("/api/v1/freeze/unfreeze", json={
-        "verification_code": "123456"
+        "verification_code": "1234"
     }, headers=new_headers)
     assert unfreeze_res.status_code == 200
     assert unfreeze_res.json()["is_frozen"] is False

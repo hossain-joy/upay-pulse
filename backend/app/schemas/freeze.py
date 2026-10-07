@@ -27,3 +27,9 @@ class FreezeExecuteRequest(BaseModel):
 class AdminUnfreezeRequest(BaseModel):
     account_id: str = Field(..., description="Target phone number, account number, or user ID to unfreeze")
     reason: Optional[str] = Field("Admin cleared account", max_length=255)
+
+class AdminSecureUnfreezeRequest(BaseModel):
+    account_id: str = Field(..., description="Target phone number, account number, or user ID to unfreeze")
+    case_ticket_id: str = Field(..., min_length=4, max_length=64, description="Mandatory security investigation case ticket ID")
+    reason: str = Field(..., min_length=8, max_length=255, description="Audited clearance reason")
+    supervisor_mfa_token: Optional[str] = Field(None, description="Supervisor MFA / TOTP authorization token")

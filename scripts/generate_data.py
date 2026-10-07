@@ -165,13 +165,13 @@ class SyntheticDataEngine:
         # -------------------------------------------------------------
         # Inject In-Depth Fraud Patterns: 6 Money-Mule Syndicates
         # -------------------------------------------------------------
-        print("  -> Injecting 6 money-mule fan-out syndicates...")
-        mule_clusters_count = min(6, max(1, len(customers) // 20))
+        mule_clusters_count = max(6, int(total_count * 0.012 / 7))
+        print(f"  -> Injecting {mule_clusters_count} money-mule fan-out syndicates...")
         victim_pool = customers[:max(1, len(customers) // 4)]
         mule_pool = customers[max(1, len(customers) // 4):]
 
         for cluster_idx in range(1, mule_clusters_count + 1):
-            cluster_id = f"CLUSTER-MULE-0{cluster_idx}"
+            cluster_id = f"CLUSTER-MULE-{cluster_idx:03d}"
             mule_agent = random.choice(agents)
             victim = random.choice(victim_pool)
             mule_group = random.sample(mule_pool, min(4, len(mule_pool)))
@@ -192,7 +192,7 @@ class SyntheticDataEngine:
             # Inbound transaction to primary mule
             txn_id = str(secrets.token_hex(16))
             ref = f"TXN-ML-{cluster_idx}01"
-            tx_time = now - timedelta(days=cluster_idx * 5, hours=2, minutes=15)
+            tx_time = start_date + timedelta(days=random.randint(1, 88), hours=random.choice([1, 2, 3, 4]), minutes=random.randint(0, 50))
             transactions.append({
                 "id": txn_id,
                 "transaction_reference": ref,
@@ -386,10 +386,16 @@ class SyntheticDataEngine:
             # 1.5% chance of spontaneous high-risk / blocked anomaly
             if random.random() < 0.015:
                 is_fraud = True
-                risk_val = round(random.uniform(0.76, 0.96), 3)
+                tx_type = random.choice(["SEND_MONEY", "CASH_OUT"])
+                amount = round(random.uniform(25000.0, 48000.0), 2)
+                if random.random() < 0.65:
+                    hour = random.choice([1, 2, 3, 4])
+                    is_night = 1
+                    tx_dt = tx_dt.replace(hour=hour)
+                risk_val = round(random.uniform(0.78, 0.96), 3)
                 risk_tier = "HIGH"
                 decision = "BLOCK_AND_FLAG"
-                reasons = ["Abnormal amount deviation", "Unusual velocity burst"]
+                reasons = ["Abnormal amount deviation", "Unusual velocity burst", "Unregistered recipient"]
 
             txn_id = str(secrets.token_hex(16))
             ref = f"TXN-{secrets.token_hex(4).upper()}"

@@ -1,0 +1,39 @@
+{
+  "model_type": "LightGBM Classifier",
+  "training_samples": 40000,
+  "test_samples": 10000,
+  "roc_auc": 1.0,
+  "pr_auc": 1.0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1_score": 1.0,
+  "confusion_matrix": [
+    [
+      9842,
+      0
+    ],
+    [
+      0,
+      158
+    ]
+  ],
+  "latency_p50_ms": 1.37,
+  "latency_p95_ms": 1.72,
+  "feature_importances": {
+    "amount": 326.0,
+    "amount_zscore_user": 54.0,
+    "velocity_10m": 0.0,
+    "velocity_1h": 43.0,
+    "hour_of_day": 191.0,
+    "is_night_time": 0.0,
+    "account_age_days": 667.0,
+    "is_new_recipient": 209.0,
+    "receiver_in_degree_24h": 195.0,
+    "receiver_risk_rating": 307.0,
+    "device_switch_detected": 197.0,
+    "rapid_drain_pct": 416.0,
+    "failed_pin_attempts_prior": 125.0,
+    "tx_type_risk_weight": 18.0
+  },
+  "trained_at": "2026-10-03 16:43:39 UTC"
+}
