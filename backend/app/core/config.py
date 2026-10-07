@@ -48,6 +48,13 @@ class Settings(BaseSettings):
     def assemble_cors_origins(cls, v):
         if isinstance(v, list):
             return ",".join(v)
+        if isinstance(v, str) and v.strip().startswith("["):
+            import json
+            try:
+                parsed = json.loads(v)
+                return ",".join(parsed)
+            except Exception:
+                pass
         return v or "http://localhost:5173"
 
     @property

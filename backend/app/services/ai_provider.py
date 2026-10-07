@@ -60,8 +60,11 @@ class GeminiProvider(AIProvider):
     # Preferred (cheap/fast) models first. The set is intentionally narrow; we
     # dynamically validate availability on first use instead of guessing.
     PREFERRED_MODELS = [
+        "gemini-3.5-flash-lite",
+        "gemini-3.5-flash",
+        "gemini-3.1-flash-lite",
+        "gemini-flash-lite-latest",
         "gemini-2.5-flash",
-        "gemini-2.5-flash-lite",
         "gemini-flash-latest",
     ]
 
@@ -104,10 +107,16 @@ class GeminiProvider(AIProvider):
                 methods = m.get("supportedGenerationMethods", []) or []
                 if "generateContent" in methods and "flash" in name.lower():
                     discovered.append(name)
-            # Preserve preferred order, then any extras discovered.
+            # Preserve preferred order first, then any extras discovered.
             seen = set()
             merged = []
-            for n in self.PREFERRED_MODELS + discovered:
+            # Preferred models go first — they are validated to work for this key.
+            for n in self.PREFERRED_MODELS:
+                if n not in seen:
+                    merged.append(n)
+                    seen.add(n)
+            # Append any additionally discovered models not already in the list.
+            for n in discovered:
                 if n not in seen:
                     merged.append(n)
                     seen.add(n)
@@ -129,6 +138,7 @@ class GeminiProvider(AIProvider):
         """Return the model's text on success; None on retryable failure."""
         try:
             import urllib.request
+            import urllib.error
             import json
             url = (
                 "https://generativelanguage.googleapis.com/v1beta/models/"
@@ -140,8 +150,15 @@ class GeminiProvider(AIProvider):
                 headers={"Content-Type": "application/json"},
                 method="POST",
             )
-            with urllib.request.urlopen(req, timeout=timeout_s) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
+            try:
+                with urllib.request.urlopen(req, timeout=timeout_s) as resp:
+                    result = json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as http_err:
+                body = http_err.read().decode("utf-8", errors="replace")
+                err_data = json.loads(body) if body else {}
+                code = err_data.get("error", {}).get("code", http_err.code)
+                logger.warning("Gemini model '%s' HTTP %s: %s", model, code, err_data.get("error", {}).get("message", "")[:120])
+                return None
             text = result["candidates"][0]["content"]["parts"][0]["text"].strip()
             return text
         except Exception as e:
