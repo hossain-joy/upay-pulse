@@ -21,7 +21,8 @@ import {
   BarChart2,
   PieChart as PieChartIcon,
   ChevronRight,
-  Filter
+  Filter,
+  TrendingUp
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -34,7 +35,7 @@ import {
   Cell 
 } from 'recharts';
 import { apiRequest } from '../api/client';
-import { GraphTopology, GraphNode, ScamReportItem, AppealItem } from '../types';
+import { GraphTopology, GraphNode, ScamReportItem, AppealItem, EvolutionDataset, EvolutionDatasetList, EvolutionSnapshot, EvolutionDiff, EmergingMulesResponse, EmergingMule } from '../types';
 
 interface RiskConsoleProps {
   onNotify?: (msg: string, type: 'success' | 'error' | 'info') => void;
@@ -113,9 +114,36 @@ interface EvidencePayload {
   } | null;
 }
 
+// Small inline helper used by the EvolutionPanel sidebar. Renders a single
+// statistic with a label and a colour-tinted value (or literal "—" when the
+// snapshot hasn't loaded yet). Avoids hardcoded fallbacks.
+interface StatCellProps {
+  label: string;
+  value: number | null | undefined;
+  accent?: 'emerald' | 'rose' | 'cyan' | 'slate' | 'purple' | 'amber';
+}
+const StatCell: React.FC<StatCellProps> = ({ label, value, accent = 'cyan' }) => {
+  const accentClass: Record<string, string> = {
+    emerald: 'text-emerald-300',
+    rose: 'text-rose-300',
+    cyan: 'text-cyan-300',
+    slate: 'text-slate-300',
+    purple: 'text-purple-300',
+    amber: 'text-amber-300',
+  };
+  return (
+    <div className="rounded-xl bg-slate-950/60 border border-slate-800 p-2.5">
+      <div className="text-[9px] font-mono uppercase tracking-wider text-slate-500">{label}</div>
+      <div className={`text-base sm:text-lg font-black font-mono ${accentClass[accent]}`}>
+        {value == null ? '—' : value}
+      </div>
+    </div>
+  );
+};
+
 export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
   // Navigation tabs
-  const [activeTab, setActiveTab] = useState<'MONITOR' | 'GRAPH' | 'SCAMS' | 'ML' | 'APPEALS'>('MONITOR');
+  const [activeTab, setActiveTab] = useState<'MONITOR' | 'GRAPH' | 'EVOLUTION' | 'SCAMS' | 'ML' | 'APPEALS'>('MONITOR');
 
   // Overview & Telemetry state
   const [overview, setOverview] = useState<RiskOverview | null>(null);
@@ -145,6 +173,19 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
   // ML Metrics state
   const [mlMetrics, setMlMetrics] = useState<MLMetrics | null>(null);
   const [loadingMl, setLoadingMl] = useState<boolean>(false);
+
+  // Mule Network Evolution state
+  const [evoDatasets, setEvoDatasets] = useState<EvolutionDatasetList | null>(null);
+  const [evoSnapshots, setEvoSnapshots] = useState<Record<string, EvolutionSnapshot>>({});
+  const [evoCurrent, setEvoCurrent] = useState<string | null>(null);
+  const [evoPrev, setEvoPrev] = useState<string | null>(null);
+  const [evoDiff, setEvoDiff] = useState<EvolutionDiff | null>(null);
+  const [evoEmerging, setEvoEmerging] = useState<EmergingMulesResponse | null>(null);
+  const [evoMode, setEvoMode] = useState<'play' | 'compare'>('play');
+  const [evoPlaying, setEvoPlaying] = useState<boolean>(false);
+  const [evoSpeedMs, setEvoSpeedMs] = useState<number>(1200);
+  const [loadingEvo, setLoadingEvo] = useState<boolean>(false);
+  const [evoError, setEvoError] = useState<string | null>(null);
 
   // Phase-2 Evidence Bundle (live, from /api/v1/evidence/benchmarks)
   const [evidence, setEvidence] = useState<EvidencePayload | null>(null);
@@ -539,6 +580,153 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
     }
   };
 
+  // Mule Network Evolution — fetch helpers
+  const fetchEvoDatasets = async () => {
+    try {
+      const data = await apiRequest<EvolutionDatasetList>('/graph/evolution/datasets?bucket_days=7');
+      setEvoDatasets(data);
+      setEvoError(null);
+      // Default-select the first two datasets so the timeline is immediately useful.
+      if (data.datasets.length >= 1 && !evoCurrent) {
+        setEvoCurrent(data.datasets[0].id);
+        if (data.datasets.length >= 2) {
+          setEvoPrev(data.datasets[1].id);
+        }
+      }
+    } catch (err: any) {
+      console.warn('Failed to fetch evolution datasets:', err);
+      setEvoError(err?.message || 'Failed to load datasets');
+      setEvoDatasets(null);
+    }
+  };
+
+  const fetchEvoSnapshot = async (datasetId: string) => {
+    try {
+      const data = await apiRequest<EvolutionSnapshot>(
+        `/graph/evolution/${datasetId}?bucket_days=7&top_n=100`
+      );
+      setEvoSnapshots(prev => ({ ...prev, [datasetId]: data }));
+    } catch (err) {
+      console.warn(`Failed to fetch snapshot for ${datasetId}:`, err);
+    }
+  };
+
+  const fetchEvoDiffAndEmerging = async (fromId: string, toId: string) => {
+    try {
+      const [diff, emerging] = await Promise.all([
+        apiRequest<EvolutionDiff>(`/graph/evolution/${toId}/changes?from=${fromId}&bucket_days=7`),
+        apiRequest<EmergingMulesResponse>(`/graph/evolution/${toId}/emerging?from=${fromId}&bucket_days=7`),
+      ]);
+      setEvoDiff(diff);
+      setEvoEmerging(emerging);
+    } catch (err) {
+      console.warn(`Failed to fetch diff/emerging ${fromId} -> ${toId}:`, err);
+    }
+  };
+
+  // Auto-fetch datasets + first snapshot whenever the EVOLUTION tab opens.
+  useEffect(() => {
+    if (activeTab === 'EVOLUTION' && !evoDatasets && !loadingEvo) {
+      setLoadingEvo(true);
+      fetchEvoDatasets().finally(() => setLoadingEvo(false));
+    }
+  }, [activeTab]);
+
+  // When datasets change, lazy-fetch snapshots for the current + previous + neighbours.
+  useEffect(() => {
+    if (!evoDatasets) return;
+    const ids = new Set<string>();
+    if (evoCurrent) ids.add(evoCurrent);
+    if (evoPrev) ids.add(evoPrev);
+    // Pre-fetch first 3 + last 1 for fast play-evolution navigation
+    evoDatasets.datasets.slice(0, 3).forEach(d => ids.add(d.id));
+    if (evoDatasets.datasets.length) ids.add(evoDatasets.datasets[evoDatasets.datasets.length - 1].id);
+    ids.forEach(id => {
+      if (!evoSnapshots[id]) fetchEvoSnapshot(id);
+    });
+    if (evoCurrent && evoPrev) {
+      fetchEvoDiffAndEmerging(evoPrev, evoCurrent);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evoDatasets?.datasets.length, evoCurrent, evoPrev]);
+
+  // Play-evolution auto-advance
+  useEffect(() => {
+    if (!evoPlaying || !evoDatasets || evoDatasets.datasets.length < 2) return;
+    const interval = setInterval(() => {
+      setEvoCurrent(prev => {
+        if (!prev) return evoDatasets.datasets[0].id;
+        const idx = evoDatasets.datasets.findIndex(d => d.id === prev);
+        const nextIdx = (idx + 1) % evoDatasets.datasets.length;
+        return evoDatasets.datasets[nextIdx].id;
+      });
+    }, evoSpeedMs);
+    return () => clearInterval(interval);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evoPlaying, evoSpeedMs, evoDatasets?.datasets.length]);
+
+  const goPrev = () => {
+    if (!evoDatasets || !evoCurrent) return;
+    const idx = evoDatasets.datasets.findIndex(d => d.id === evoCurrent);
+    const prevIdx = (idx - 1 + evoDatasets.datasets.length) % evoDatasets.datasets.length;
+    setEvoPrev(evoCurrent);
+    setEvoCurrent(evoDatasets.datasets[prevIdx].id);
+  };
+
+  const goNext = () => {
+    if (!evoDatasets || !evoCurrent) return;
+    const idx = evoDatasets.datasets.findIndex(d => d.id === evoCurrent);
+    const nextIdx = (idx + 1) % evoDatasets.datasets.length;
+    setEvoPrev(evoCurrent);
+    setEvoCurrent(evoDatasets.datasets[nextIdx].id);
+  };
+
+  const selectEvoDataset = (id: string) => {
+    setEvoPrev(evoCurrent);
+    setEvoCurrent(id);
+  };
+
+  // Hash a node id to deterministic (x, y) in polar coords so frames align.
+  const evoNodeXY = React.useCallback((id: string, count: number) => {
+    let h = 0;
+    for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
+    const angle = (Math.abs(h) % 360) * (Math.PI / 180);
+    const radius = 80 + (Math.abs(h >> 8) % 120);
+    return {
+      x: 320 + Math.cos(angle) * radius,
+      y: 200 + Math.sin(angle) * radius,
+    };
+  }, []);
+
+  // Tag each node/edge with its evolution status vs evoDiff.
+  const evoNodeClass = React.useMemo(() => {
+    if (!evoDiff) return new Map<string, 'new' | 'removed' | 'risk-up' | 'risk-down' | 'unchanged'>();
+    const map = new Map<string, 'new' | 'removed' | 'risk-up' | 'risk-down' | 'unchanged'>();
+    evoDiff.new_nodes.forEach(n => map.set(n.id, 'new'));
+    evoDiff.removed_nodes.forEach(n => map.set(n.id, 'removed'));
+    evoDiff.risk_up.forEach(r => map.set(r.id, 'risk-up'));
+    evoDiff.risk_down.forEach(r => map.set(r.id, 'risk-down'));
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evoDiff]);
+
+  const evoEdgeClass = React.useMemo(() => {
+    if (!evoDiff) return new Map<string, 'new' | 'removed' | 'unchanged'>();
+    const map = new Map<string, 'new' | 'removed' | 'unchanged'>();
+    const addKey = (e: { source: string; target: string }) => {
+      map.set(`frozen:${e.source}|${e.target}`, e.source > e.target ? 'new' : 'removed'); // placeholder, replaced below
+    };
+    // Actually use frozenset-style symmetric key:
+    const sym = (e: { source: string; target: string }) => `${e.source}|${e.target}`;
+    evoDiff.new_edges.forEach(e => map.set(sym(e), 'new'));
+    evoDiff.removed_edges.forEach(e => map.set(sym(e), 'removed'));
+    return map;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [evoDiff]);
+
+  const currentEvoSnapshot = evoCurrent ? evoSnapshots[evoCurrent] : null;
+  const prevEvoSnapshot = evoPrev ? evoSnapshots[evoPrev] : null;
+
   // Run Sandbox Evaluation
   const handleEvaluateSandbox = async () => {
     setIsEvaluating(true);
@@ -805,10 +993,21 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
               <span>Mule Graph</span>
             </button>
             <button
+              onClick={() => setActiveTab('EVOLUTION')}
+              className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
+                activeTab === 'EVOLUTION'
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Mule Evolution</span>
+            </button>
+            <button
               onClick={() => setActiveTab('SCAMS')}
               className={`px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition shrink-0 ${
-                activeTab === 'SCAMS' 
-                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20' 
+                activeTab === 'SCAMS'
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/20'
                   : 'text-slate-400 hover:text-white'
               }`}
             >
@@ -1504,7 +1703,313 @@ export const RiskConsole: React.FC<RiskConsoleProps> = ({ onNotify }) => {
         </div>
       )}
 
-      {/* TAB 3: CITIZEN SCAM COMPLAINTS INVESTIGATION QUEUE */}
+      {/* TAB 3: MULE NETWORK EVOLUTION — chronological graph snapshots */}
+      {activeTab === 'EVOLUTION' && (
+        <div className="space-y-4 sm:space-y-6 animate-fade-in">
+          {/* Header + controls */}
+          <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 to-indigo-950/40 border border-indigo-500/30 p-4 sm:p-6 backdrop-blur-xl">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 mb-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <TrendingUp className="w-4 h-4 text-indigo-400" />
+                  <span className="text-[11px] font-mono uppercase tracking-wider text-indigo-300">Mule Network Evolution</span>
+                </div>
+                <h2 className="text-lg sm:text-xl font-bold text-white">How the network changes week-by-week</h2>
+                <p className="text-xs text-slate-400 mt-1">
+                  Snapshots computed from real <code className="text-indigo-300">Transaction.created_at</code> via the existing MuleGraphDetector pipeline. No hardcoded graphs.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <select
+                  value={evoCurrent ?? ''}
+                  onChange={e => selectEvoDataset(e.target.value)}
+                  className="bg-slate-950 border border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono text-cyan-300"
+                  aria-label="Select evolution dataset"
+                >
+                  {evoDatasets?.datasets.map(d => (
+                    <option key={d.id} value={d.id}>
+                      {d.id} — {d.label} ({d.tx_count} txns)
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={goPrev}
+                  className="px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs"
+                  aria-label="Previous dataset"
+                >
+                  ← Prev
+                </button>
+                <button
+                  onClick={goNext}
+                  className="px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 text-xs"
+                  aria-label="Next dataset"
+                >
+                  Next →
+                </button>
+                <button
+                  onClick={() => setEvoPlaying(p => !p)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition ${
+                    evoPlaying
+                      ? 'bg-rose-600 text-white'
+                      : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                  }`}
+                  aria-label={evoPlaying ? 'Pause evolution' : 'Play evolution'}
+                >
+                  {evoPlaying ? '⏸ Pause' : '▶ Play Evolution'}
+                </button>
+                <select
+                  value={evoSpeedMs}
+                  onChange={e => setEvoSpeedMs(Number(e.target.value))}
+                  className="bg-slate-950 border border-slate-700 rounded-xl px-2 py-1.5 text-xs text-slate-300"
+                  aria-label="Evolution playback speed"
+                >
+                  <option value={600}>0.6s</option>
+                  <option value={1200}>1.2s</option>
+                  <option value={2400}>2.4s</option>
+                </select>
+                <button
+                  onClick={() => setEvoMode(m => (m === 'play' ? 'compare' : 'play'))}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition ${
+                    evoMode === 'compare'
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                      : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                  }`}
+                  aria-label="Toggle compare mode"
+                >
+                  {evoMode === 'compare' ? 'Compare mode' : 'Single mode'}
+                </button>
+              </div>
+            </div>
+
+            {/* Legend */}
+            <div className="flex flex-wrap gap-3 text-[11px] text-slate-300">
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-cyan-400" /> Existing account</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-emerald-400" /> New account</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500" /> Risk escalated</span>
+              <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-slate-500" /> Removed account</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 h-0.5 bg-amber-400" /> New transfer</span>
+              <span className="flex items-center gap-1.5"><span className="w-6 h-0.5 bg-slate-600" /> Removed transfer</span>
+            </div>
+          </div>
+
+          {evoError && (
+            <div className="rounded-2xl border border-rose-500/30 bg-rose-950/30 p-4 text-sm text-rose-300">
+              Failed to load evolution datasets: {evoError}. Numbers below show literal <code>—</code> until the endpoint responds.
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+            {/* Main graph canvas */}
+            <div className="lg:col-span-2 rounded-2xl sm:rounded-3xl bg-slate-950 border border-slate-800/80 p-3 sm:p-4">
+              <div className="flex items-center justify-between mb-2 px-1">
+                <div className="text-xs text-slate-400">
+                  {evoCurrent ? (
+                    <>
+                      <span className="font-mono text-cyan-300">{evoCurrent}</span>
+                      <span className="text-slate-500"> · </span>
+                      <span className="text-slate-300">{currentEvoSnapshot?.label ?? '…'}</span>
+                      <span className="text-slate-500"> · </span>
+                      <span className="text-slate-300">{currentEvoSnapshot?.tx_count ?? 0} txns</span>
+                    </>
+                  ) : (
+                    <span className="text-slate-500">No dataset selected</span>
+                  )}
+                </div>
+                <div className="text-[11px] text-slate-500">
+                  Window: {currentEvoSnapshot ? `${currentEvoSnapshot.start.slice(0, 10)} → ${currentEvoSnapshot.end.slice(0, 10)}` : '—'}
+                </div>
+              </div>
+
+              {evoMode === 'compare' && prevEvoSnapshot ? (
+                /* Side-by-side compare */
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { label: `Previous (${evoPrev})`, snap: prevEvoSnapshot, side: 'prev' as const },
+                    { label: `Current (${evoCurrent})`, snap: currentEvoSnapshot, side: 'curr' as const },
+                  ].map(({ label, snap, side }) => (
+                    <div key={side} className="rounded-xl bg-slate-900/60 border border-slate-800 p-2">
+                      <div className="text-[10px] font-mono text-slate-400 uppercase mb-1">{label}</div>
+                      {snap ? (
+                        <svg viewBox="0 0 640 360" className="w-full h-56">
+                          <defs>
+                            <marker id={`arr-${side}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                            </marker>
+                          </defs>
+                          {snap.edges.map(e => {
+                            const a = evoNodeXY(e.source, snap.nodes.length);
+                            const b = evoNodeXY(e.target, snap.nodes.length);
+                            const evoKey = `${e.source}|${e.target}`;
+                            const edgeCls = side === 'curr' ? (evoEdgeClass.get(evoKey) ?? 'unchanged') : 'unchanged';
+                            const stroke = edgeCls === 'new' ? '#10b981' : edgeCls === 'removed' ? '#475569' : '#64748b';
+                            return (
+                              <line key={`${side}-${e.id}`} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={stroke} strokeWidth={1} markerEnd={`url(#arr-${side})`} className={edgeCls === 'new' ? 'evo-edge-new' : edgeCls === 'removed' ? 'evo-edge-removed' : ''} />
+                            );
+                          })}
+                          {snap.nodes.map(n => {
+                            const p = evoNodeXY(n.id, snap.nodes.length);
+                            const cls = side === 'curr' ? (evoNodeClass.get(n.id) ?? 'unchanged') : 'unchanged';
+                            const fill = cls === 'new' ? '#10b981' : cls === 'removed' ? '#475569' : cls === 'risk-up' ? '#f43f5e' : '#0284c7';
+                            return (
+                              <g key={`${side}-${n.id}`} className={cls === 'new' ? 'evo-new' : cls === 'removed' ? 'evo-removed' : cls === 'risk-up' ? 'evo-risk-up' : 'evo-unchanged'}>
+                                <circle cx={p.x} cy={p.y} r={n.risk_score >= 0.7 ? 9 : 6} fill={fill} stroke={cls === 'risk-up' ? '#fda4af' : '#0f172a'} strokeWidth={1.5} />
+                                <title>{`${n.label} · ${n.node_type} · risk ${n.risk_score.toFixed(2)}`}</title>
+                              </g>
+                            );
+                          })}
+                        </svg>
+                      ) : (
+                        <div className="h-56 flex items-center justify-center text-slate-500 text-xs">Loading…</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                /* Single-snapshot view */
+                <div className="rounded-xl bg-slate-900/60 border border-slate-800 p-2">
+                  {currentEvoSnapshot ? (
+                    <svg viewBox="0 0 640 360" className="w-full h-72">
+                      <defs>
+                        <marker id="arr-curr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                          <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b" />
+                        </marker>
+                      </defs>
+                      {currentEvoSnapshot.edges.map(e => {
+                        const a = evoNodeXY(e.source, currentEvoSnapshot.nodes.length);
+                        const b = evoNodeXY(e.target, currentEvoSnapshot.nodes.length);
+                        const evoKey = `${e.source}|${e.target}`;
+                        const edgeCls = evoEdgeClass.get(evoKey) ?? 'unchanged';
+                        const stroke = edgeCls === 'new' ? '#10b981' : edgeCls === 'removed' ? '#475569' : '#64748b';
+                        return (
+                          <line key={e.id} x1={a.x} y1={a.y} x2={b.x} y2={b.y} stroke={stroke} strokeWidth={1} markerEnd="url(#arr-curr)" className={edgeCls === 'new' ? 'evo-edge-new' : edgeCls === 'removed' ? 'evo-edge-removed' : ''} />
+                        );
+                      })}
+                      {currentEvoSnapshot.nodes.map(n => {
+                        const p = evoNodeXY(n.id, currentEvoSnapshot.nodes.length);
+                        const cls = evoNodeClass.get(n.id) ?? 'unchanged';
+                        const fill = cls === 'new' ? '#10b981' : cls === 'removed' ? '#475569' : cls === 'risk-up' ? '#f43f5e' : '#0284c7';
+                        return (
+                          <g key={n.id} className={cls === 'new' ? 'evo-new' : cls === 'removed' ? 'evo-removed' : cls === 'risk-up' ? 'evo-risk-up' : 'evo-unchanged'}>
+                            <circle cx={p.x} cy={p.y} r={n.risk_score >= 0.7 ? 9 : 6} fill={fill} stroke={cls === 'risk-up' ? '#fda4af' : '#0f172a'} strokeWidth={1.5} />
+                            <title>{`${n.label} · ${n.node_type} · risk ${n.risk_score.toFixed(2)}`}</title>
+                          </g>
+                        );
+                      })}
+                    </svg>
+                  ) : (
+                    <div className="h-72 flex items-center justify-center text-slate-500 text-xs">
+                      {loadingEvo ? 'Loading…' : 'No snapshot selected'}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Timeline strip */}
+              <div className="mt-3 px-1 overflow-x-auto">
+                <div className="flex items-center gap-1.5 min-w-fit">
+                  {evoDatasets?.datasets.map(d => {
+                    const active = d.id === evoCurrent;
+                    const isPrev = d.id === evoPrev;
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => selectEvoDataset(d.id)}
+                        className={`shrink-0 px-2 py-1 rounded-lg text-[11px] font-mono transition border ${
+                          active
+                            ? 'bg-rose-600/20 border-rose-500/50 text-rose-200'
+                            : isPrev
+                            ? 'bg-amber-500/10 border-amber-500/30 text-amber-200'
+                            : 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                        }`}
+                        aria-label={`Select dataset ${d.id}`}
+                      >
+                        <div>{d.id}</div>
+                        <div className="text-[9px] text-slate-500">{d.tx_count}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar: stats + emerging mules */}
+            <div className="space-y-4">
+              {/* Stats grid */}
+              <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4">
+                <div className="text-[10px] font-mono uppercase text-slate-400 mb-3">Snapshot Δ vs previous</div>
+                <div className="grid grid-cols-2 gap-3">
+                  <StatCell label="New nodes" value={evoDiff?.stats.new_nodes_count} accent="emerald" />
+                  <StatCell label="Removed nodes" value={evoDiff?.stats.removed_nodes_count} accent="slate" />
+                  <StatCell label="New edges" value={evoDiff?.stats.new_edges_count} accent="emerald" />
+                  <StatCell label="Removed edges" value={evoDiff?.stats.removed_edges_count} accent="slate" />
+                  <StatCell label="Risk ↑" value={evoDiff?.stats.risk_up_count} accent="rose" />
+                  <StatCell label="Risk ↓" value={evoDiff?.stats.risk_down_count} accent="cyan" />
+                </div>
+                <div className="mt-3 pt-3 border-t border-slate-800 grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="flex justify-between"><span className="text-slate-400">Total nodes</span><span className="font-mono text-cyan-300">{currentEvoSnapshot?.summary.total_nodes ?? '—'}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Total edges</span><span className="font-mono text-cyan-300">{currentEvoSnapshot?.summary.total_edges ?? '—'}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Mule nodes</span><span className="font-mono text-rose-300">{currentEvoSnapshot?.summary.mule_nodes_detected ?? '—'}</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Clusters</span><span className="font-mono text-purple-300">{currentEvoSnapshot?.summary.clusters_detected ?? '—'}</span></div>
+                </div>
+              </div>
+
+              {/* Emerging mules */}
+              <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                  <div className="text-[10px] font-mono uppercase text-slate-300">Emerging mule activity</div>
+                </div>
+                {!evoEmerging ? (
+                  <div className="text-xs text-slate-500">—</div>
+                ) : evoEmerging.mules.length === 0 ? (
+                  <div className="text-xs text-slate-500">No new or escalated mules in this window.</div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {evoEmerging.mules.slice(0, 12).map((m: EmergingMule) => (
+                      <div key={m.id} className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-2 text-[11px]">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-amber-200 truncate">{m.label}</span>
+                          <span className={`px-1.5 py-0.5 rounded-md font-mono ${
+                            m.emergence === 'newly_classified' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'
+                          }`}>
+                            {m.emergence === 'newly_classified' ? 'NEW' : 'RISK↑'}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between mt-1 text-slate-400">
+                          <span className="font-mono">{m.node_type}</span>
+                          <span className="font-mono">{m.previous_risk != null ? `${m.previous_risk.toFixed(2)} → ` : ''}{m.risk_score.toFixed(2)}</span>
+                        </div>
+                        {m.cluster_id && <div className="text-slate-500 font-mono mt-0.5">{m.cluster_id}</div>}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Risk delta list */}
+              <div className="rounded-2xl bg-slate-900/90 border border-slate-800 p-4">
+                <div className="text-[10px] font-mono uppercase text-slate-400 mb-3">Risk escalations</div>
+                {!evoDiff || evoDiff.risk_up.length === 0 ? (
+                  <div className="text-xs text-slate-500">—</div>
+                ) : (
+                  <div className="space-y-1.5 max-h-48 overflow-y-auto">
+                    {evoDiff.risk_up.slice(0, 10).map(r => (
+                      <div key={r.id} className="flex items-center justify-between text-[11px] font-mono">
+                        <span className="text-slate-300 truncate">{r.label}</span>
+                        <span className="text-rose-300">
+                          {r.from.toFixed(2)} → {r.to.toFixed(2)}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 4: CITIZEN SCAM COMPLAINTS INVESTIGATION QUEUE */}
       {activeTab === 'SCAMS' && (
         <div className="rounded-2xl sm:rounded-3xl bg-slate-900/90 border border-slate-800 p-4 sm:p-6 md:p-8 backdrop-blur-xl shadow-xl">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">

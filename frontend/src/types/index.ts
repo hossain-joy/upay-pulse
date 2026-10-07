@@ -212,3 +212,94 @@ export interface AppealItem {
   created_at?: string;
   resolved_at?: string;
 }
+
+// ============================================================================
+// Mule Network Evolution (Phase 3 visualization)
+// All values are computed from real Transaction.created_at timestamps and the
+// existing MuleGraphDetector pipeline — no hardcoded graphs.
+// ============================================================================
+
+export interface EvolutionDataset {
+  id: string;
+  start: string;
+  end: string;
+  tx_count: number;
+  label: string;
+}
+
+export interface EvolutionDatasetList {
+  bucket_days: number | null;
+  window_start: string | null;
+  window_end: string | null;
+  datasets: EvolutionDataset[];
+}
+
+export interface EvolutionSnapshot {
+  dataset_id: string;
+  start: string;
+  end: string;
+  label: string;
+  tx_count: number;
+  bucket_days: number | null;
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  clusters: GraphTopology["clusters"];
+  summary: GraphTopology["summary"];
+}
+
+export interface EvolutionRiskDelta {
+  id: string;
+  label: string;
+  from: number;
+  to: number;
+  delta: number;
+}
+
+export interface EvolutionClusterChange {
+  cluster_id: string;
+  overlap: number;
+  added: string[];
+  removed: string[];
+}
+
+export interface EvolutionDiffStats {
+  new_nodes_count: number;
+  removed_nodes_count: number;
+  new_edges_count: number;
+  removed_edges_count: number;
+  risk_up_count: number;
+  risk_down_count: number;
+  cluster_changes_count: number;
+}
+
+export interface EvolutionDiff {
+  // Backend uses pydantic aliases so JSON keys are `from` and `to`.
+  from: string;
+  to: string;
+  bucket_days: number | null;
+  new_nodes: GraphNode[];
+  removed_nodes: GraphNode[];
+  new_edges: GraphEdge[];
+  removed_edges: GraphEdge[];
+  risk_up: EvolutionRiskDelta[];
+  risk_down: EvolutionRiskDelta[];
+  cluster_changes: EvolutionClusterChange[];
+  stats: EvolutionDiffStats;
+}
+
+export interface EmergingMule {
+  id: string;
+  label: string;
+  node_type: string;
+  risk_score: number;
+  emergence: "newly_classified" | "risk_escalated";
+  previous_risk: number | null;
+  cluster_id: string | null;
+}
+
+export interface EmergingMulesResponse {
+  from: string;
+  to: string;
+  count: number;
+  mules: EmergingMule[];
+}

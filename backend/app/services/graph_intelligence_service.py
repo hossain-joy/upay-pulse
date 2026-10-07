@@ -18,15 +18,18 @@ from ml.graph.mule_detector import MuleGraphDetector
 class GraphIntelligenceService:
 
     @classmethod
-    def _fetch_transaction_records(cls, db: Session, limit: int = 5000) -> List[Dict[str, Any]]:
+    def _records_from_txns(cls, txs: List[Transaction], db: Session) -> tuple[List[Dict[str, Any]], Dict[str, bool]]:
         """
-        Fetches completed transactions and maps IDs to phone numbers / agent codes
-        for human-readable graph topology.
-        """
-        txs = db.query(Transaction).filter(
-            Transaction.status == TransactionStatus.COMPLETED
-        ).order_by(desc(Transaction.created_at)).limit(limit).all()
+        Maps a list of already-loaded Transaction ORM objects into the
+        canonical record dict format expected by MuleGraphDetector. Returns
+        `(records, phone_to_frozen)` so callers can annotate nodes with the
+        real-time freeze state.
 
+        This helper is shared between the full-graph endpoint
+        (`_fetch_transaction_records`) and the time-windowed snapshot builder
+        used by the Mule Network Evolution feature. Behaviour of either
+        caller is identical to the pre-refactor implementation.
+        """
         if not txs:
             return [], {}
 
@@ -50,7 +53,7 @@ class GraphIntelligenceService:
         records = []
         for t in txs:
             s_acc = id_to_phone.get(t.sender_id, "SYSTEM")
-            
+
             # If receiver is an agent, use agent code if available
             r_acc = id_to_agent_code.get(t.receiver_id) or id_to_phone.get(t.receiver_id, "SYSTEM")
 
@@ -64,6 +67,21 @@ class GraphIntelligenceService:
             })
 
         return records, phone_to_frozen
+
+    @classmethod
+    def _fetch_transaction_records(cls, db: Session, limit: int = 5000) -> List[Dict[str, Any]]:
+        """
+        Fetches completed transactions and maps IDs to phone numbers / agent codes
+        for human-readable graph topology.
+        """
+        txs = db.query(Transaction).filter(
+            Transaction.status == TransactionStatus.COMPLETED
+        ).order_by(desc(Transaction.created_at)).limit(limit).all()
+
+        if not txs:
+            return [], {}
+
+        return cls._records_from_txns(txs, db)
 
     @classmethod
     def get_full_graph(

@@ -33,3 +33,29 @@
 .glow-danger {
   box-shadow: 0 0 20px -3px rgba(239, 68, 68, 0.4);
 }
+
+/* ============================================================================
+   Mule Network Evolution — keyframes for new/removed/risk-up transitions.
+   Driven by data-evo attributes on SVG <g> nodes from RiskConsole.tsx.
+   ============================================================================ */
+@keyframes evoFadeIn {
+  0%   { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes evoFadeOut {
+  0%   { opacity: 0.6; }
+  100% { opacity: 0.05; }
+}
+
+@keyframes evoPulse {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(244, 63, 94, 0)); }
+  50%      { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.8)); }
+}
+
+.evo-new     { animation: evoFadeIn 700ms ease-out; transform-box: fill-box; transform-origin: center; }
+.evo-removed { animation: evoFadeOut 700ms ease-in forwards; transform-box: fill-box; transform-origin: center; }
+.evo-risk-up { animation: evoPulse 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.evo-unchanged { transition: opacity 250ms ease-in; }
+.evo-edge-new { animation: evoFadeIn 500ms ease-out; }
+.evo-edge-removed { animation: evoFadeOut 500ms ease-in forwards; }
