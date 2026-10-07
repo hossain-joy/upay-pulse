@@ -183,7 +183,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
 
   // Unfreeze Modal
   const [isUnfreezeModalOpen, setIsUnfreezeModalOpen] = useState(false);
-  const [unfreezeCode, setUnfreezeCode] = useState("123456");
+  const [unfreezeCode, setUnfreezeCode] = useState("1234");
   const [unfreezeError, setUnfreezeError] = useState<string | null>(null);
   const [unfreezeSuccess, setUnfreezeSuccess] = useState<string | null>(null);
   const [isUnfreezing, setIsUnfreezing] = useState(false);
@@ -761,7 +761,7 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
           return;
         }
       }
-      setUnfreezeError(err.message || "Unfreeze verification failed. Please verify OTP code (Default: 123456).");
+      setUnfreezeError(err.message || "Unfreeze verification failed. Please verify your Master Freeze PIN (Default: 1234).");
     } finally {
       setIsUnfreezing(false);
     }
@@ -2838,14 +2838,14 @@ export const CustomerPortal: React.FC<CustomerPortalProps> = ({ user: propUser, 
             <form onSubmit={handleExecuteUnfreeze} className="space-y-4 text-left">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">
-                  Verification Code (Demo OTP: <strong className="text-emerald-400">123456</strong>)
+                  Verification Code (Demo PIN: <strong className="text-emerald-400">1234</strong>)
                 </label>
                 <input
                   type="text"
                   maxLength={6}
                   value={unfreezeCode}
                   onChange={(e) => setUnfreezeCode(e.target.value)}
-                  placeholder="123456"
+                  placeholder="1234"
                   className="w-full bg-slate-800 border border-emerald-500/50 rounded-xl px-4 py-3 text-center text-2xl font-mono font-bold tracking-widest text-white focus:outline-none focus:border-emerald-400"
                   required
                 />
